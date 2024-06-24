@@ -1,0 +1,9 @@
+*.out
+*.o
+*.py
+*.ipynb
+*.json
+*.bc
+*.db
+builddir
+dist
