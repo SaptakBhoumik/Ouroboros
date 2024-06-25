@@ -1,7 +1,9 @@
 #include "op.hpp"
-
+#include "func/func.hpp"
 using namespace Ouroboros;
-
+double func(double x){
+    return x*x;
+}
 int main(){
     Tensor A=Tensor({2,2});
     Tensor B=Tensor({2,2});
@@ -52,4 +54,12 @@ int main(){
     t2.reshape({3});
     std::cout<<matvecmul(t1,t2)<<std::endl;
 
+    D=CreateTensor::rand({2,2},-1,1);
+    std::cout<<D<<std::endl;
+    D=CreateTensor::scalar_matrix(3,2);
+    std::cout<<D<<std::endl;
+    D=CreateTensor::diagonal_matrix({2,1,2});
+    std::cout<<D<<std::endl;
+    D=transform<func>(D);
+    std::cout<<D<<std::endl;
 }

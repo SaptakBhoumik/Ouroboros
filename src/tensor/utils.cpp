@@ -22,7 +22,7 @@ void Tensor::ones(){
 void Tensor::rand(double start,double end){
     std::random_device __dev;
     std::mt19937 __rng(__dev());
-    std::uniform_real_distribution<std::mt19937::result_type> dist(start,end);
+    std::uniform_real_distribution<double> dist(start,end);
     for(size_t i=0;i<m_shape.count();++i){
         m_data[i]=dist(__rng);
     }
@@ -41,6 +41,19 @@ void Tensor::clamp(double a,double b){
         }
         else if(m_data[i]>b){
             m_data[i]=b;
+        }
+    }
+}
+void Tensor::clamp(double a,double b,double c){
+    for(size_t i=0;i<m_shape.count();++i){
+        if(m_data[i]<a){
+            m_data[i]=a;
+        }
+        else if(m_data[i]>b){
+            m_data[i]=b;
+        }
+        else{
+            m_data[i]=c;
         }
     }
 }
@@ -67,7 +80,7 @@ void Tensor::fill_inf(double value){
         }
     }
 }
-void Tensor::fill_neg_inf(double value=0.0){
+void Tensor::fill_neg_inf(double value){
     for(size_t i=0;i<m_shape.count();++i){
         if(std::isinf(m_data[i])&&m_data[i]<0){
             m_data[i]=value;

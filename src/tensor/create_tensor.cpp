@@ -1,6 +1,7 @@
 #include "tensor.hpp"
 #include <random>
 namespace Ouroboros{
+namespace CreateTensor{
 Tensor zeros(const Shape& shape){
     return fill(shape,0.0);
 }
@@ -10,7 +11,7 @@ Tensor ones(const Shape& shape){
 Tensor rand(const Shape& shape,double start,double end){
     std::random_device __dev;
     std::mt19937 __rng(__dev());
-    std::uniform_real_distribution<std::mt19937::result_type> dist(start,end);
+    std::uniform_real_distribution<double> dist(start,end);
     size_t count=shape.count();
     if(count==0){
         throw std::invalid_argument("Invalid shape");
@@ -73,5 +74,30 @@ Tensor logspace(const Shape& shape,double start,double end,double base){
         data[i]=std::pow(base,exponent);
     }
     return Tensor(shape,data);
+}
+Tensor scalar_matrix(size_t col_count,double value){
+    if(col_count==0){
+        throw std::invalid_argument("Invalid shape");
+    }
+    Shape shape={col_count,col_count};
+    Tensor tensor(shape,0.0);
+    auto d=tensor.data();
+    for(size_t i=0;i<col_count;++i){
+        d[i*col_count+i]=value;
+    }
+    return tensor;
+}
+Tensor diagonal_matrix(std::vector<double> diag){
+    if(diag.size()==0){
+        throw std::invalid_argument("Invalid shape");
+    }
+    size_t col_count=diag.size();
+    Tensor tensor({col_count,col_count},0.0);
+    auto d=tensor.data();
+    for(size_t i=0;i<col_count;++i){
+        d[i*col_count+i]=diag[i];
+    }
+    return tensor;
+}
 }
 }

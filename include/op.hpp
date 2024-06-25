@@ -1,3 +1,4 @@
+#pragma once
 #include "tensor.hpp"
 
 namespace Ouroboros{

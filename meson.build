@@ -5,6 +5,7 @@ project('Ouroboros', 'cpp', version: '0.1.0')
 include = include_directories('include/')
 omp=dependency('openmp')
 cblas=dependency('cblas')
+gsl=dependencies('gsl')
 
 add_project_arguments('-std=c++2a', language: ['cpp','c'])
 
@@ -14,14 +15,14 @@ ouroboros=static_library(
     'ouroboros',
     include_directories:include,
     sources:src,
-    dependencies:[omp,cblas],
+    dependencies:[omp,cblas,gsl],
     install:true
 )
 
 executable(
     'test_tensor.elf',
     sources: ['test_tensor.cpp'], 
-    dependencies:[omp,cblas],
+    dependencies:[omp,cblas,gsl],
     include_directories:include,
     link_with: [ouroboros]
 )

@@ -1,6 +1,8 @@
+#pragma once
 #include "shape.hpp"
 #include <memory>
 #include <functional>
+#include <vector>   
 namespace Ouroboros{
 //TODO:bool tensor
 class Tensor{
@@ -31,6 +33,8 @@ class Tensor{
     void clean(double a=0.0,double new_val=0.0);
     //Clip all values to be in the range [a,b] i.e if a>x then x=a and if x>b then x=b else x=x
     void clamp(double a,double b);
+    //Clip all values to be in the range {a,b,c} i.e if a>x then x=a and if x>b then x=b else x=c
+    void clamp(double a,double b,double c);
     //Replace all values a with b
     void replace(double a,double b);
 
@@ -119,15 +123,7 @@ Tensor linspace(const Shape& shape,double start,double end);
 //base^start,base^(start+step),base^(start+2*step),...,base^end
 //step=(end-start)/(count-1)
 Tensor logspace(const Shape& shape,double start,double end,double base=10.0);	
-Tensor regspace(const Shape& shape);	 
-Tensor randperm(const Shape& shape);	 
-Tensor eye();
-ones
-zeros
-randu	
-randn	 
-randg	
-randi
-toeplitz
+Tensor scalar_matrix(size_t col_count,double value);
+Tensor diagonal_matrix(std::vector<double> diag);
 }
 }

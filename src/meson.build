@@ -3,5 +3,6 @@ src=[
     'src/op.cpp',
     'src/shape.cpp',
     'src/tensor/tensor.cpp',
-    'src/tensor/modify_tensor.cpp',
+    'src/tensor/utils.cpp',
+    'src/tensor/create_tensor.cpp',
 ]
