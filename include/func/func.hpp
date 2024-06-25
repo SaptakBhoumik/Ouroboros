@@ -2,17 +2,18 @@
 #include "op.hpp"
 #include <cmath>
 #include <functional>
-#include <gsl/gsl_sf_psi.h>
-#include <gsl/gsl_sf_trig.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_sf_gamma.h>
-
+#include <omp.h>
+#include "basic.hpp"
+#include "err_func.hpp"
+#include "sf_func.hpp"
+#include "trig.hpp"
+#include "h_trig.hpp"
 #ifndef __MIN__COUNT__FOR__THREAD__
 #define __MIN__COUNT__FOR__THREAD__ 1000000
 #endif
 namespace Ouroboros{
-template<double(*func)(double),size_t min_size=__MIN__COUNT__FOR__THREAD__>
-Tensor transform(const Tensor& a){
+template<double(*func)(double)>
+Tensor transform(const Tensor& a,size_t min_size=__MIN__COUNT__FOR__THREAD__){
     Tensor res(a.shape());
     double* res_data=res.data();
     size_t count=a.count();

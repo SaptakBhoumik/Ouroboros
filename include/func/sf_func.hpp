@@ -1,152 +1,178 @@
 #pragma once
-#include <cmath>
-#include <functional>
-#include <gsl/gsl_sf_psi.h>
-#include <gsl/gsl_sf_trig.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_sf_gamma.h>
-#include <gsl/gsl_sf_airy.h>
-#include <gsl/gsl_sf_bessel.h>
 namespace Ouroboros{
 //Airy Functions
-__always_inline double Ai(double x){
-    return gsl_sf_airy_Ai(x,GSL_PREC_DOUBLE);
-}
-__always_inline double Bi(double x){
-    return gsl_sf_airy_Bi(x,GSL_PREC_DOUBLE);
-}
-__always_inline double Ai_scaled(double x){
-    return gsl_sf_airy_Ai_scaled(x,GSL_PREC_DOUBLE);
-}
-__always_inline double Bi_scaled(double x){
-    return gsl_sf_airy_Bi_scaled(x,GSL_PREC_DOUBLE);
-}
-__always_inline double Ai_grad(double x){
-    return gsl_sf_airy_Ai_deriv(x,GSL_PREC_DOUBLE);
-}
-__always_inline double Bi_grad(double x){
-    return gsl_sf_airy_Bi_deriv(x,GSL_PREC_DOUBLE);
-}
-__always_inline double Ai_grad_scaled(double x){
-    return gsl_sf_airy_Ai_deriv_scaled(x,GSL_PREC_DOUBLE);
-}
-__always_inline double Bi_grad_scaled(double x){
-    return gsl_sf_airy_Bi_deriv_scaled(x,GSL_PREC_DOUBLE);
-}
-__always_inline double Ai_zero(unsigned int n){
-    return gsl_sf_airy_zero_Ai(n);
-}
-__always_inline double Bi_zero(unsigned int n){
-    return gsl_sf_airy_zero_Bi(n);
-}
-__always_inline double Ai_grad_zero(unsigned int n){
-    return gsl_sf_airy_zero_Ai_deriv(n);
-}
-__always_inline double Bi_grad_zero(unsigned int n){
-    return gsl_sf_airy_zero_Bi_deriv(n);
-}
+double Ai(double x);
+double Bi(double x);
+double Ai_scaled(double x);
+double Bi_scaled(double x);
+double Ai_grad(double x);
+double Bi_grad(double x);
+double Ai_grad_scaled(double x);
+double Bi_grad_scaled(double x);
+double Ai_zero(unsigned int n);
+double Bi_zero(unsigned int n);
+double Ai_grad_zero(unsigned int n);
+double Bi_grad_zero(unsigned int n);
 //Bessel Functions
-__always_inline double J0(double x){
-    return gsl_sf_bessel_J0(x);
-}
-__always_inline double J1(double x){
-    return gsl_sf_bessel_J1(x);
-}
-__always_inline double Jn(double x,int n){
-    return gsl_sf_bessel_Jn(n,x);
-}
-__always_inline double J0_zero(unsigned int n){
-    return gsl_sf_bessel_zero_J0(n);
-}
-__always_inline double J1_zero(unsigned int n){
-    return gsl_sf_bessel_zero_J1(n);
-}
+double J0(double x);
+double J1(double x);
+double Jn(double x,int n);
+double J0_zero(unsigned int n);
+double J1_zero(unsigned int n);
 
-__always_inline double Y0(double x){
-    return gsl_sf_bessel_Y0(x);
-}
-__always_inline double Y1(double x){
-    return gsl_sf_bessel_Y1(x);
-}
-__always_inline double Yn(double x,int n){
-    return gsl_sf_bessel_Yn(n,x);
-}
+double Y0(double x);
+double Y1(double x);
+double Yn(double x,int n);
 
-__always_inline double I0(double x){
-    return gsl_sf_bessel_I0(x);
-}
-__always_inline double I1(double x){
-    return gsl_sf_bessel_I1(x);
-}
-__always_inline double In(double x,int n){
-    return gsl_sf_bessel_In(n,x);
-}
-__always_inline double I0_scaled(double x){
-    return gsl_sf_bessel_I0_scaled(x);
-}
-__always_inline double I1_scaled(double x){
-    return gsl_sf_bessel_I1_scaled(x);
-}
-__always_inline double In_scaled(double x,int n){
-    return gsl_sf_bessel_In_scaled(n,x);
-}
+double I0(double x);
+double I1(double x);
+double In(double x,int n);
+double I0_scaled(double x);
+double I1_scaled(double x);
+double In_scaled(double x,int n);
 
-__always_inline double K0(double x){
-    return gsl_sf_bessel_K0(x);
-}
-__always_inline double K1(double x){
-    return gsl_sf_bessel_K1(x);
-}
-__always_inline double Kn(double x,int n){
-    return gsl_sf_bessel_Kn(n,x);
-}
-__always_inline double K0_scaled(double x){
-    return gsl_sf_bessel_K0_scaled(x);
-}
-__always_inline double K1_scaled(double x){
-    return gsl_sf_bessel_K1_scaled(x);
-}
-__always_inline double Kn_scaled(double x,int n){
-    return gsl_sf_bessel_Kn_scaled(n,x);
-}
+double K0(double x);
+double K1(double x);
+double Kn(double x,int n);
+double K0_scaled(double x);
+double K1_scaled(double x);
+double Kn_scaled(double x,int n);
 
-__always_inline double Ynu(double nu,double x){
-    return gsl_sf_bessel_Ynu(nu,x);
-}
-__always_inline double Jnu(double nu,double x){
-    return gsl_sf_bessel_Jnu(nu,x);
-}
-__always_inline double Jnu_zero(double nu,unsigned int n){
-    return gsl_sf_bessel_zero_Jnu(nu,n);
-}
-__always_inline double Inu(double nu,double x){
-    return gsl_sf_bessel_Inu(nu,x);
-}
-__always_inline double Knu(double nu,double x){
-    return gsl_sf_bessel_Knu(nu,x);
-}
-__always_inline double Knu_scaled(double nu,double x){
-    return gsl_sf_bessel_Knu_scaled(nu,x);
-}
-__always_inline double Knu_ln(double nu,double x){
-    return gsl_sf_bessel_lnKnu(nu,x);
-}
-//From https://www.gnu.org/software/gsl/doc/html/specfunc.html#clausen-functions
-/*
-__always_inline double gamma(double x){
-    return gsl_sf_gamma(x);
-}
-__always_inline double lgamma(double x){
-    return gsl_sf_lngamma(x);
-}
-__always_inline double psi(double x){
-    return gsl_sf_psi(x);
-}
-__always_inline double psi_3(double x){
-    return gsl_sf_psi_1(x);
-}
-__always_inline double psi_n(double x,int n){
-    return gsl_sf_psi_n(n,x);
-}
-*/
+double Ynu(double nu,double x);
+double Jnu(double nu,double x);
+double Jnu_zero(double nu,unsigned int n);
+double Inu(double nu,double x);
+double Knu(double nu,double x);
+double Knu_scaled(double nu,double x);
+double lKnu(double nu,double x);
+//Clausen Functions
+double clausen(double x);
+//Dawson Function
+double dawson(double x);
+//Debye Functions
+double debye1(double x);
+double debye2(double x);
+double debye3(double x);
+double debye4(double x);
+double debye5(double x);
+double debye6(double x);
+//Dilogarithm Function
+double dilog(double x);
+//Elliptic Integrals
+double Kcomp(double k);
+double Ecomp(double k);
+double Pcomp(double k,double n);
+double F(double phi,double k);
+double E(double phi,double k);
+double P(double phi,double k,double n);
+double D(double phi,double k);
+double RC(double x,double y);
+double RD(double x,double y,double z);
+double RF(double x,double y,double z);
+double RJ(double x,double y,double z,double p);
+//Exponential Integrals
+double E1(double x);
+double E2(double x);
+double En(double x,int n);
+double Ei(double x);
+double Shi(double x);
+double Chi(double x);
+double Ei_3(double x);
+double Si(double x);
+double Ci(double x);
+double atan_int(double x);
+//Fermi-Dirac Functions
+double fermi_dirac_m1(double x);
+double fermi_dirac_0(double x);
+double fermi_dirac_1(double x);
+double fermi_dirac(double x,int j);
+double fermi_dirac_half(double x);
+double fermi_dirac_mhalf(double x);
+double fermi_dirac_3half(double x);
+double fermi_dirac_inc_0(double x,double b);
+//Gamma and Related Functions
+double gamma(double x);
+double lgamma(double x);
+double gamma_star(double x);
+double gamma_inv(double x);
+double taylorcoeff(double x,int n);
+double poch(double a, double x);
+double lpoch(double a, double x);
+double pochrel(double a, double x);
+double gamma_inc(double a,double x);
+double gamma_inc_Q(double a,double x);
+double gamma_inc_P(double a,double x);
+double beta(double a,double b);
+double lbeta(double a,double b);
+double beta_inc(double a,double b,double x);
+//Gegenbauer Functions
+double gegenpoly1(double lambda,double x);
+double gegenpoly2(double lambda,double x);
+double gegenpoly3(double lambda,double x);
+double gegenpoly(double lambda,double x,int n);
+//Hermite Functions
+double hermite(double x,int n);
+double hermite_prob(double x,int n);
+double hermite_grad(double x,int n,int order);
+double hermite_prob_grad(double x,int n,int order);
+double hermite_func(double x,int n);
+double hermite_func_fast(double x,int n);
+double hermite_func_grad(double x,int n,int order);
+double hermite_zero(int n,int s);
+double hermite_prob_zero(int n,int s);
+double hermite_func_zero(int n,int s);
+//Hypergeometric Functions
+double F01(double a,double b);
+double F11(double a,double b,double x);
+double U(double a,double b,double x);
+double F21(double a,double b,double c,double x);
+double F21_renorm(double a,double b,double c,double x);
+double F20(double a,double b,double x);
+//Laguerre Functions
+double L1(double a,double x);
+double L2(double a,double x);
+double L3(double a,double x);
+double L(double a,double x,int n);
+//Lambert W Functions
+double W0(double x);
+double Wm1(double x);
+//Legendre Polynomials
+double legendre_P1(double x);
+double legendre_P2(double x);
+double legendre_P3(double x);
+double legendre_P(double x,int l);
+double Q0(double x);
+double Q1(double x);
+double Q(double x,int l);
+//Associated Legendre Polynomials and Spherical Harmonics
+double Plm(double x,int l,int m);
+double sphPlm(double x,int l,int m);
+//Conical Functions
+double conicalP_half(double x,double lambda);
+double conicalP_mhalf(double x,double lambda);
+double conicalP0(double x,double lambda);
+double conicalP1(double x,double lambda);
+double conicalP_sph(double x,double lambda,int n);
+double conicalP_cyl(double x,double lambda,int n);
+//Radial Functions for Hyperbolic Space
+double H3d0(double lambda,double eta);
+double H3d1(double lambda,double eta);
+double H3d(double lambda,double eta,int n);
+//Psi Functions
+double psi(double x);
+double psi1(double x);
+double psi_n(double x,int n);
+//Synchrotron Functions
+double synchrotron1(double x);
+double synchrotron2(double x);
+//Transport Functions
+double transport2(double x);
+double transport3(double x);
+double transport4(double x);
+double transport5(double x);
+//Zeta Functions
+double zeta(double x);
+double zetam1(double x);
+double hzeta(double x,double q);
+double eta(double x);
 }

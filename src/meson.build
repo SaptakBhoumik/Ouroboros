@@ -1,8 +1,15 @@
-src=[
+tensor_src=[
     'src/cpu/op.cpp',
     'src/op.cpp',
     'src/shape.cpp',
     'src/tensor/tensor.cpp',
     'src/tensor/utils.cpp',
     'src/tensor/create_tensor.cpp',
+]
+scalar_func_src=[
+    'src/func/scalar/basic.cpp',
+    'src/func/scalar/err_func.cpp',
+    'src/func/scalar/h_trig.cpp',
+    'src/func/scalar/sf_func.cpp',
+    'src/func/scalar/trig.cpp',
 ]

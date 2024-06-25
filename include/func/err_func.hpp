@@ -1,11 +1,9 @@
 #pragma once
-#include <gsl/gsl_sf_erf.h>
-#include <cmath>
 namespace Ouroboros{
-__always_inline double erf(double x){
-    return gsl_sf_erf(x);
-}
-__always_inline double erfc(double x){
-    return gsl_sf_erfc(x);
-}
+double erf(double x);
+double erfc(double x);
+double lerfc(double x);
+double erf_Z(double x);
+double erf_Q(double x);
+double hazard(double x);
 }
