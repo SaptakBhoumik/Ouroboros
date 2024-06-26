@@ -11,6 +11,25 @@ add_project_arguments('-std=c++2a', language: ['cpp','c'])
 
 subdir('src')
 
+install_headers(
+    [
+        'include/op.hpp',
+        'include/shape.hpp',
+        'include/tensor.hpp',
+    ],
+subdir : 'ouroboros')
+
+install_headers(
+    [
+        'include/func/basic.hpp',
+        'include/func/err_func.hpp',
+        'include/func/func.hpp',
+        'include/func/h_trig.hpp',
+        'include/func/sf_func.hpp',
+        'include/func/trig.hpp',
+    ],
+subdir : 'ouroboros/func')
+
 ouroboros=static_library(
     'ouroboros',
     include_directories:include,
@@ -22,6 +41,13 @@ ouroboros=static_library(
 executable(
     'test_tensor.elf',
     sources: ['test_tensor.cpp'], 
+    dependencies:[omp,cblas,gsl],
+    include_directories:include,
+    link_with: [ouroboros]
+)
+executable(
+    'bench.elf',
+    sources: ['bench.cpp'], 
     dependencies:[omp,cblas,gsl],
     include_directories:include,
     link_with: [ouroboros]

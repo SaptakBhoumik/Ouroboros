@@ -1,7 +1,8 @@
-#include "op.hpp"
 #include "func/func.hpp"
-int main()
-{
+double func(double a,double b,double c){
+    return a*b+c;
+}
+int main(){
     Ouroboros::Tensor A({2, 2});
     Ouroboros::Tensor B({2, 2});
 
@@ -59,4 +60,12 @@ int main()
     std::cout << D << std::endl;
     D = Ouroboros::transform<Ouroboros::sin>(D);
     std::cout << D << std::endl;
+    auto E = Ouroboros::CreateTensor::fill({2, 2}, 1);
+    std::cout<<E<<std::endl;
+    auto F = Ouroboros::CreateTensor::fill({2, 2}, 2);
+    std::cout<<F<<std::endl;
+    auto G = Ouroboros::CreateTensor::fill({2, 2}, 3);
+    std::cout<<G<<std::endl;
+    auto H = Ouroboros::transform<func>(E,F,G);
+    std::cout<<H<<std::endl;
 }

@@ -35,6 +35,7 @@ class Tensor{
     void clamp(double a,double b);
     //Clip all values to be in the range {a,b,c} i.e if a>x then x=a and if x>b then x=b else x=c
     void clamp(double a,double b,double c);
+    void threshold(double a,double new_val=0.0);
     //Replace all values a with b
     void replace(double a,double b);
 
@@ -105,8 +106,8 @@ class Tensor{
     
     double* data();
     const double* data() const;
-    const Shape& shape() const;
-    const Shape& strides() const;
+    Shape shape() const;
+    Shape strides() const;
     size_t count() const;
     size_t dim() const;
 

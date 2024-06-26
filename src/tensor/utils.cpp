@@ -57,6 +57,14 @@ void Tensor::clamp(double a,double b,double c){
         }
     }
 }
+void Tensor::threshold(double a,double new_val){
+    size_t count=m_shape.count();
+    for(size_t i=0;i<count;++i){
+        if(m_data[i]<=a){
+            m_data[i]=new_val;
+        }
+    }
+}
 void Tensor::replace(double a,double b){
     auto epsilon=std::numeric_limits<double>::epsilon();
     for(size_t i=0;i<m_shape.count();++i){

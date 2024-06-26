@@ -175,4 +175,27 @@ double zeta(double x);
 double zetam1(double x);
 double hzeta(double x,double q);
 double eta(double x);
+//common activation function
+double ELU(double x,double alpha=1.0);
+double hardshrink(double x,double lambda=0.5);
+double hardsigmoid(double x);
+double hardtanh(double x,double min_val=-1.0,double max_val=1.0);
+double hardswish(double x);
+double leakyReLU(double x,double alpha=0.01);
+double logsigmoid(double x);
+double ReLU(double x);
+double ReLU6(double x);
+double RReLU(double x,double lower=0.125,double upper=0.333);
+double SELU(double x);
+double CELU(double x,double alpha);
+double GELU(double x);
+double GELU_fast(double x);
+double sigmoid(double x);
+double SiLU(double x);
+double mish(double x);
+double softplus(double x,double beta=1.0,double threshold=20.0);
+double softshrink(double x,double lambda=0.5);
+double softsign(double x);
+double tanhshrink(double x);
+double threshold(double x,double threshold=1.0,double value=0.0);
 }

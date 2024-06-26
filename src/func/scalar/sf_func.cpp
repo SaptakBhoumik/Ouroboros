@@ -1,5 +1,5 @@
 #include "func/sf_func.hpp"
-#include <cmath>
+#include "func/basic.hpp"
 #include <functional>
 #include <gsl/gsl_sf_psi.h>
 #include <gsl/gsl_sf_trig.h>
@@ -494,5 +494,130 @@ double hzeta(double x,double q){
 }
 double eta(double x){
     return gsl_sf_eta(x);
+}
+//Common Activation Functions
+double ELU(double x,double alpha){
+    if(x>0){
+        return x;
+    }
+    return alpha*(exp(x)-1);
+}
+double hardshrink(double x,double lambda){
+    if(x>lambda){
+        return x;
+    }
+    else if(x<-lambda){
+        return x;
+    }
+    return 0;
+}
+double hardsigmoid(double x){
+    if(x<=-3){
+        return 0;
+    }
+    else if(x>=3){
+        return 1;
+    }
+    return x/6+0.5;
+}
+double hardtanh(double x,double min_val,double max_val){
+    if(x>max_val){
+        return max_val;
+    }
+    else if(x<min_val){
+        return min_val;
+    }
+    return x;
+}
+double hardswish(double x){
+    if(x<=-3){
+        return 0;
+    }
+    else if(x>=3){
+        return x;
+    }
+    return x*(x+3)/6;
+}
+double leakyReLU(double x,double alpha){
+    if(x>0){
+        return x;
+    }
+    return alpha*x;
+}
+double logsigmoid(double x){
+    return -ln(1+exp(-x));
+}
+double ReLU(double x){
+    if(x>0){
+        return x;
+    }
+    return 0;
+}
+double ReLU6(double x){
+    if(x>6){
+        return 6;
+    }
+    else if(x<0){
+        return 0;
+    }
+    return x;
+}
+double RReLU(double x,double lower,double upper){
+    double alpha=(lower+upper)/2;
+    if(x>0){
+        return x;
+    }
+    return alpha*x;
+}
+double SELU(double x){
+    double alpha=1.6732632423543772848170429916717;
+    double scale=1.0507009873554804934193349852946;
+    return scale*(max(0,x)+min(0,alpha*(exp(x)-1)));
+}
+double CELU(double x,double alpha){
+    return max(0,x)+min(0,alpha*(exp(x/alpha)-1));
+}
+double GELU(double x){
+    return 0.5*x*erfc(-x/1.4142135623730951);
+}
+double GELU_fast(double x){
+    return 0.5*x*(1+tanh(0.7978845608028654*(x+0.044715*x*x*x)));
+}
+double sigmoid(double x){
+    return 1/(1+exp(-x));
+}
+double SiLU(double x){
+    return x*sigmoid(x);
+}
+double mish(double x){
+    return x*tanh(softplus(x));
+}
+double softplus(double x,double beta,double threshold){
+    double y=beta*x;
+    if(y>threshold){
+        return x;
+    }
+    return (1/beta)*ln(1+exp(y));
+}
+double softshrink(double x,double lambda){
+    if(x>lambda){
+        return x-lambda;
+    }
+    else if(x<-lambda){
+        return x+lambda;
+    }
+    return 0;
+}
+double softsign(double x){
+    return x/(1+abs(x));
+}
+double tanhshrink(double x){
+    return x-tanh(x);
+}
+double threshold(double x,double threshold,double value){
+    if(x>threshold){
+        return value;
+    }
+    return x;
 }
 }

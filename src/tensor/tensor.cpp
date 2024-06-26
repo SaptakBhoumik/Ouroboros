@@ -98,12 +98,12 @@ double* Tensor::data(){
 const double* Tensor::data() const{
     return m_data;
 }
-const Shape& Tensor::shape() const{
+Shape Tensor::shape() const{
     return m_shape;
 }
- const Shape& Tensor::strides() const{
+Shape Tensor::strides() const{
     return m_strides;
- }
+}
 size_t Tensor::count() const{
     return m_shape.count();
 }
