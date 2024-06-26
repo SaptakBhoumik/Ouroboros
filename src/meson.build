@@ -13,3 +13,10 @@ scalar_func_src=[
     'src/func/scalar/sf_func.cpp',
     'src/func/scalar/trig.cpp',
 ]
+tensor_func_src=[
+    'src/func/tensor/basic.cpp',
+    'src/func/tensor/err_func.cpp',
+    'src/func/tensor/h_trig.cpp',
+    'src/func/tensor/sf_func.cpp',
+    'src/func/tensor/trig.cpp',
+]

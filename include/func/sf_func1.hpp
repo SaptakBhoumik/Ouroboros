@@ -1,5 +1,7 @@
 #pragma once
+#include "../macros.hpp"
 namespace Ouroboros{
+namespace Scalar{
 //Airy Functions
 double Ai(double x);
 double Bi(double x);
@@ -198,4 +200,5 @@ double softshrink(double x,double lambda=0.5);
 double softsign(double x);
 double tanhshrink(double x);
 double threshold(double x,double threshold=1.0,double value=0.0);
+}
 }

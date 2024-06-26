@@ -16,6 +16,7 @@ install_headers(
         'include/op.hpp',
         'include/shape.hpp',
         'include/tensor.hpp',
+        'include/macros.hpp',
     ],
 subdir : 'ouroboros')
 
@@ -25,7 +26,8 @@ install_headers(
         'include/func/err_func.hpp',
         'include/func/func.hpp',
         'include/func/h_trig.hpp',
-        'include/func/sf_func.hpp',
+        'include/func/sf_func1.hpp',
+        'include/func/sf_func2.hpp',
         'include/func/trig.hpp',
     ],
 subdir : 'ouroboros/func')
@@ -33,7 +35,7 @@ subdir : 'ouroboros/func')
 ouroboros=static_library(
     'ouroboros',
     include_directories:include,
-    sources:tensor_src+scalar_func_src,
+    sources:tensor_src+scalar_func_src+tensor_func_src,
     dependencies:[omp,cblas,gsl],
     install:true
 )

@@ -2,6 +2,7 @@
 #include <gsl/gsl_sf_trig.h>
 #include <cmath>
 namespace Ouroboros{
+namespace Scalar{
 double sin(double x){
     return gsl_sf_sin(x);
 }
@@ -40,5 +41,5 @@ double asec(double x){
 double acot(double x){
     return atan(1.0/x);
 }
-
+}
 }

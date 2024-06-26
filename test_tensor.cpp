@@ -58,7 +58,8 @@ int main(){
     std::cout << D << std::endl;
     D = Ouroboros::CreateTensor::diagonal_matrix({2, 1, 2});
     std::cout << D << std::endl;
-    D = Ouroboros::transform<Ouroboros::sin>(D);
+    //Transform is used to apply a function to each element of a tensor
+    D = Ouroboros::transform(Ouroboros::Scalar::sin,D);
     std::cout << D << std::endl;
     auto E = Ouroboros::CreateTensor::fill({2, 2}, 1);
     std::cout<<E<<std::endl;
@@ -66,6 +67,15 @@ int main(){
     std::cout<<F<<std::endl;
     auto G = Ouroboros::CreateTensor::fill({2, 2}, 3);
     std::cout<<G<<std::endl;
-    auto H = Ouroboros::transform<func>(E,F,G);
+    auto H = Ouroboros::transform(func,E,F,G);
+    std::cout<<H<<std::endl;
+
+    H=Ouroboros::sin(H);
+    std::cout<<H<<std::endl;
+    H=Ouroboros::pow(F,2);
+    std::cout<<H<<std::endl;
+    H=Ouroboros::pow(3,F);
+    std::cout<<H<<std::endl;
+    H=Ouroboros::pow(F,2.5*E);
     std::cout<<H<<std::endl;
 }

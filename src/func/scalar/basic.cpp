@@ -4,6 +4,7 @@
 #include <gsl/gsl_sf_exp.h>
 #include <cmath>
 namespace Ouroboros{
+namespace Scalar{
 double abs(double x){
     return std::abs(x);
 }
@@ -96,5 +97,6 @@ double sign(double x){
 }
 double fdim(double x,double y){
     return std::fdim(x,y);
+}
 }
 }

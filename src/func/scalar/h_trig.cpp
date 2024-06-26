@@ -2,6 +2,7 @@
 #include <gsl/gsl_math.h>
 #include <cmath>
 namespace Ouroboros{
+namespace Scalar{
 double sinh(double x){
     return std::sinh(x);
 }
@@ -39,5 +40,6 @@ double asech(double x){
 }
 double acoth(double x){
     return atanh(1.0/x);
+}
 }
 }

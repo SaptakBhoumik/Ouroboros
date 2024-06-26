@@ -2,7 +2,7 @@
 #include <chrono>
 
 Ouroboros::Tensor my_impl(const Ouroboros::Tensor& A){
-    return Ouroboros::transform<Ouroboros::sin>(A);
+    return Ouroboros::transform(Ouroboros::Scalar::sin,A);
 }
 Ouroboros::Tensor threaded_impl(const Ouroboros::Tensor& A){
     Ouroboros::Tensor res(A.shape());
@@ -10,7 +10,7 @@ Ouroboros::Tensor threaded_impl(const Ouroboros::Tensor& A){
     double* data=res.data();
     #pragma omp parallel for
     for(size_t i=0;i<count;i++){
-        data[i]=Ouroboros::sin(A.data()[i]);
+        data[i]=Ouroboros::Scalar::sin(A.data()[i]);
     }
     return res;
 }
@@ -19,7 +19,7 @@ Ouroboros::Tensor non_threaded_impl(const Ouroboros::Tensor& A){
     size_t count=A.shape().count();
     double* data=res.data();
     for(size_t i=0;i<count;i++){
-        data[i]=Ouroboros::sin(A.data()[i]);
+        data[i]=Ouroboros::Scalar::sin(A.data()[i]);
     }
     return res;
 }

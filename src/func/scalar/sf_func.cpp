@@ -1,4 +1,4 @@
-#include "func/sf_func.hpp"
+#include "func/sf_func1.hpp"
 #include "func/basic.hpp"
 #include <functional>
 #include <gsl/gsl_sf_psi.h>
@@ -24,6 +24,7 @@
 #include <gsl/gsl_sf_transport.h>
 #include <gsl/gsl_sf_zeta.h>
 namespace Ouroboros{
+namespace Scalar{
 //Airy Functions
 double Ai(double x){
     return gsl_sf_airy_Ai(x,GSL_PREC_DOUBLE);
@@ -619,5 +620,6 @@ double threshold(double x,double threshold,double value){
         return value;
     }
     return x;
+}
 }
 }

@@ -2,6 +2,7 @@
 #include <gsl/gsl_sf_erf.h>
 #include <cmath>
 namespace Ouroboros{
+namespace Scalar{
 double erf(double x){
     return gsl_sf_erf(x);
 }
@@ -19,5 +20,6 @@ double erf_Q(double x){
 }
 double hazard(double x){
     return gsl_sf_hazard(x);
+}
 }
 }
