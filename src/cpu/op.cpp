@@ -1,6 +1,9 @@
 #include "op.hpp"
 #include <omp.h>
 #include <limits>
+#include "macros.hpp"
+//NOTE:-We use abs for checking equality of floating point numbers because of floating point errors
+//Since it is a slow operation so we use threads only for equality operations to speed up the process
 namespace Ouroboros{
 namespace Scalar{
 double abs(double a);//Defined in src/func/scalar/basic.cpp
@@ -139,20 +142,34 @@ void div_ptr_self(double* a,double b,size_t size){
 }
 
 bool* eq_ptr(const double* a,const double* b,size_t size){
-    //Slow but accurate(considering floating point precision)
     double eps=std::numeric_limits<double>::epsilon();
     bool* result=new bool[size];
-    for(size_t i=0;i<size;i++){
-        result[i]=Scalar::abs(a[i]-b[i])<eps;
+    if(size<=__MIN__COUNT__FOR__THREAD__){
+        for(size_t i=0;i<size;i++){
+            result[i]=Scalar::abs(a[i]-b[i])<eps;
+        }
+    }
+    else{
+        #pragma omp parallel for
+        for(size_t i=0;i<size;i++){
+            result[i]=Scalar::abs(a[i]-b[i])<eps;
+        }
     }
     return result;
 }
 bool* neq_ptr(const double* a,const double* b,size_t size){
-    //Slow but accurate(considering floating point precision)
     double eps=std::numeric_limits<double>::epsilon();
     bool* result=new bool[size];
-    for(size_t i=0;i<size;i++){
-        result[i]=Scalar::abs(a[i]-b[i])>=eps;
+    if(size<=__MIN__COUNT__FOR__THREAD__){
+        for(size_t i=0;i<size;i++){
+            result[i]=Scalar::abs(a[i]-b[i])>=eps;
+        }
+    }
+    else{
+        #pragma omp parallel for
+        for(size_t i=0;i<size;i++){
+            result[i]=Scalar::abs(a[i]-b[i])>=eps;
+        }
     }
     return result;
 }
@@ -172,35 +189,67 @@ bool* gt_ptr(const double* a,const double* b,size_t size){
 
 }
 bool* lteq_ptr(const double* a,const double* b,size_t size){
+    double eps=std::numeric_limits<double>::epsilon();
     bool* result=new bool[size];
-    for(size_t i=0;i<size;i++){
-        result[i]=a[i]<=b[i];
+    if(size<=__MIN__COUNT__FOR__THREAD__){
+        for(size_t i=0;i<size;i++){
+            result[i]=(a[i]<b[i])||(Scalar::abs(a[i]-b[i])<eps);
+        }
+    }
+    else{
+        #pragma omp parallel for
+        for(size_t i=0;i<size;i++){
+            result[i]=(a[i]<b[i])||(Scalar::abs(a[i]-b[i])<eps);
+        }
     }
     return result;
 }
 bool* gteq_ptr(const double* a,const double* b,size_t size){
+    double eps=std::numeric_limits<double>::epsilon();
     bool* result=new bool[size];
-    for(size_t i=0;i<size;i++){
-        result[i]=a[i]>=b[i];
+    if(size<=__MIN__COUNT__FOR__THREAD__){
+        for(size_t i=0;i<size;i++){
+            result[i]=(a[i]>b[i])||(Scalar::abs(a[i]-b[i])<eps);
+        }
+    }
+    else{
+        #pragma omp parallel for
+        for(size_t i=0;i<size;i++){
+            result[i]=(a[i]>b[i])||(Scalar::abs(a[i]-b[i])<eps);
+        }
     }
     return result;
 }
 
 bool* eq_ptr(const double* a,double b,size_t size){
-    //Slow but accurate(considering floating point precision)
     double eps=std::numeric_limits<double>::epsilon();
     bool* result=new bool[size];
-    for(size_t i=0;i<size;i++){
-        result[i]=Scalar::abs(a[i]-b)<eps;
+    if(size<=__MIN__COUNT__FOR__THREAD__){
+        for(size_t i=0;i<size;i++){
+            result[i]=Scalar::abs(a[i]-b)<eps;
+        }
+    }
+    else{
+        #pragma omp parallel for
+        for(size_t i=0;i<size;i++){
+            result[i]=Scalar::abs(a[i]-b)<eps;
+        }
     }
     return result;
 }
 bool* neq_ptr(const double* a,double b,size_t size){
-    //Slow but accurate(considering floating point precision)
     double eps=std::numeric_limits<double>::epsilon();
     bool* result=new bool[size];
-    for(size_t i=0;i<size;i++){
-        result[i]=Scalar::abs(a[i]-b)>=eps;
+    if(size<=__MIN__COUNT__FOR__THREAD__){
+        for(size_t i=0;i<size;i++){
+            result[i]=Scalar::abs(a[i]-b)>=eps;
+        }
+    }
+    else{
+        #pragma omp parallel for
+        for(size_t i=0;i<size;i++){
+            result[i]=Scalar::abs(a[i]-b)>=eps;
+        }
     }
     return result;
 }
@@ -219,16 +268,34 @@ bool* gt_ptr(const double* a,double b,size_t size){
     return result;
 }
 bool* lteq_ptr(const double* a,double b,size_t size){
+    double eps=std::numeric_limits<double>::epsilon();
     bool* result=new bool[size];
-    for(size_t i=0;i<size;i++){
-        result[i]=a[i]<=b;
+    if(size<=__MIN__COUNT__FOR__THREAD__){
+        for(size_t i=0;i<size;i++){
+            result[i]=(a[i]<b)||(Scalar::abs(a[i]-b)<eps);
+        }
+    }
+    else{
+        #pragma omp parallel for
+        for(size_t i=0;i<size;i++){
+            result[i]=(a[i]<b)||(Scalar::abs(a[i]-b)<eps);
+        }
     }
     return result;
 }
 bool* gteq_ptr(const double* a,double b,size_t size){
+    double eps=std::numeric_limits<double>::epsilon();
     bool* result=new bool[size];
-    for(size_t i=0;i<size;i++){
-        result[i]=a[i]>=b;
+    if(size<=__MIN__COUNT__FOR__THREAD__){
+        for(size_t i=0;i<size;i++){
+            result[i]=(a[i]>b)||(Scalar::abs(a[i]-b)<eps);
+        }
+    }
+    else{
+        #pragma omp parallel for
+        for(size_t i=0;i<size;i++){
+            result[i]=(a[i]>b)||(Scalar::abs(a[i]-b)<eps);
+        }
     }
     return result;
 }

@@ -104,5 +104,62 @@ Tensor diagonal_matrix(std::vector<double> diag){
     }
     return tensor;
 }
+Tensor where(const BoolTensor& condition,const Tensor& x,const Tensor& y){
+    auto shape=condition.shape();
+    if(shape!=x.shape()||shape!=y.shape()){
+        throw std::invalid_argument("Invalid shape");
+    }
+    auto result=Tensor(shape);
+    size_t count=shape.count();
+    double* result_data=result.data();
+    const double* x_data=x.data();
+    const double* y_data=y.data();
+    const bool* condition_data=condition.data();
+    for(size_t i=0;i<count;i++){
+        result_data[i]=condition_data[i]?x_data[i]:y_data[i];
+    }
+    return result;
+}
+Tensor where(const BoolTensor& condition,const Tensor& x,double y){
+    auto shape=condition.shape();
+    if(shape!=x.shape()){
+        throw std::invalid_argument("Invalid shape");
+    }
+    auto result=Tensor(shape);
+    size_t count=shape.count();
+    double* result_data=result.data();
+    const double* x_data=x.data();
+    const bool* condition_data=condition.data();
+    for(size_t i=0;i<count;i++){
+        result_data[i]=condition_data[i]?x_data[i]:y;
+    }
+    return result;
+}
+Tensor where(const BoolTensor& condition,double x,const Tensor& y){
+    auto shape=condition.shape();
+    if(shape!=y.shape()){
+        throw std::invalid_argument("Invalid shape");
+    }
+    auto result=Tensor(shape);
+    size_t count=shape.count();
+    double* result_data=result.data();
+    const double* y_data=y.data();
+    const bool* condition_data=condition.data();
+    for(size_t i=0;i<count;i++){
+        result_data[i]=condition_data[i]?x:y_data[i];
+    }
+    return result;
+}
+Tensor where(const BoolTensor& condition,double x,double y){
+    auto shape=condition.shape();
+    auto result=Tensor(shape);
+    size_t count=shape.count();
+    double* result_data=result.data();
+    const bool* condition_data=condition.data();
+    for(size_t i=0;i<count;i++){
+        result_data[i]=condition_data[i]?x:y;
+    }
+    return result;
+}
 }
 }

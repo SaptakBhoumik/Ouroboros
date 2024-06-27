@@ -88,4 +88,13 @@ int main(){
     std::cout<<L(E,F,5)<<std::endl;
 
     //TODO:Test bool tensor
+    A=Ouroboros::cos(A);
+    std::cout << A << std::endl;
+    std::cout << B << std::endl;
+    std::cout << (A > B)<< std::endl;
+    std::cout<<Ouroboros::max(A,B)<<std::endl;
+    auto new_Tensor=Ouroboros::CreateTensor::where(A > B, A, B);//Basically max function
+    std::cout << new_Tensor << std::endl;
+    new_Tensor=Ouroboros::CreateTensor::where(A > B, 1, 0);
+    std::cout << new_Tensor << std::endl;
 }
