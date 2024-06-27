@@ -5,7 +5,7 @@ Shape::Shape(size_t dim,size_t* shape){
     m_dim=dim;
     m_shape=new size_t[m_dim];
     size_t* ptr=m_shape;
-    for(size_t i=0;i<m_dim;++i){
+    for(size_t i=0;i<m_dim;i++){
         *ptr=shape[i];
         m_count*=shape[i];
         ++ptr;
@@ -18,7 +18,7 @@ Shape::Shape(std::initializer_list<size_t> shape){
     }
     m_shape=new size_t[m_dim];
     size_t* ptr=m_shape;
-    for(auto it=shape.begin();it!=shape.end();++it){
+    for(auto it=shape.begin();it!=shape.end();it++){
         *ptr=*it;
         m_count*=(*it);
         ++ptr;
@@ -29,7 +29,7 @@ Shape::Shape(const Shape& shape){
     m_count=shape.m_count;
     m_shape=new size_t[m_dim];
     size_t* ptr=m_shape;
-    for(size_t i=0;i<m_dim;++i){
+    for(size_t i=0;i<m_dim;i++){
         *ptr=shape.m_shape[i];
         ++ptr;
     }
@@ -54,7 +54,7 @@ Shape& Shape::operator=(const Shape& shape){
     m_count=shape.m_count;
     m_shape=new size_t[m_dim];
     size_t* ptr=m_shape;
-    for(size_t i=0;i<m_dim;++i){
+    for(size_t i=0;i<m_dim;i++){
         *ptr=shape.m_shape[i];
         ++ptr;
     }
@@ -96,7 +96,7 @@ bool Shape::operator==(const Shape& shape) const{
     if(m_dim!=shape.m_dim||m_count!=shape.m_count){
         return false;
     }
-    for(size_t i=0;i<m_dim;++i){
+    for(size_t i=0;i<m_dim;i++){
         if(m_shape[i]!=shape.m_shape[i]){
             return false;
         }
@@ -125,7 +125,7 @@ Shape::~Shape(){
 std::ostream& operator<<(std::ostream& os,const Shape& shape){
     os<<"[";
     auto ptr=shape.begin();
-    for(size_t i=0;i<shape.dim();++i){
+    for(size_t i=0;i<shape.dim();i++){
         os<<*ptr;
         if(i!=shape.dim()-1){
             os<<",";

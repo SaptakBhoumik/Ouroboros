@@ -1,5 +1,5 @@
 #include "tensor.hpp"
-#include "cpu/op.hpp"
+#include "../cpu/op.hpp"
 #include <cblas.h>
 namespace Ouroboros{
 Tensor operator-(const Tensor& a){
@@ -164,5 +164,106 @@ Tensor matvecmul(const Tensor& a,const Tensor& b){
     cblas_dgemv(CblasRowMajor, CblasNoTrans, a_shape[0], a_shape[1], 1.0, 
                 a.data(), a_shape[1], b.data(), 1, 0.0, data, 1);
     return Tensor({a_shape[0]},data);
+}
+
+BoolTensor operator==(const Tensor& a,const Tensor& b){
+    #ifdef __OUROBOROS_CHECK__
+    if(a.shape()!=b.shape()){
+        throw std::invalid_argument("Shape mismatch");
+    }
+    #endif
+    bool* data=CPU::eq_ptr(a.data(),b.data(),a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator!=(const Tensor& a,const Tensor& b){
+    #ifdef __OUROBOROS_CHECK__
+    if(a.shape()!=b.shape()){
+        throw std::invalid_argument("Shape mismatch");
+    }
+    #endif
+    bool* data=CPU::neq_ptr(a.data(),b.data(),a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator<(const Tensor& a,const Tensor& b){
+    #ifdef __OUROBOROS_CHECK__
+    if(a.shape()!=b.shape()){
+        throw std::invalid_argument("Shape mismatch");
+    }
+    #endif
+    bool* data=CPU::lt_ptr(a.data(),b.data(),a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator>(const Tensor& a,const Tensor& b){
+    #ifdef __OUROBOROS_CHECK__
+    if(a.shape()!=b.shape()){
+        throw std::invalid_argument("Shape mismatch");
+    }
+    #endif
+    bool* data=CPU::gt_ptr(a.data(),b.data(),a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator<=(const Tensor& a,const Tensor& b){
+    #ifdef __OUROBOROS_CHECK__
+    if(a.shape()!=b.shape()){
+        throw std::invalid_argument("Shape mismatch");
+    }
+    #endif
+    bool* data=CPU::lteq_ptr(a.data(),b.data(),a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator>=(const Tensor& a,const Tensor& b){
+    #ifdef __OUROBOROS_CHECK__
+    if(a.shape()!=b.shape()){
+        throw std::invalid_argument("Shape mismatch");
+    }
+    #endif
+    bool* data=CPU::gteq_ptr(a.data(),b.data(),a.count());
+    return BoolTensor(a.shape(),data);
+}
+
+
+BoolTensor operator==(const Tensor& a,double b){
+    bool* data=CPU::eq_ptr(a.data(),b,a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator!=(const Tensor& a,double b){
+    bool* data=CPU::neq_ptr(a.data(),b,a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator<(const Tensor& a,double b){
+    bool* data=CPU::lt_ptr(a.data(),b,a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator>(const Tensor& a,double b){
+    bool* data=CPU::gt_ptr(a.data(),b,a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator<=(const Tensor& a,double b){
+    bool* data=CPU::lteq_ptr(a.data(),b,a.count());
+    return BoolTensor(a.shape(),data);
+}
+BoolTensor operator>=(const Tensor& a,double b){
+    bool* data=CPU::gteq_ptr(a.data(),b,a.count());
+    return BoolTensor(a.shape(),data);
+}
+
+
+BoolTensor operator==(double a,const Tensor& b){
+    return b==a;
+}
+BoolTensor operator!=(double a,const Tensor& b){
+    return b!=a;
+}
+BoolTensor operator<(double a,const Tensor& b){
+    return b>a;
+}
+BoolTensor operator>(double a,const Tensor& b){
+    return b<a;
+}
+BoolTensor operator<=(double a,const Tensor& b){
+    return b>=a;
+}
+BoolTensor operator>=(double a,const Tensor& b){
+    return b<=a;
 }
 }

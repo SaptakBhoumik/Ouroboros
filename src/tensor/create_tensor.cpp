@@ -22,7 +22,7 @@ Tensor rand(const Shape& shape,double start,double end){
         throw std::invalid_argument("Invalid shape");
     }
     double* data=new double[count];
-    for(size_t i=0;i<count;++i){
+    for(size_t i=0;i<count;i++){
         data[i]=dist(__rng);
     }
     return Tensor(shape,data);
@@ -33,7 +33,7 @@ Tensor fill(const Shape& shape,double value){
         throw std::invalid_argument("Invalid shape");
     }
     double* data=new double[count];
-    for(size_t i=0;i<count;++i){
+    for(size_t i=0;i<count;i++){
         data[i]=value;
     }
     return Tensor(shape,data);
@@ -44,7 +44,7 @@ Tensor fill(const Shape& shape,std::function<double()> func){
         throw std::invalid_argument("Invalid shape");
     }
     double* data=new double[count];
-    for(size_t i=0;i<count;++i){
+    for(size_t i=0;i<count;i++){
         data[i]=func();
     }
     return Tensor(shape,data);
@@ -59,7 +59,7 @@ Tensor linspace(const Shape& shape,double start,double end){
     }
     double* data=new double[count];
     double step=(end-start)/(count-1);
-    for(size_t i=0;i<count;++i){
+    for(size_t i=0;i<count;i++){
         data[i]=start+i*step;
     }
     return Tensor(shape,data);
@@ -74,7 +74,7 @@ Tensor logspace(const Shape& shape,double start,double end,double base){
     }
     double* data=new double[count];
     double step=(end-start)/(count-1);
-    for(size_t i=0;i<count;++i){
+    for(size_t i=0;i<count;i++){
         double exponent=start+i*step;
         data[i]=std::pow(base,exponent);
     }
@@ -87,7 +87,7 @@ Tensor scalar_matrix(size_t col_count,double value){
     Shape shape={col_count,col_count};
     Tensor tensor(shape,0.0);
     auto d=tensor.data();
-    for(size_t i=0;i<col_count;++i){
+    for(size_t i=0;i<col_count;i++){
         d[i*col_count+i]=value;
     }
     return tensor;
@@ -99,7 +99,7 @@ Tensor diagonal_matrix(std::vector<double> diag){
     size_t col_count=diag.size();
     Tensor tensor({col_count,col_count},0.0);
     auto d=tensor.data();
-    for(size_t i=0;i<col_count;++i){
+    for(size_t i=0;i<col_count;i++){
         d[i*col_count+i]=diag[i];
     }
     return tensor;

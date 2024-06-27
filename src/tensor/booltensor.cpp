@@ -1,64 +1,63 @@
 #include "tensor.hpp"
 namespace Ouroboros{
-Tensor::Tensor(const Shape& shape):m_shape(shape){
+BoolTensor::BoolTensor(const Shape& shape):m_shape(shape){
     if(m_shape.count()==0){
-        throw std::invalid_argument("Tensor cannot have 0 elements");
+        throw std::invalid_argument("BoolTensor cannot have 0 elements");
     }
-    m_data=new double[m_shape.count()];
+    m_data=new bool[m_shape.count()];
     m_strides = getStride(m_shape);
 }
-Tensor::Tensor(const Shape& shape,double value):m_shape(shape){
+BoolTensor::BoolTensor(const Shape& shape,bool value):m_shape(shape){
     if(m_shape.count()==0){
-        throw std::invalid_argument("Tensor cannot have 0 elements");
+        throw std::invalid_argument("BoolTensor cannot have 0 elements");
     }
-    m_data=new double[m_shape.count()];
+    m_data=new bool[m_shape.count()];
     for(size_t i=0;i<m_shape.count();i++){
         m_data[i]=value;
     }
     m_strides = getStride(m_shape);
 }
-Tensor::Tensor(const Shape& shape,double* data):m_shape(shape){
+BoolTensor::BoolTensor(const Shape& shape,bool* data):m_shape(shape){
     if(m_shape.count()==0){
-        throw std::invalid_argument("Tensor cannot have 0 elements");
+        throw std::invalid_argument("BoolTensor cannot have 0 elements");
     }
     m_data=data;
     m_strides = getStride(m_shape);
 }
-Tensor::Tensor(const Tensor& tensor):m_shape(tensor.m_shape){
-    m_data=new double[m_shape.count()];
+BoolTensor::BoolTensor(const BoolTensor& BoolTensor):m_shape(BoolTensor.m_shape){
+    m_data=new bool[m_shape.count()];
     for(size_t i=0;i<m_shape.count();i++){
-        m_data[i]=tensor.m_data[i];
+        m_data[i]=BoolTensor.m_data[i];
     }
     m_strides = getStride(m_shape);
 }
-Tensor::Tensor(Tensor&& tensor):m_shape(tensor.m_shape){
-    m_data=tensor.m_data;
-    m_strides = tensor.m_strides;
-    tensor.m_data=nullptr;
+BoolTensor::BoolTensor(BoolTensor&& BoolTensor):m_shape(BoolTensor.m_shape){
+    m_data=BoolTensor.m_data;
+    m_strides = BoolTensor.m_strides;
+    BoolTensor.m_data=nullptr;
 }
 
-
-Tensor& Tensor::operator=(const Tensor& tensor){
+BoolTensor& BoolTensor::operator=(const BoolTensor& tensor){
     if(this==&tensor){
         return *this;
     }
     if(m_data!=nullptr){
         if(m_shape.count()!=tensor.m_shape.count()){
             delete[] m_data;
-            m_data=new double[tensor.m_shape.count()];
+            m_data=new bool[tensor.m_shape.count()];
         }
         m_shape=tensor.m_shape;
     }
     else{
         m_shape=tensor.m_shape;
-        m_data=new double[m_shape.count()];
+        m_data=new bool[m_shape.count()];
     }
     for(size_t i=0;i<m_shape.count();i++){
         m_data[i]=tensor.m_data[i];
     }
     return *this;
 }
-Tensor& Tensor::operator=(Tensor&& tensor){
+BoolTensor& BoolTensor::operator=(BoolTensor&& tensor){
     if(this==&tensor){
         return *this;
     }
@@ -70,8 +69,7 @@ Tensor& Tensor::operator=(Tensor&& tensor){
     tensor.m_data=nullptr;
     return *this;
 }
-
-void Tensor::reshape(const Shape& shape){
+void BoolTensor::reshape(const Shape& shape){
     if(m_shape.count()!=shape.count()){
         throw std::invalid_argument("Invalid shape for reshape");
     }
@@ -79,33 +77,31 @@ void Tensor::reshape(const Shape& shape){
     m_strides = getStride(m_shape);
 }
 
-double* Tensor::data(){
+bool* BoolTensor::data(){
     return m_data;
 }
-const double* Tensor::data() const{
+const bool* BoolTensor::data() const{
     return m_data;
 }
-Shape Tensor::shape() const{
+Shape BoolTensor::shape() const{
     return m_shape;
 }
-Shape Tensor::strides() const{
+Shape BoolTensor::strides() const{
     return m_strides;
 }
-size_t Tensor::count() const{
+size_t BoolTensor::count() const{
     return m_shape.count();
 }
-size_t Tensor::dim() const{
+size_t BoolTensor::dim() const{
     return m_shape.dim();
 }
-
-
-Tensor::~Tensor(){
+BoolTensor::~BoolTensor(){
     if(m_data!=nullptr){
         delete[] m_data;
         m_data=nullptr;
     }
 }
-void printTensorRecursively(std::ostream& os,const Tensor& tensor, 
+void printTensorRecursively(std::ostream& os,const BoolTensor& tensor, 
                             const Shape& strides, size_t dim, size_t offset) {
     auto shape=tensor.shape();
     auto data=tensor.data();
@@ -131,7 +127,7 @@ void printTensorRecursively(std::ostream& os,const Tensor& tensor,
 }
 
 // Function to print the Tensor object as a multidimensional array
-void printTensorAsArray(std::ostream& os , const Tensor& tensor) {
+void printTensorAsArray(std::ostream& os , const BoolTensor& tensor) {
     auto shape=tensor.shape();
     
     auto strides = getStride(shape);
@@ -139,7 +135,7 @@ void printTensorAsArray(std::ostream& os , const Tensor& tensor) {
     os << std::endl;
 }
 
-std::ostream& operator<<(std::ostream& os,const Tensor& tensor){
+std::ostream& operator<<(std::ostream& os,const BoolTensor& tensor){
     printTensorAsArray(os,tensor);
     return os;
 }

@@ -35,7 +35,7 @@ subdir : 'ouroboros/func')
 ouroboros=static_library(
     'ouroboros',
     include_directories:include,
-    sources:tensor_src+scalar_func_src+tensor_func_src,
+    sources:tensor_src+scalar_func_src+tensor_func_src+op_src,
     dependencies:[omp,cblas,gsl],
     install:true
 )

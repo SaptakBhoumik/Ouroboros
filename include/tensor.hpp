@@ -4,7 +4,85 @@
 #include <functional>
 #include <vector>   
 namespace Ouroboros{
-//TODO:bool tensor
+class BoolTensor{
+    bool* m_data=nullptr;
+    Shape m_shape;
+    Shape m_strides={1};
+    public:
+    BoolTensor(const Shape& shape);
+    BoolTensor(const Shape& shape,bool value);
+    //We dont copy the data and instead this data is shared
+    //So the user should not delete the data/use it
+    BoolTensor(const Shape& shape,bool* data);
+    BoolTensor(const BoolTensor& tensor);
+    BoolTensor(BoolTensor&& tensor);
+
+    BoolTensor& operator=(const BoolTensor& tensor);
+    BoolTensor& operator=(BoolTensor&& tensor);
+
+    void reshape(const Shape& shape);
+
+    __always_inline bool& operator[](size_t index){
+        #ifdef __OUROBOROS_CHECK__
+        if(index>=m_shape.count()){
+            throw std::invalid_argument("Invalid index");
+        }
+        #endif
+        return m_data[index];
+    }
+    __always_inline const bool& operator[](size_t index) const{
+        #ifdef __OUROBOROS_CHECK__
+        if(index>=m_shape.count()){
+            throw std::invalid_argument("Invalid index");
+        }
+        #endif
+        return m_data[index];
+    }
+    __always_inline bool& operator[](const Shape& index){
+        #ifdef __OUROBOROS_CHECK__
+        if(index.dim()!=m_shape.dim()){
+            throw std::invalid_argument("Invalid index");
+        }
+        for(size_t i=0;i<index.dim();i++){
+            if(index[i]>=m_shape[i]){
+                throw std::invalid_argument("Invalid index");
+            }
+        }
+        #endif
+        size_t idx=0;
+        for(size_t i=0;i<m_strides.dim();i++){
+            idx+=m_strides[i]*index[i];
+        }
+        return m_data[idx];
+    }
+    __always_inline const bool& operator[](const Shape& index) const{
+        #ifdef __OUROBOROS_CHECK__
+        if(index.dim()!=m_shape.dim()){
+            throw std::invalid_argument("Invalid index");
+        }
+        for(size_t i=0;i<index.dim();i++){
+            if(index[i]>=m_shape[i]){
+                throw std::invalid_argument("Invalid index");
+            }
+        }
+        #endif
+        size_t idx=0;
+        for(size_t i=0;i<m_shape.dim();i++){
+            idx=idx*m_shape[i]+index[i];
+        }
+        return m_data[idx];
+    }
+    
+    bool* data();
+    const bool* data() const;
+    Shape shape() const;
+    Shape strides() const;
+    size_t count() const;
+    size_t dim() const;
+
+    ~BoolTensor();
+};
+std::ostream& operator<<(std::ostream& os,const BoolTensor& tensor);
 class Tensor{
     double* m_data=nullptr;
     Shape m_shape;
@@ -74,14 +152,14 @@ class Tensor{
         if(index.dim()!=m_shape.dim()){
             throw std::invalid_argument("Invalid index");
         }
-        for(size_t i=0;i<index.dim();++i){
+        for(size_t i=0;i<index.dim();i++){
             if(index[i]>=m_shape[i]){
                 throw std::invalid_argument("Invalid index");
             }
         }
         #endif
         size_t idx=0;
-        for(size_t i=0;i<m_strides.dim();++i){
+        for(size_t i=0;i<m_strides.dim();i++){
             idx+=m_strides[i]*index[i];
         }
         return m_data[idx];
@@ -91,14 +169,14 @@ class Tensor{
         if(index.dim()!=m_shape.dim()){
             throw std::invalid_argument("Invalid index");
         }
-        for(size_t i=0;i<index.dim();++i){
+        for(size_t i=0;i<index.dim();i++){
             if(index[i]>=m_shape[i]){
                 throw std::invalid_argument("Invalid index");
             }
         }
         #endif
         size_t idx=0;
-        for(size_t i=0;i<m_shape.dim();++i){
+        for(size_t i=0;i<m_shape.dim();i++){
             idx=idx*m_shape[i]+index[i];
         }
         return m_data[idx];
@@ -114,6 +192,7 @@ class Tensor{
     ~Tensor();
 };
 std::ostream& operator<<(std::ostream& os,const Tensor& tensor);
+Shape getStride(const Shape& shape);
 namespace CreateTensor{
 Tensor zeros(const Shape& shape);
 Tensor ones(const Shape& shape);
@@ -126,5 +205,10 @@ Tensor linspace(const Shape& shape,double start,double end);
 Tensor logspace(const Shape& shape,double start,double end,double base=10.0);	
 Tensor scalar_matrix(size_t col_count,double value);
 Tensor diagonal_matrix(std::vector<double> diag);
+//If condition is true then x else y
+Tensor where(const BoolTensor& condition,const Tensor& x,const Tensor& y);
+Tensor where(const BoolTensor& condition,const Tensor& x,double y);
+Tensor where(const BoolTensor& condition,double x,const Tensor& y);
+Tensor where(const BoolTensor& condition,double x,double y);
 }
 }

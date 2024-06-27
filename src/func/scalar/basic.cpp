@@ -6,7 +6,7 @@
 namespace Ouroboros{
 namespace Scalar{
 double abs(double x){
-    return std::abs(x);
+    return x<0?-x:x;
 }
 
 double exp(double x){
@@ -96,7 +96,7 @@ double sign(double x){
     return x>0?1:(x<0?-1:0);
 }
 double fdim(double x,double y){
-    return std::fdim(x,y);
+    return abs(x-y);
 }
 }
 }

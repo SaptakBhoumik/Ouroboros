@@ -12,7 +12,7 @@ double* neg_ptr_par1(const double* a,size_t size){
         goto single_thread;
     }
     #pragma omp parallel for
-    for(size_t i=0;i<loop_c;++i){
+    for(size_t i=0;i<loop_c;i++){
         size_t start=i*__CHUNK_SIZE__;
         end=(i+1)*__CHUNK_SIZE__;
         for(size_t j=start;j<end;++j){
@@ -20,7 +20,7 @@ double* neg_ptr_par1(const double* a,size_t size){
         }
     }
     single_thread:{}
-    for(size_t i=end;i<size;++i){
+    for(size_t i=end;i<size;i++){
         result[i]=std::sin(a[i]);
     }
     return result;
@@ -33,7 +33,7 @@ double* neg_ptr_par2(const double* a,size_t size){
         goto single_thread;
     }
     #pragma omp parallel for
-    for(size_t i=0;i<loop_c;++i){
+    for(size_t i=0;i<loop_c;i++){
         size_t start=i*__CHUNK_SIZE__;
         end=(i+1)*__CHUNK_SIZE__;
         #pragma omp simd
@@ -42,7 +42,7 @@ double* neg_ptr_par2(const double* a,size_t size){
         }
     }
     single_thread:{}
-    for(size_t i=end;i<size;++i){
+    for(size_t i=end;i<size;i++){
         result[i]=std::sin(a[i]);
     }
     return result;
@@ -50,7 +50,7 @@ double* neg_ptr_par2(const double* a,size_t size){
 double* neg_ptr_par3(const double* a,size_t size){
     auto result=new double[size];
     #pragma omp parallel for
-    for(size_t i=0;i<size;++i){
+    for(size_t i=0;i<size;i++){
         result[i]=std::sin(a[i]);
     }
     return result;
@@ -58,14 +58,14 @@ double* neg_ptr_par3(const double* a,size_t size){
 double* neg_ptr_simd(const double* a,size_t size){
     auto result=new double[size];
     #pragma omp simd
-    for(size_t i=0;i<size;++i){
+    for(size_t i=0;i<size;i++){
         result[i]=std::sin(a[i]);
     }
     return result;
 }
 double* neg_ptr_sin(const double* a,size_t size){
     auto result=new double[size];
-    for(size_t i=0;i<size;++i){
+    for(size_t i=0;i<size;i++){
         result[i]=std::sin(a[i]);
     }
     return result;

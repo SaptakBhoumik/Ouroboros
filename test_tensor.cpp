@@ -86,4 +86,6 @@ int main(){
     std::cout<<L(E,F,3)<<std::endl;
     std::cout<<L(E,F,4)<<std::endl;
     std::cout<<L(E,F,5)<<std::endl;
+
+    //TODO:Test bool tensor
 }
