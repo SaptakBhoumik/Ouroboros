@@ -1294,6 +1294,7 @@ Tensor Plm(const Tensor& x,int l,int m,size_t min_count){
 }
 Tensor Plm(double x,const Tensor& l,int m,size_t min_count){
     auto func=[x,m](double l){return Scalar::Plm(x,(int)l,m);};
+    return transform(func,min_count,l);
 }
 Tensor Plm(double x,int l,const Tensor& m,size_t min_count){
     auto func=[x,l](double m){return Scalar::Plm(x,l,(int)m);};
@@ -1451,19 +1452,336 @@ Tensor conicalP_cyl(const Tensor& x,const Tensor& lambda,const Tensor& n,size_t 
     return transform(func,min_count,x,lambda,n);
 }
 //Radial Functions for Hyperbolic Space
-Tensor H3d0(const Tensor& lambda,double eta,size_t min_count);
-Tensor H3d0(double lambda,const Tensor& eta,size_t min_count);
-Tensor H3d0(const Tensor& lambda,const Tensor& eta,size_t min_count);
+Tensor H3d0(const Tensor& lambda,double eta,size_t min_count){
+    auto func=[eta](double lambda){return Scalar::H3d0(lambda,eta);};
+    return transform(func,min_count,lambda);
+}
+Tensor H3d0(double lambda,const Tensor& eta,size_t min_count){
+    auto func=[lambda](double eta){return Scalar::H3d0(lambda,eta);};
+    return transform(func,min_count,eta);
+}
+Tensor H3d0(const Tensor& lambda,const Tensor& eta,size_t min_count){
+    return transform(Scalar::H3d0,min_count,lambda,eta);
+}
 
-Tensor H3d1(const Tensor& lambda,double eta,size_t min_count);
-Tensor H3d1(double lambda,const Tensor& eta,size_t min_count);
-Tensor H3d1(const Tensor& lambda,const Tensor& eta,size_t min_count);
+Tensor H3d1(const Tensor& lambda,double eta,size_t min_count){
+    auto func=[eta](double lambda){return Scalar::H3d1(lambda,eta);};
+    return transform(func,min_count,lambda);
+}
+Tensor H3d1(double lambda,const Tensor& eta,size_t min_count){
+    auto func=[lambda](double eta){return Scalar::H3d1(lambda,eta);};
+    return transform(func,min_count,eta);
+}
+Tensor H3d1(const Tensor& lambda,const Tensor& eta,size_t min_count){
+    return transform(Scalar::H3d1,min_count,lambda,eta);
+}
 
-Tensor H3d(const Tensor& lambda,double eta,int n,size_t min_count);
-Tensor H3d(double lambda,const Tensor& eta,int n,size_t min_count);
-Tensor H3d(double lambda,double eta,const Tensor& n,size_t min_count);
-Tensor H3d(const Tensor& lambda,const Tensor& eta,int n,size_t min_count);
-Tensor H3d(const Tensor& lambda,double eta,const Tensor& n,size_t min_count);
-Tensor H3d(double lambda,const Tensor& eta,const Tensor& n,size_t min_count);
-Tensor H3d(const Tensor& lambda,const Tensor& eta,const Tensor& n,size_t min_count);
+Tensor H3d(const Tensor& lambda,double eta,int n,size_t min_count){
+    auto func=[eta,n](double lambda){return Scalar::H3d(lambda,eta,n);};
+    return transform(func,min_count,lambda);
+}
+Tensor H3d(double lambda,const Tensor& eta,int n,size_t min_count){
+    auto func=[lambda,n](double eta){return Scalar::H3d(lambda,eta,n);};
+    return transform(func,min_count,eta);
+}
+Tensor H3d(double lambda,double eta,const Tensor& n,size_t min_count){
+    auto func=[lambda,eta](double n){return Scalar::H3d(lambda,eta,(int)n);};
+    return transform(func,min_count,n);
+}
+Tensor H3d(const Tensor& lambda,const Tensor& eta,int n,size_t min_count){
+    auto func=[n](double lambda,double eta){return Scalar::H3d(lambda,eta,n);};
+    return transform(func,min_count,lambda,eta);
+}
+Tensor H3d(const Tensor& lambda,double eta,const Tensor& n,size_t min_count){
+    auto func=[eta](double lambda,double n){return Scalar::H3d(lambda,eta,(int)n);};
+    return transform(func,min_count,lambda,n);
+}
+Tensor H3d(double lambda,const Tensor& eta,const Tensor& n,size_t min_count){
+    auto func=[lambda](double eta,double n){return Scalar::H3d(lambda,eta,(int)n);};
+    return transform(func,min_count,eta,n);
+}
+Tensor H3d(const Tensor& lambda,const Tensor& eta,const Tensor& n,size_t min_count){
+    auto func=[](double lambda,double eta,double n){return Scalar::H3d(lambda,eta,(int)n);};
+    return transform(func,min_count,lambda,eta,n);
+}
+//Psi Functions
+Tensor psi(const Tensor& x,size_t min_count){
+    return transform(Scalar::psi,min_count,x);
+}
+Tensor psi1(const Tensor& x,size_t min_count){
+    return transform(Scalar::psi1,min_count,x);
+}
+Tensor psi_n(const Tensor& x,int n,size_t min_count){
+    auto func=[n](double x){return Scalar::psi_n(x,n);};
+    return transform(func,min_count,x);
+}
+Tensor psi_n(double x,const Tensor& n,size_t min_count){
+    auto func=[x](double n){return Scalar::psi_n(x,(int)n);};
+    return transform(func,min_count,n);
+}
+Tensor psi_n(const Tensor& x,const Tensor& n,size_t min_count){
+    auto func=[](double x,double n){return Scalar::psi_n(x,(int)n);};
+    return transform(func,min_count,x,n);
+}
+//Synchrotron Functions
+Tensor synchrotron1(const Tensor& x,size_t min_count){
+    return transform(Scalar::synchrotron1,min_count,x);
+}
+Tensor synchrotron2(const Tensor& x,size_t min_count){
+    return transform(Scalar::synchrotron2,min_count,x);
+}
+//Transport Functions
+Tensor transport2(const Tensor& x,size_t min_count){
+    return transform(Scalar::transport2,min_count,x);
+}
+Tensor transport3(const Tensor& x,size_t min_count){
+    return transform(Scalar::transport3,min_count,x);
+}
+Tensor transport4(const Tensor& x,size_t min_count){
+    return transform(Scalar::transport4,min_count,x);
+}
+Tensor transport5(const Tensor& x,size_t min_count){
+    return transform(Scalar::transport5,min_count,x);
+}
+//Zeta Functions
+Tensor zeta(const Tensor& x,size_t min_count){
+    return transform(Scalar::zeta,min_count,x);
+}
+Tensor zetam1(const Tensor& x,size_t min_count){
+    return transform(Scalar::zetam1,min_count,x);
+}
+Tensor hzeta(const Tensor& x,double q,size_t min_count){
+    auto func=[q](double x){return Scalar::hzeta(x,q);};
+    return transform(func,min_count,x);
+}
+Tensor hzeta(double x,const Tensor& q,size_t min_count){
+    auto func=[x](double q){return Scalar::hzeta(x,q);};
+    return transform(func,min_count,q);
+}
+Tensor hzeta(const Tensor& x,const Tensor& q,size_t min_count){
+    return transform(Scalar::hzeta,min_count,x,q);
+}
+Tensor eta(const Tensor& x,size_t min_count){
+    return transform(Scalar::eta,min_count,x);
+}
+//common activation function
+Tensor ELU(const Tensor& x,double alpha,size_t min_count){
+    auto func=[alpha](double x){return Scalar::ELU(x,alpha);};
+    return transform(func,min_count,x);
+}
+Tensor ELU(double x,const Tensor& alpha,size_t min_count){
+    auto func=[x](double alpha){return Scalar::ELU(x,alpha);};
+    return transform(func,min_count,alpha);
+}
+Tensor ELU(const Tensor& x,const Tensor& alpha,size_t min_count){
+    return transform(Scalar::ELU,min_count,x,alpha);
+}
+
+Tensor hardshrink(const Tensor& x,double lambda,size_t min_count){
+    auto func=[lambda](double x){return Scalar::hardshrink(x,lambda);};
+    return transform(func,min_count,x);
+}
+Tensor hardshrink(double x,const Tensor& lambda,size_t min_count){
+    auto func=[x](double lambda){return Scalar::hardshrink(x,lambda);};
+    return transform(func,min_count,lambda);
+}
+Tensor hardshrink(const Tensor& x,const Tensor& lambda,size_t min_count){
+    return transform(Scalar::hardshrink,min_count,x,lambda);
+}
+
+Tensor hardsigmoid(const Tensor& x,size_t min_count){
+    return transform(Scalar::hardsigmoid,min_count,x);
+}
+
+Tensor hardtanh(const Tensor& x,double min_val,double max_val,size_t min_count){
+    auto func=[min_val,max_val](double x){return Scalar::hardtanh(x,min_val,max_val);};
+    return transform(func,min_count,x);
+}
+Tensor hardtanh(double x,const Tensor& min_val,double max_val,size_t min_count){
+    auto func=[x,max_val](double min_val){return Scalar::hardtanh(x,min_val,max_val);};
+    return transform(func,min_count,min_val);
+}
+Tensor hardtanh(double x, double min_val, const Tensor& max_val,size_t min_count){
+    auto func=[x,min_val](double max_val){return Scalar::hardtanh(x,min_val,max_val);};
+    return transform(func,min_count,max_val);
+}
+Tensor hardtanh(const Tensor& x,const Tensor& min_val,double max_val,size_t min_count){
+    auto func=[max_val](double x,double min_val){return Scalar::hardtanh(x,min_val,max_val);};
+    return transform(func,min_count,x,min_val);
+}
+Tensor hardtanh(const Tensor& x,double min_val,const Tensor& max_val,size_t min_count){
+    auto func=[min_val](double x,double max_val){return Scalar::hardtanh(x,min_val,max_val);};
+    return transform(func,min_count,x,max_val);
+}
+Tensor hardtanh(double x,const Tensor& min_val,const Tensor& max_val,size_t min_count){
+    auto func=[x](double min_val,double max_val){return Scalar::hardtanh(x,min_val,max_val);};
+    return transform(func,min_count,min_val,max_val);
+}
+Tensor hardtanh(const Tensor& x,const Tensor& min_val,const Tensor& max_val,size_t min_count){
+    return transform(Scalar::hardtanh,min_count,x,min_val,max_val);
+}
+
+Tensor hardswish(const Tensor& x,size_t min_count){
+    return transform(Scalar::hardswish,min_count,x);
+}
+
+Tensor leakyReLU(const Tensor& x,double alpha,size_t min_count){
+    auto func=[alpha](double x){return Scalar::leakyReLU(x,alpha);};
+    return transform(func,min_count,x);
+}
+Tensor leakyReLU(double x,const Tensor& alpha,size_t min_count){
+    auto func=[x](double alpha){return Scalar::leakyReLU(x,alpha);};
+    return transform(func,min_count,alpha);
+}
+Tensor leakyReLU(const Tensor& x,const Tensor& alpha,size_t min_count){
+    return transform(Scalar::leakyReLU,min_count,x,alpha);
+}
+
+Tensor logsigmoid(const Tensor& x,size_t min_count){
+    return transform(Scalar::logsigmoid,min_count,x);
+}
+
+Tensor ReLU(const Tensor& x,size_t min_count){
+    return transform(Scalar::ReLU,min_count,x);
+}
+
+Tensor ReLU6(const Tensor& x,size_t min_count){
+    return transform(Scalar::ReLU6,min_count,x);
+}
+
+Tensor RReLU(const Tensor& x,double lower,double upper,size_t min_count){
+    auto func=[lower,upper](double x){return Scalar::RReLU(x,lower,upper);};
+    return transform(func,min_count,x);
+}
+Tensor RReLU(double x,const Tensor& lower,double upper,size_t min_count){
+    auto func=[x,upper](double lower){return Scalar::RReLU(x,lower,upper);};
+    return transform(func,min_count,lower);
+}
+Tensor RReLU(double x,double lower,const Tensor& upper,size_t min_count){
+    auto func=[x,lower](double upper){return Scalar::RReLU(x,lower,upper);};
+    return transform(func,min_count,upper);
+}
+Tensor RReLU(const Tensor& x,const Tensor& lower,double upper,size_t min_count){
+    auto func=[upper](double x,double lower){return Scalar::RReLU(x,lower,upper);};
+    return transform(func,min_count,x,lower);
+}
+Tensor RReLU(const Tensor& x,double lower,const Tensor& upper,size_t min_count){
+    auto func=[lower](double x,double upper){return Scalar::RReLU(x,lower,upper);};
+    return transform(func,min_count,x,upper);
+}
+Tensor RReLU(double x,const Tensor& lower,const Tensor& upper,size_t min_count){
+    auto func=[x](double lower,double upper){return Scalar::RReLU(x,lower,upper);};
+    return transform(func,min_count,lower,upper);
+}
+Tensor RReLU(const Tensor& x,const Tensor& lower,const Tensor& upper,size_t min_count){
+    return transform(Scalar::RReLU,min_count,x,lower,upper);
+}
+
+Tensor SELU(const Tensor& x,size_t min_count){
+    return transform(Scalar::SELU,min_count,x);
+}
+
+Tensor CELU(const Tensor& x,double alpha,size_t min_count){
+    auto func=[alpha](double x){return Scalar::CELU(x,alpha);};
+    return transform(func,min_count,x);
+}
+Tensor CELU(double x,const Tensor& alpha,size_t min_count){
+    auto func=[x](double alpha){return Scalar::CELU(x,alpha);};
+    return transform(func,min_count,alpha);
+}
+Tensor CELU(const Tensor& x,const Tensor& alpha,size_t min_count){
+    return transform(Scalar::CELU,min_count,x,alpha);
+}
+
+Tensor GELU(const Tensor& x,size_t min_count){
+    return transform(Scalar::GELU,min_count,x);
+}
+Tensor GELU_fast(const Tensor& x,size_t min_count){
+    return transform(Scalar::GELU_fast,min_count,x);
+}
+
+Tensor sigmoid(const Tensor& x,size_t min_count){
+    return transform(Scalar::sigmoid,min_count,x);
+}
+Tensor SiLU(const Tensor& x,size_t min_count){
+    return transform(Scalar::SiLU,min_count,x);
+}
+Tensor mish(const Tensor& x,size_t min_count){
+    return transform(Scalar::mish,min_count,x);
+}
+
+Tensor softplus(const Tensor& x,double beta,double threshold,size_t min_count){
+    auto func=[beta,threshold](double x){return Scalar::softplus(x,beta,threshold);};
+    return transform(func,min_count,x);
+}
+Tensor softplus(double x,const Tensor& beta,double threshold,size_t min_count){
+    auto func=[x,threshold](double beta){return Scalar::softplus(x,beta,threshold);};
+    return transform(func,min_count,beta);
+}
+Tensor softplus(double x,double beta,const Tensor& threshold,size_t min_count){
+    auto func=[x,beta](double threshold){return Scalar::softplus(x,beta,threshold);};
+    return transform(func,min_count,threshold);
+}
+Tensor softplus(const Tensor& x,const Tensor& beta,double threshold,size_t min_count){
+    auto func=[threshold](double x,double beta){return Scalar::softplus(x,beta,threshold);};
+    return transform(func,min_count,x,beta);
+}
+Tensor softplus(const Tensor& x,double beta,const Tensor& threshold,size_t min_count){
+    auto func=[beta](double x,double threshold){return Scalar::softplus(x,beta,threshold);};
+    return transform(func,min_count,x,threshold);
+}
+Tensor softplus(double x,const Tensor& beta,const Tensor& threshold,size_t min_count){
+    auto func=[x](double beta,double threshold){return Scalar::softplus(x,beta,threshold);};
+    return transform(func,min_count,beta,threshold);
+}
+Tensor softplus(const Tensor& x,const Tensor& beta,const Tensor& threshold,size_t min_count){
+    return transform(Scalar::softplus,min_count,x,beta,threshold);
+}
+
+Tensor softshrink(const Tensor& x,double lambda,size_t min_count){
+    auto func=[lambda](double x){return Scalar::softshrink(x,lambda);};
+    return transform(func,min_count,x);
+}
+Tensor softshrink(double x,const Tensor& lambda,size_t min_count){
+    auto func=[x](double lambda){return Scalar::softshrink(x,lambda);};
+    return transform(func,min_count,lambda);
+}
+Tensor softshrink(const Tensor& x,const Tensor& lambda,size_t min_count){
+    return transform(Scalar::softshrink,min_count,x,lambda);
+}
+
+Tensor softsign(const Tensor& x,size_t min_count){
+    return transform(Scalar::softsign,min_count,x);
+}
+Tensor tanhshrink(const Tensor& x,size_t min_count){
+    return transform(Scalar::tanhshrink,min_count,x);
+}
+
+Tensor threshold(const Tensor& x,double threshold,double value,size_t min_count){
+    auto func=[threshold,value](double x){return Scalar::threshold(x,threshold,value);};
+    return transform(func,min_count,x);
+}
+Tensor threshold(double x,const Tensor& threshold,double value,size_t min_count){
+    auto func=[x,value](double threshold){return Scalar::threshold(x,threshold,value);};
+    return transform(func,min_count,threshold);
+}
+Tensor threshold(double x,double threshold,const Tensor& value,size_t min_count){
+    auto func=[x,threshold](double value){return Scalar::threshold(x,threshold,value);};
+    return transform(func,min_count,value);
+}
+Tensor threshold(const Tensor& x,const Tensor& threshold,double value,size_t min_count){
+    auto func=[value](double x,double threshold){return Scalar::threshold(x,threshold,value);};
+    return transform(func,min_count,x,threshold);
+}
+Tensor threshold(const Tensor& x,double threshold,const Tensor& value,size_t min_count){
+    auto func=[threshold](double x,double value){return Scalar::threshold(x,threshold,value);};
+    return transform(func,min_count,x,value);
+}
+Tensor threshold(double x,const Tensor& threshold,const Tensor& value,size_t min_count){
+    auto func=[x](double threshold,double value){return Scalar::threshold(x,threshold,value);};
+    return transform(func,min_count,threshold,value);
+}
+Tensor threshold(const Tensor& x,const Tensor& threshold,const Tensor& value,size_t min_count){
+    return transform(Scalar::threshold,min_count,x,threshold,value);
+} 
 }

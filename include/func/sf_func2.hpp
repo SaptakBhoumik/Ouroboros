@@ -443,4 +443,99 @@ Tensor H3d(const Tensor& lambda,const Tensor& eta,int n,size_t min_count=__MIN__
 Tensor H3d(const Tensor& lambda,double eta,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
 Tensor H3d(double lambda,const Tensor& eta,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
 Tensor H3d(const Tensor& lambda,const Tensor& eta,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Psi Functions
+Tensor psi(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor psi1(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor psi_n(const Tensor& x,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor psi_n(double x,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor psi_n(const Tensor& x,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Synchrotron Functions
+Tensor synchrotron1(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor synchrotron2(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Transport Functions
+Tensor transport2(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor transport3(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor transport4(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor transport5(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Zeta Functions
+Tensor zeta(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor zetam1(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hzeta(const Tensor& x,double q,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hzeta(double x,const Tensor& q,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hzeta(const Tensor& x,const Tensor& q,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor eta(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//common activation function
+Tensor ELU(const Tensor& x,double alpha=1.0,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor ELU(double x,const Tensor& alpha,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor ELU(const Tensor& x,const Tensor& alpha,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor hardshrink(const Tensor& x,double lambda=0.5,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hardshrink(double x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hardshrink(const Tensor& x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor hardsigmoid(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor hardtanh(const Tensor& x,double min_val=-1.0,double max_val=1.0,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hardtanh(double x,const Tensor& min_val,double max_val,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hardtanh(double x, double min_val, const Tensor& max_val,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hardtanh(const Tensor& x,const Tensor& min_val,double max_val,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hardtanh(const Tensor& x,double min_val,const Tensor& max_val,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hardtanh(double x,const Tensor& min_val,const Tensor& max_val,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor hardtanh(const Tensor& x,const Tensor& min_val,const Tensor& max_val,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor hardswish(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor leakyReLU(const Tensor& x,double alpha=0.01,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor leakyReLU(double x,const Tensor& alpha,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor leakyReLU(const Tensor& x,const Tensor& alpha,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor logsigmoid(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor ReLU(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor ReLU6(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor RReLU(const Tensor& x,double lower=0.125,double upper=0.333,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor RReLU(double x,const Tensor& lower,double upper,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor RReLU(double x,double lower,const Tensor& upper,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor RReLU(const Tensor& x,const Tensor& lower,double upper,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor RReLU(const Tensor& x,double lower,const Tensor& upper,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor RReLU(double x,const Tensor& lower,const Tensor& upper,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor RReLU(const Tensor& x,const Tensor& lower,const Tensor& upper,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor SELU(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor CELU(const Tensor& x,double alpha=1.0,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor CELU(double x,const Tensor& alpha,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor CELU(const Tensor& x,const Tensor& alpha,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor GELU(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor GELU_fast(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor sigmoid(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor SiLU(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor mish(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor softplus(const Tensor& x,double beta=1.0,double threshold=20.0,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor softplus(double x,const Tensor& beta,double threshold,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor softplus(double x,double beta,const Tensor& threshold,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor softplus(const Tensor& x,const Tensor& beta,double threshold,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor softplus(const Tensor& x,double beta,const Tensor& threshold,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor softplus(double x,const Tensor& beta,const Tensor& threshold,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor softplus(const Tensor& x,const Tensor& beta,const Tensor& threshold,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor softshrink(const Tensor& x,double lambda=0.5,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor softshrink(double x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor softshrink(const Tensor& x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor softsign(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor tanhshrink(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor threshold(const Tensor& x,double threshold=1.0,double value=0.0,size_t min_count=__MIN__COUNT__FOR__THREAD__); 
+Tensor threshold(double x,const Tensor& threshold,double value,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor threshold(double x,double threshold,const Tensor& value,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor threshold(const Tensor& x,const Tensor& threshold,double value,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor threshold(const Tensor& x,double threshold,const Tensor& value,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor threshold(double x,const Tensor& threshold,const Tensor& value,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor threshold(const Tensor& x,const Tensor& threshold,const Tensor& value,size_t min_count=__MIN__COUNT__FOR__THREAD__);  
 }

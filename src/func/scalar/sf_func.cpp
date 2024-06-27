@@ -522,6 +522,11 @@ double hardsigmoid(double x){
     return x/6+0.5;
 }
 double hardtanh(double x,double min_val,double max_val){
+    #ifdef __OUROBOROS_CHECK__
+    if(min_val>max_val){
+        throw std::invalid_argument("Invalid range");
+    }
+    #endif
     if(x>max_val){
         return max_val;
     }

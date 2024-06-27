@@ -189,7 +189,7 @@ double ReLU(double x);
 double ReLU6(double x);
 double RReLU(double x,double lower=0.125,double upper=0.333);
 double SELU(double x);
-double CELU(double x,double alpha);
+double CELU(double x,double alpha=1.0);
 double GELU(double x);
 double GELU_fast(double x);
 double sigmoid(double x);
