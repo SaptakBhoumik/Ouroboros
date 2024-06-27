@@ -284,10 +284,163 @@ Tensor hermite_func_zero(const Tensor& n,int s,size_t min_count=__MIN__COUNT__FO
 Tensor hermite_func_zero(int n,const Tensor& s,size_t min_count=__MIN__COUNT__FOR__THREAD__);
 Tensor hermite_func_zero(const Tensor& n,const Tensor& s,size_t min_count=__MIN__COUNT__FOR__THREAD__);
 //Hypergeometric Functions
-// double F01(double a,double b);
-// double F11(double a,double b,double x);
-// double U(double a,double b,double x);
-// double F21(double a,double b,double c,double x);
-// double F21_renorm(double a,double b,double c,double x);
-// double F20(double a,double b,double x);
+Tensor F01(const Tensor& a,double b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F01(double a,const Tensor& b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F01(const Tensor& a,const Tensor& b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor F11(const Tensor& a,double b,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F11(double a,const Tensor& b,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F11(double a,double b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F11(const Tensor& a,const Tensor& b,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F11(const Tensor& a,double b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F11(double a,const Tensor& b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F11(const Tensor& a,const Tensor& b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor U(const Tensor& a,double b,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor U(double a,const Tensor& b,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor U(double a,double b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor U(const Tensor& a,const Tensor& b,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor U(const Tensor& a,double b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor U(double a,const Tensor& b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor U(const Tensor& a,const Tensor& b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor F21(const Tensor& a,double b,double c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(double a,const Tensor& b,double c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(double a,double b,const Tensor& c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(double a,double b,double c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(const Tensor& a,const Tensor& b,double c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(const Tensor& a,double b,const Tensor& c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(const Tensor& a,double b,double c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(double a,const Tensor& b,const Tensor& c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(double a,const Tensor& b,double c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(double a,double b,const Tensor& c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(const Tensor& a,const Tensor& b,const Tensor& c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(const Tensor& a,const Tensor& b,double c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(const Tensor& a,double b,const Tensor& c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(double a,const Tensor& b,const Tensor& c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21(const Tensor& a,const Tensor& b,const Tensor& c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor F21_renorm(const Tensor& a,double b,double c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(double a,const Tensor& b,double c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(double a,double b,const Tensor& c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(double a,double b,double c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(const Tensor& a,const Tensor& b,double c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(const Tensor& a,double b,const Tensor& c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(const Tensor& a,double b,double c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(double a,const Tensor& b,const Tensor& c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(double a,const Tensor& b,double c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(double a,double b,const Tensor& c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(const Tensor& a,const Tensor& b,const Tensor& c,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(const Tensor& a,const Tensor& b,double c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(const Tensor& a,double b,const Tensor& c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(double a,const Tensor& b,const Tensor& c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F21_renorm(const Tensor& a,const Tensor& b,const Tensor& c,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor F20(const Tensor& a,double b,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F20(double a,const Tensor& b,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F20(double a,double b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F20(const Tensor& a,const Tensor& b,double x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F20(const Tensor& a,double b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F20(double a,const Tensor& b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor F20(const Tensor& a,const Tensor& b,const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Laguerre Functions
+Tensor L1(const Tensor& a,double b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L1(double a,const Tensor& b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L1(const Tensor& a,const Tensor& b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor L2(const Tensor& a,double b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L2(double a,const Tensor& b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L2(const Tensor& a,const Tensor& b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor L3(const Tensor& a,double b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L3(double a,const Tensor& b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L3(const Tensor& a,const Tensor& b,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor L(const Tensor& a,double x,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L(double a,const Tensor& x,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L(double a,double x,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L(const Tensor& a,const Tensor& x,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L(const Tensor& a,double x,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L(double a,const Tensor& x,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor L(const Tensor& a,const Tensor& x,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Lambert W Functions
+Tensor W0(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Wm1(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Legendre Polynomials
+Tensor legendre_P1(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor legendre_P2(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor legendre_P3(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor legendre_P(const Tensor& x,int l,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor legendre_P(double x,const Tensor& l,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor legendre_P(const Tensor& x,const Tensor& l,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor Q0(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Q1(const Tensor& x,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Q(const Tensor& x,int l,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Q(double x,const Tensor& l,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Q(const Tensor& x,const Tensor& l,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Associated Legendre Polynomials and Spherical Harmonics
+Tensor Plm(const Tensor& x,int l,int m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Plm(double x,const Tensor& l,int m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Plm(double x,int l,const Tensor& m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Plm(const Tensor& x,const Tensor& l,int m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Plm(const Tensor& x,int l,const Tensor& m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Plm(double x,const Tensor& l,const Tensor& m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor Plm(const Tensor& x,const Tensor& l,const Tensor& m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor sphPlm(const Tensor& x,int l,int m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor sphPlm(double x,const Tensor& l,int m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor sphPlm(double x,int l,const Tensor& m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor sphPlm(const Tensor& x,const Tensor& l,int m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor sphPlm(const Tensor& x,int l,const Tensor& m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor sphPlm(double x,const Tensor& l,const Tensor& m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor sphPlm(const Tensor& x,const Tensor& l,const Tensor& m,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Conical Functions
+Tensor conicalP_half(const Tensor& x,double lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_half(double x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_half(const Tensor& x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor conicalP_mhalf(const Tensor& x,double lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_mhalf(double x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_mhalf(const Tensor& x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor conicalP0(const Tensor& x,double lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP0(double x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP0(const Tensor& x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor conicalP1(const Tensor& x,double lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP1(double x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP1(const Tensor& x,const Tensor& lambda,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor conicalP_sph(const Tensor& x,double lambda,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_sph(double x,const Tensor& lambda,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_sph(double x,double lambda,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_sph(const Tensor& x,const Tensor& lambda,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_sph(const Tensor& x,double lambda,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_sph(double x,const Tensor& lambda,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_sph(const Tensor& x,const Tensor& lambda,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor conicalP_cyl(const Tensor& x,double lambda,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_cyl(double x,const Tensor& lambda,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_cyl(double x,double lambda,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_cyl(const Tensor& x,const Tensor& lambda,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_cyl(const Tensor& x,double lambda,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_cyl(double x,const Tensor& lambda,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor conicalP_cyl(const Tensor& x,const Tensor& lambda,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+//Radial Functions for Hyperbolic Space
+Tensor H3d0(const Tensor& lambda,double eta,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d0(double lambda,const Tensor& eta,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d0(const Tensor& lambda,const Tensor& eta,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor H3d1(const Tensor& lambda,double eta,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d1(double lambda,const Tensor& eta,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d1(const Tensor& lambda,const Tensor& eta,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+
+Tensor H3d(const Tensor& lambda,double eta,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d(double lambda,const Tensor& eta,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d(double lambda,double eta,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d(const Tensor& lambda,const Tensor& eta,int n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d(const Tensor& lambda,double eta,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d(double lambda,const Tensor& eta,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
+Tensor H3d(const Tensor& lambda,const Tensor& eta,const Tensor& n,size_t min_count=__MIN__COUNT__FOR__THREAD__);
 }

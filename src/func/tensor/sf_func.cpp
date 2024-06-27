@@ -955,5 +955,515 @@ Tensor hermite_func_zero(const Tensor& n,const Tensor& s,size_t min_count){
     auto func=[](double n,double s){return Scalar::hermite_func_zero((int)n,(int)s);};
     return transform(func,min_count,n,s);
 }
+//Hypergeometric Functions
+Tensor F01(const Tensor& a,double b,size_t min_count){
+    auto func=[b](double a){return Scalar::F01(a,b);};
+    return transform(func,min_count,a);
+}
+Tensor F01(double a,const Tensor& b,size_t min_count){
+    auto func=[a](double b){return Scalar::F01(a,b);};
+    return transform(func,min_count,b);
+}
+Tensor F01(const Tensor& a,const Tensor& b,size_t min_count){
+    return transform(Scalar::F01,min_count,a,b);
+}
 
+Tensor F11(const Tensor& a,double b,double x,size_t min_count){
+    auto func=[b,x](double a){return Scalar::F11(a,b,x);};
+    return transform(func,min_count,a);
+}
+Tensor F11(double a,const Tensor& b,double x,size_t min_count){
+    auto func=[a,x](double b){return Scalar::F11(a,b,x);};
+    return transform(func,min_count,b);
+}
+Tensor F11(double a,double b,const Tensor& x,size_t min_count){
+    auto func=[a,b](double x){return Scalar::F11(a,b,x);};
+    return transform(func,min_count,x);
+}
+Tensor F11(const Tensor& a,const Tensor& b,double x,size_t min_count){
+    auto func=[x](double a,double b){return Scalar::F11(a,b,x);};
+    return transform(func,min_count,a,b);
+}
+Tensor F11(const Tensor& a,double b,const Tensor& x,size_t min_count){
+    auto func=[b](double a,double x){return Scalar::F11(a,b,x);};
+    return transform(func,min_count,a,x);
+}
+Tensor F11(double a,const Tensor& b,const Tensor& x,size_t min_count){
+    auto func=[a](double b,double x){return Scalar::F11(a,b,x);};
+    return transform(func,min_count,b,x);
+}
+Tensor F11(const Tensor& a,const Tensor& b,const Tensor& x,size_t min_count){
+    return transform(Scalar::F11,min_count,a,b,x);
+}
+
+Tensor U(const Tensor& a,double b,double x,size_t min_count){
+    auto func=[b,x](double a){return Scalar::U(a,b,x);};
+    return transform(func,min_count,a);
+}
+Tensor U(double a,const Tensor& b,double x,size_t min_count){
+    auto func=[a,x](double b){return Scalar::U(a,b,x);};
+    return transform(func,min_count,b);
+}
+Tensor U(double a,double b,const Tensor& x,size_t min_count){
+    auto func=[a,b](double x){return Scalar::U(a,b,x);};
+    return transform(func,min_count,x);
+}
+Tensor U(const Tensor& a,const Tensor& b,double x,size_t min_count){
+    auto func=[x](double a,double b){return Scalar::U(a,b,x);};
+    return transform(func,min_count,a,b);
+}
+Tensor U(const Tensor& a,double b,const Tensor& x,size_t min_count){
+    auto func=[b](double a,double x){return Scalar::U(a,b,x);};
+    return transform(func,min_count,a,x);
+}
+Tensor U(double a,const Tensor& b,const Tensor& x,size_t min_count){
+    auto func=[a](double b,double x){return Scalar::U(a,b,x);};
+    return transform(func,min_count,b,x);
+}
+Tensor U(const Tensor& a,const Tensor& b,const Tensor& x,size_t min_count){
+    return transform(Scalar::U,min_count,a,b,x);
+}
+
+Tensor F21(const Tensor& a,double b,double c,double x,size_t min_count){
+    auto func=[b,c,x](double a){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,a);
+}
+Tensor F21(double a,const Tensor& b,double c,double x,size_t min_count){
+    auto func=[a,c,x](double b){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,b);
+}
+Tensor F21(double a,double b,const Tensor& c,double x,size_t min_count){
+    auto func=[a,b,x](double c){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,c);
+}
+Tensor F21(double a,double b,double c,const Tensor& x,size_t min_count){
+    auto func=[a,b,c](double x){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,x);
+}
+Tensor F21(const Tensor& a,const Tensor& b,double c,double x,size_t min_count){
+    auto func=[c,x](double a,double b){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,a,b);
+}
+Tensor F21(const Tensor& a,double b,const Tensor& c,double x,size_t min_count){
+    auto func=[b,x](double a,double c){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,a,c);
+}
+Tensor F21(const Tensor& a,double b,double c,const Tensor& x,size_t min_count){
+    auto func=[b,c](double a,double x){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,a,x);
+}
+Tensor F21(double a,const Tensor& b,const Tensor& c,double x,size_t min_count){
+    auto func=[a,x](double b,double c){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,b,c);
+}
+Tensor F21(double a,const Tensor& b,double c,const Tensor& x,size_t min_count){
+    auto func=[a,c](double b,double x){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,b,x);
+}
+Tensor F21(double a,double b,const Tensor& c,const Tensor& x,size_t min_count){
+    auto func=[a,b](double c,double x){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,c,x);
+}
+Tensor F21(const Tensor& a,const Tensor& b,const Tensor& c,double x,size_t min_count){
+    auto func=[x](double a,double b,double c){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,a,b,c);
+}
+Tensor F21(const Tensor& a,const Tensor& b,double c,const Tensor& x,size_t min_count){
+    auto func=[c](double a,double b,double x){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,a,b,x);
+}
+Tensor F21(const Tensor& a,double b,const Tensor& c,const Tensor& x,size_t min_count){
+    auto func=[b](double a,double c,double x){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,a,c,x);
+}
+Tensor F21(double a,const Tensor& b,const Tensor& c,const Tensor& x,size_t min_count){
+    auto func=[a](double b,double c,double x){return Scalar::F21(a,b,c,x);};
+    return transform(func,min_count,b,c,x);
+}
+Tensor F21(const Tensor& a,const Tensor& b,const Tensor& c,const Tensor& x,size_t min_count){
+    return transform(Scalar::F21,min_count,a,b,c,x);
+}
+
+Tensor F21_renorm(const Tensor& a,double b,double c,double x,size_t min_count){
+    auto func=[b,c,x](double a){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,a);
+}
+Tensor F21_renorm(double a,const Tensor& b,double c,double x,size_t min_count){
+    auto func=[a,c,x](double b){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,b);
+}
+Tensor F21_renorm(double a,double b,const Tensor& c,double x,size_t min_count){
+    auto func=[a,b,x](double c){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,c);
+}
+Tensor F21_renorm(double a,double b,double c,const Tensor& x,size_t min_count){
+    auto func=[a,b,c](double x){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,x);
+}
+Tensor F21_renorm(const Tensor& a,const Tensor& b,double c,double x,size_t min_count){
+    auto func=[c,x](double a,double b){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,a,b);
+}
+Tensor F21_renorm(const Tensor& a,double b,const Tensor& c,double x,size_t min_count){
+    auto func=[b,x](double a,double c){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,a,c);
+}
+Tensor F21_renorm(const Tensor& a,double b,double c,const Tensor& x,size_t min_count){
+    auto func=[b,c](double a,double x){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,a,x);
+}
+Tensor F21_renorm(double a,const Tensor& b,const Tensor& c,double x,size_t min_count){
+    auto func=[a,x](double b,double c){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,b,c);
+}
+Tensor F21_renorm(double a,const Tensor& b,double c,const Tensor& x,size_t min_count){
+    auto func=[a,c](double b,double x){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,b,x);
+}
+Tensor F21_renorm(double a,double b,const Tensor& c,const Tensor& x,size_t min_count){
+    auto func=[a,b](double c,double x){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,c,x);
+}
+Tensor F21_renorm(const Tensor& a,const Tensor& b,const Tensor& c,double x,size_t min_count){
+    auto func=[x](double a,double b,double c){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,a,b,c);
+}
+Tensor F21_renorm(const Tensor& a,const Tensor& b,double c,const Tensor& x,size_t min_count){
+    auto func=[c](double a,double b,double x){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,a,b,x);
+}
+Tensor F21_renorm(const Tensor& a,double b,const Tensor& c,const Tensor& x,size_t min_count){
+    auto func=[b](double a,double c,double x){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,a,c,x);
+}
+Tensor F21_renorm(double a,const Tensor& b,const Tensor& c,const Tensor& x,size_t min_count){
+    auto func=[a](double b,double c,double x){return Scalar::F21_renorm(a,b,c,x);};
+    return transform(func,min_count,b,c,x);
+}
+Tensor F21_renorm(const Tensor& a,const Tensor& b,const Tensor& c,const Tensor& x,size_t min_count){
+    return transform(Scalar::F21_renorm,min_count,a,b,c,x);
+
+}
+
+Tensor F20(const Tensor& a,double b,double x,size_t min_count){
+    auto func=[b,x](double a){return Scalar::F20(a,b,x);};
+    return transform(func,min_count,a);
+
+}
+Tensor F20(double a,const Tensor& b,double x,size_t min_count){
+    auto func=[a,x](double b){return Scalar::F20(a,b,x);};
+    return transform(func,min_count,b);
+
+}
+Tensor F20(double a,double b,const Tensor& x,size_t min_count){
+    auto func=[a,b](double x){return Scalar::F20(a,b,x);};
+    return transform(func,min_count,x);
+}
+Tensor F20(const Tensor& a,const Tensor& b,double x,size_t min_count){
+    auto func=[x](double a,double b){return Scalar::F20(a,b,x);};
+    return transform(func,min_count,a,b);
+}
+Tensor F20(const Tensor& a,double b,const Tensor& x,size_t min_count){
+    auto func=[b](double a,double x){return Scalar::F20(a,b,x);};
+    return transform(func,min_count,a,x);
+}
+Tensor F20(double a,const Tensor& b,const Tensor& x,size_t min_count){
+    auto func=[a](double b,double x){return Scalar::F20(a,b,x);};
+    return transform(func,min_count,b,x);
+}
+Tensor F20(const Tensor& a,const Tensor& b,const Tensor& x,size_t min_count){
+    return transform(Scalar::F20,min_count,a,b,x);
+}
+//Laguerre Functions
+Tensor L1(const Tensor& a,double b,size_t min_count){
+    auto func=[b](double a){return Scalar::L1(a,b);};
+    return transform(func,min_count,a);
+}
+Tensor L1(double a,const Tensor& b,size_t min_count){
+    auto func=[a](double b){return Scalar::L1(a,b);};
+    return transform(func,min_count,b);
+}
+Tensor L1(const Tensor& a,const Tensor& b,size_t min_count){
+    return transform(Scalar::L1,min_count,a,b);
+}
+
+Tensor L2(const Tensor& a,double b,size_t min_count){
+    auto func=[b](double a){return Scalar::L2(a,b);};
+    return transform(func,min_count,a);
+}
+Tensor L2(double a,const Tensor& b,size_t min_count){
+    auto func=[a](double b){return Scalar::L2(a,b);};
+    return transform(func,min_count,b);
+}
+Tensor L2(const Tensor& a,const Tensor& b,size_t min_count){
+    return transform(Scalar::L2,min_count,a,b);
+}
+
+Tensor L3(const Tensor& a,double b,size_t min_count){
+    auto func=[b](double a){return Scalar::L3(a,b);};
+    return transform(func,min_count,a);
+}
+Tensor L3(double a,const Tensor& b,size_t min_count){
+    auto func=[a](double b){return Scalar::L3(a,b);};
+    return transform(func,min_count,b);
+}
+Tensor L3(const Tensor& a,const Tensor& b,size_t min_count){
+    return transform(Scalar::L3,min_count,a,b);
+}
+
+Tensor L(const Tensor& a,double x,int n,size_t min_count){
+    auto func=[x,n](double a){return Scalar::L(a,x,n);};
+    return transform(func,min_count,a);
+}
+Tensor L(double a,const Tensor& x,int n,size_t min_count){
+    auto func=[a,n](double x){return Scalar::L(a,x,n);};
+    return transform(func,min_count,x);
+}
+Tensor L(double a,double x,const Tensor& n,size_t min_count){
+    auto func=[a,x](double n){return Scalar::L(a,x,(int)n);};
+    return transform(func,min_count,n);
+}
+Tensor L(const Tensor& a,const Tensor& x,int n,size_t min_count){
+    auto func=[n](double a,double x){return Scalar::L(a,x,n);};
+    return transform(func,min_count,a,x);
+}
+Tensor L(const Tensor& a,double x,const Tensor& n,size_t min_count){
+    auto func=[x](double a,double n){return Scalar::L(a,x,(int)n);};
+    return transform(func,min_count,a,n);
+}
+Tensor L(double a,const Tensor& x,const Tensor& n,size_t min_count){
+    auto func=[a](double x,double n){return Scalar::L(a,x,(int)n);};
+    return transform(func,min_count,x,n);
+}
+Tensor L(const Tensor& a,const Tensor& x,const Tensor& n,size_t min_count){
+    auto func=[](double a,double x,double n){return Scalar::L(a,x,(int)n);};
+    return transform(func,min_count,a,x,n);
+}
+//Lambert W Functions
+Tensor W0(const Tensor& x,size_t min_count){
+    return transform(Scalar::W0,min_count,x);
+}
+Tensor Wm1(const Tensor& x,size_t min_count){
+    return transform(Scalar::Wm1,min_count,x);
+}
+//Legendre Polynomials
+Tensor legendre_P1(const Tensor& x,size_t min_count){
+    return transform(Scalar::legendre_P1,min_count,x);
+}
+Tensor legendre_P2(const Tensor& x,size_t min_count){
+    return transform(Scalar::legendre_P2,min_count,x);
+}
+Tensor legendre_P3(const Tensor& x,size_t min_count){
+    return transform(Scalar::legendre_P3,min_count,x);
+}
+Tensor legendre_P(const Tensor& x,int l,size_t min_count){
+    auto func=[l](double x){return Scalar::legendre_P(x,l);};
+    return transform(func,min_count,x);
+}
+Tensor legendre_P(double x,const Tensor& l,size_t min_count){
+    auto func=[x](double l){return Scalar::legendre_P(x,(int)l);};
+    return transform(func,min_count,l);
+}
+Tensor legendre_P(const Tensor& x,const Tensor& l,size_t min_count){
+    auto func=[](double x,double l){return Scalar::legendre_P(x,(int)l);};
+    return transform(func,min_count,x,l);
+}
+
+Tensor Q0(const Tensor& x,size_t min_count){
+    return transform(Scalar::Q0,min_count,x);
+}
+Tensor Q1(const Tensor& x,size_t min_count){
+    return transform(Scalar::Q1,min_count,x);
+}
+Tensor Q(const Tensor& x,int l,size_t min_count){
+    auto func=[l](double x){return Scalar::Q(x,l);};
+    return transform(func,min_count,x);
+}
+Tensor Q(double x,const Tensor& l,size_t min_count){
+    auto func=[x](double l){return Scalar::Q(x,(int)l);};
+    return transform(func,min_count,l);
+}
+Tensor Q(const Tensor& x,const Tensor& l,size_t min_count){
+    auto func=[](double x,double l){return Scalar::Q(x,(int)l);};
+    return transform(func,min_count,x,l);
+}
+//Associated Legendre Polynomials and Spherical Harmonics
+Tensor Plm(const Tensor& x,int l,int m,size_t min_count){
+    auto func=[l,m](double x){return Scalar::Plm(x,l,m);};
+    return transform(func,min_count,x);
+}
+Tensor Plm(double x,const Tensor& l,int m,size_t min_count){
+    auto func=[x,m](double l){return Scalar::Plm(x,(int)l,m);};
+}
+Tensor Plm(double x,int l,const Tensor& m,size_t min_count){
+    auto func=[x,l](double m){return Scalar::Plm(x,l,(int)m);};
+    return transform(func,min_count,m);
+}
+Tensor Plm(const Tensor& x,const Tensor& l,int m,size_t min_count){
+    auto func=[m](double x,double l){return Scalar::Plm(x,(int)l,m);};
+    return transform(func,min_count,x,l);
+}
+Tensor Plm(const Tensor& x,int l,const Tensor& m,size_t min_count){
+    auto func=[l](double x,double m){return Scalar::Plm(x,l,(int)m);};
+    return transform(func,min_count,x,m);
+}
+Tensor Plm(double x,const Tensor& l,const Tensor& m,size_t min_count){
+    auto func=[x](double l,double m){return Scalar::Plm(x,(int)l,(int)m);};
+    return transform(func,min_count,l,m);
+}
+Tensor Plm(const Tensor& x,const Tensor& l,const Tensor& m,size_t min_count){
+    auto func=[](double x,double l,double m){return Scalar::Plm(x,(int)l,(int)m);};
+    return transform(func,min_count,x,l,m);
+}
+
+Tensor sphPlm(const Tensor& x,int l,int m,size_t min_count){
+    auto func=[l,m](double x){return Scalar::sphPlm(x,l,m);};
+    return transform(func,min_count,x);
+}
+Tensor sphPlm(double x,const Tensor& l,int m,size_t min_count){
+    auto func=[x,m](double l){return Scalar::sphPlm(x,(int)l,m);};
+    return transform(func,min_count,l);
+}
+Tensor sphPlm(double x,int l,const Tensor& m,size_t min_count){
+    auto func=[x,l](double m){return Scalar::sphPlm(x,l,(int)m);};
+    return transform(func,min_count,m);
+}
+Tensor sphPlm(const Tensor& x,const Tensor& l,int m,size_t min_count){
+    auto func=[m](double x,double l){return Scalar::sphPlm(x,(int)l,m);};
+    return transform(func,min_count,x,l);
+}
+Tensor sphPlm(const Tensor& x,int l,const Tensor& m,size_t min_count){
+    auto func=[l](double x,double m){return Scalar::sphPlm(x,l,(int)m);};
+    return transform(func,min_count,x,m);
+}
+Tensor sphPlm(double x,const Tensor& l,const Tensor& m,size_t min_count){
+    auto func=[x](double l,double m){return Scalar::sphPlm(x,(int)l,(int)m);};
+    return transform(func,min_count,l,m);
+}
+Tensor sphPlm(const Tensor& x,const Tensor& l,const Tensor& m,size_t min_count){
+    auto func=[](double x,double l,double m){return Scalar::sphPlm(x,(int)l,(int)m);};
+    return transform(func,min_count,x,l,m);
+}
+//Conical Functions
+Tensor conicalP_half(const Tensor& x,double lambda,size_t min_count){
+    auto func=[lambda](double x){return Scalar::conicalP_half(x,lambda);};
+    return transform(func,min_count,x);
+}
+Tensor conicalP_half(double x,const Tensor& lambda,size_t min_count){
+    auto func=[x](double lambda){return Scalar::conicalP_half(x,lambda);};
+    return transform(func,min_count,lambda);
+}
+Tensor conicalP_half(const Tensor& x,const Tensor& lambda,size_t min_count){
+    return transform(Scalar::conicalP_half,min_count,x,lambda);
+}
+
+Tensor conicalP_mhalf(const Tensor& x,double lambda,size_t min_count){
+    auto func=[lambda](double x){return Scalar::conicalP_mhalf(x,lambda);};
+    return transform(func,min_count,x);
+}
+Tensor conicalP_mhalf(double x,const Tensor& lambda,size_t min_count){
+    auto func=[x](double lambda){return Scalar::conicalP_mhalf(x,lambda);};
+    return transform(func,min_count,lambda);
+}
+Tensor conicalP_mhalf(const Tensor& x,const Tensor& lambda,size_t min_count){
+    return transform(Scalar::conicalP_mhalf,min_count,x,lambda);
+}
+
+Tensor conicalP0(const Tensor& x,double lambda,size_t min_count){
+    auto func=[lambda](double x){return Scalar::conicalP0(x,lambda);};
+    return transform(func,min_count,x);
+}
+Tensor conicalP0(double x,const Tensor& lambda,size_t min_count){
+    auto func=[x](double lambda){return Scalar::conicalP0(x,lambda);};
+    return transform(func,min_count,lambda);
+}
+Tensor conicalP0(const Tensor& x,const Tensor& lambda,size_t min_count){
+    return transform(Scalar::conicalP0,min_count,x,lambda);
+}
+
+Tensor conicalP1(const Tensor& x,double lambda,size_t min_count){
+    auto func=[lambda](double x){return Scalar::conicalP1(x,lambda);};
+    return transform(func,min_count,x);
+}
+Tensor conicalP1(double x,const Tensor& lambda,size_t min_count){
+    auto func=[x](double lambda){return Scalar::conicalP1(x,lambda);};
+    return transform(func,min_count,lambda);
+}
+Tensor conicalP1(const Tensor& x,const Tensor& lambda,size_t min_count){
+    return transform(Scalar::conicalP1,min_count,x,lambda);
+}
+
+Tensor conicalP_sph(const Tensor& x,double lambda,int n,size_t min_count){
+    auto func=[lambda,n](double x){return Scalar::conicalP_sph(x,lambda,n);};
+    return transform(func,min_count,x);
+}
+Tensor conicalP_sph(double x,const Tensor& lambda,int n,size_t min_count){
+    auto func=[x,n](double lambda){return Scalar::conicalP_sph(x,lambda,n);};
+    return transform(func,min_count,lambda);
+}
+Tensor conicalP_sph(double x,double lambda,const Tensor& n,size_t min_count){
+    auto func=[x,lambda](double n){return Scalar::conicalP_sph(x,lambda,(int)n);};
+    return transform(func,min_count,n);
+}
+Tensor conicalP_sph(const Tensor& x,const Tensor& lambda,int n,size_t min_count){
+    auto func=[n](double x,double lambda){return Scalar::conicalP_sph(x,lambda,n);};
+    return transform(func,min_count,x,lambda);
+}
+Tensor conicalP_sph(const Tensor& x,double lambda,const Tensor& n,size_t min_count){
+    auto func=[lambda](double x,double n){return Scalar::conicalP_sph(x,lambda,(int)n);};
+    return transform(func,min_count,x,n);
+}
+Tensor conicalP_sph(double x,const Tensor& lambda,const Tensor& n,size_t min_count){
+    auto func=[x](double lambda,double n){return Scalar::conicalP_sph(x,lambda,(int)n);};
+    return transform(func,min_count,lambda,n);
+}
+Tensor conicalP_sph(const Tensor& x,const Tensor& lambda,const Tensor& n,size_t min_count){
+    auto func=[](double x,double lambda,double n){return Scalar::conicalP_sph(x,lambda,(int)n);};
+    return transform(func,min_count,x,lambda,n);
+}
+
+Tensor conicalP_cyl(const Tensor& x,double lambda,int n,size_t min_count){
+    auto func=[lambda,n](double x){return Scalar::conicalP_cyl(x,lambda,n);};
+    return transform(func,min_count,x);
+}
+Tensor conicalP_cyl(double x,const Tensor& lambda,int n,size_t min_count){
+    auto func=[x,n](double lambda){return Scalar::conicalP_cyl(x,lambda,n);};
+    return transform(func,min_count,lambda);
+}
+Tensor conicalP_cyl(double x,double lambda,const Tensor& n,size_t min_count){
+    auto func=[x,lambda](double n){return Scalar::conicalP_cyl(x,lambda,(int)n);};
+    return transform(func,min_count,n);
+}
+Tensor conicalP_cyl(const Tensor& x,const Tensor& lambda,int n,size_t min_count){
+    auto func=[n](double x,double lambda){return Scalar::conicalP_cyl(x,lambda,n);};
+    return transform(func,min_count,x,lambda);
+}
+Tensor conicalP_cyl(const Tensor& x,double lambda,const Tensor& n,size_t min_count){
+    auto func=[lambda](double x,double n){return Scalar::conicalP_cyl(x,lambda,(int)n);};
+    return transform(func,min_count,x,n);
+}
+Tensor conicalP_cyl(double x,const Tensor& lambda,const Tensor& n,size_t min_count){
+    auto func=[x](double lambda,double n){return Scalar::conicalP_cyl(x,lambda,(int)n);};
+    return transform(func,min_count,lambda,n);
+}
+Tensor conicalP_cyl(const Tensor& x,const Tensor& lambda,const Tensor& n,size_t min_count){
+    auto func=[](double x,double lambda,double n){return Scalar::conicalP_cyl(x,lambda,(int)n);};
+    return transform(func,min_count,x,lambda,n);
+}
+//Radial Functions for Hyperbolic Space
+Tensor H3d0(const Tensor& lambda,double eta,size_t min_count);
+Tensor H3d0(double lambda,const Tensor& eta,size_t min_count);
+Tensor H3d0(const Tensor& lambda,const Tensor& eta,size_t min_count);
+
+Tensor H3d1(const Tensor& lambda,double eta,size_t min_count);
+Tensor H3d1(double lambda,const Tensor& eta,size_t min_count);
+Tensor H3d1(const Tensor& lambda,const Tensor& eta,size_t min_count);
+
+Tensor H3d(const Tensor& lambda,double eta,int n,size_t min_count);
+Tensor H3d(double lambda,const Tensor& eta,int n,size_t min_count);
+Tensor H3d(double lambda,double eta,const Tensor& n,size_t min_count);
+Tensor H3d(const Tensor& lambda,const Tensor& eta,int n,size_t min_count);
+Tensor H3d(const Tensor& lambda,double eta,const Tensor& n,size_t min_count);
+Tensor H3d(double lambda,const Tensor& eta,const Tensor& n,size_t min_count);
+Tensor H3d(const Tensor& lambda,const Tensor& eta,const Tensor& n,size_t min_count);
 }

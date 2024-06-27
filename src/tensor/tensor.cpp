@@ -115,6 +115,7 @@ size_t Tensor::dim() const{
 Tensor::~Tensor(){
     if(m_data!=nullptr){
         delete[] m_data;
+        m_data=nullptr;
     }
 }
 void printTensorRecursively(std::ostream& os,const Tensor& tensor, 

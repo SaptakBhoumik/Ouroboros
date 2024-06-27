@@ -78,4 +78,12 @@ int main(){
     std::cout<<H<<std::endl;
     H=Ouroboros::pow(F,2.5*E);
     std::cout<<H<<std::endl;
+    std::cout<<L1(E,F)<<std::endl;
+    std::cout<<L(E,F,1)<<std::endl;
+    std::cout<<L2(E,F)<<std::endl;
+    std::cout<<L(E,F,2)<<std::endl;
+    std::cout<<L3(E,F)<<std::endl;
+    std::cout<<L(E,F,3)<<std::endl;
+    std::cout<<L(E,F,4)<<std::endl;
+    std::cout<<L(E,F,5)<<std::endl;
 }
