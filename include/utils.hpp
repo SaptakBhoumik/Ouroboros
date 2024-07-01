@@ -55,5 +55,66 @@ std::string read_bin_str(std::fstream& file);
 Shape read_bin_shape(std::fstream& file);
 Tensor read_bin_tensor(std::fstream& file);
 BoolTensor read_bin_bool_tensor(std::fstream& file);
+
+template<typename T>
+class Iterator{
+    T* m_data;
+    size_t m_count=0;
+    size_t m_step=0;
+    public:
+    struct It{
+        It(T* data,size_t idx,size_t step):data(data),idx(idx),step(step){}
+        T operator*(){
+            return data[idx*step];
+        }
+        It& operator++(){
+            idx++;
+            return *this;
+        }
+        It& operator++(int){
+            auto temp=*this;
+            idx++;
+            return temp;
+        }
+        It& operator--(){
+            idx--;
+            return *this;
+        }
+        It& operator--(int){
+            auto temp=*this;
+            idx--;
+            return temp;
+        }
+        const T* operator->()const{
+            return data+idx*step;
+        }
+        bool operator==(It& other){
+            return idx==other.idx;
+        }
+        bool operator!=(It& other){
+            return idx!=other.idx;
+        }
+        private:
+        T* data;
+        size_t idx=0;
+        size_t step=0;
+    };
+    Iterator(T* data,size_t count,size_t step=1){
+        this->m_data=data;
+        this->m_count=count;
+        this->m_step=step;
+    }
+    Iterator(const T* data,size_t count,size_t step=1){
+        this->m_data=const_cast<T*>(data);
+        this->m_count=count;
+        this->m_step=step;
+    }
+    It begin(){
+        return It(m_data,0,m_step);
+    }
+    It end(){
+        return It(m_data,m_count,m_step);
+    }
+};
 }
 }

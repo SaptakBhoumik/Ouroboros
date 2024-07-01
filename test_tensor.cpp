@@ -3,13 +3,15 @@
 double func(double a,double b,double c){
     return a*b+c;
 }
-double acc(const double* a,const double* b){
+double acc(Ouroboros::Utils::Iterator<double> a){
     double sum=0;
-    size_t c=std::distance(a,b);
-    for(size_t i=0;i<c;i++){
-        sum+=a[i];
+    for(auto x:a){
+        sum+=x;
     }
     return sum;
+}
+double cum_sum(double a,double b){
+    return a+b;
 }
 int main(){
     Ouroboros::Tensor A({2, 2});
@@ -108,4 +110,13 @@ int main(){
     std::cout << t_t << std::endl;
     t_t=Ouroboros::reduce<acc>(test,0);
     std::cout << t_t << std::endl;
+    auto func=[](double a,bool b)->double{return a;};
+    auto t_t2=Ouroboros::transform<func>(test,test==test);
+    std::cout << t_t2 << std::endl;
+    auto t_t3=Ouroboros::accumulate<cum_sum>(test,2);
+    std::cout<<t_t3<<std::endl;
+    t_t3=Ouroboros::accumulate<cum_sum>(test,1);
+    std::cout<<t_t3<<std::endl;
+    t_t3=Ouroboros::accumulate<cum_sum>(test,0);
+    std::cout<<t_t3<<std::endl;
 }
