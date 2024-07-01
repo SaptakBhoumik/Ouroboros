@@ -11,3 +11,6 @@ op_src=[
     'src/op/op.cpp',
     'src/op/bool_op.cpp',
 ]
+utils_src=[
+    'src/utils.cpp'
+]

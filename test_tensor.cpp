@@ -1,6 +1,15 @@
 #include "func.hpp"
+#include "utils.hpp"
 double func(double a,double b,double c){
     return a*b+c;
+}
+double acc(const double* a,const double* b){
+    double sum=0;
+    size_t c=std::distance(a,b);
+    for(size_t i=0;i<c;i++){
+        sum+=a[i];
+    }
+    return sum;
 }
 int main(){
     Ouroboros::Tensor A({2, 2});
@@ -81,4 +90,22 @@ int main(){
     auto test=Ouroboros::CreateTensor::linspace({2,3,4},0,23);
     std::cout << test << std::endl;
     std::cout << test.slice({0, 1, 1},{2,3,4}); 
+    std::fstream file;
+    file.open("test.bin",std::ios::out|std::ios::binary);
+    Ouroboros::Utils::write_bin_tensor(file,test,Ouroboros::Utils::TensorType::FLOAT);
+    std::cout << B__ << std::endl;
+    Ouroboros::Utils::write_bin_bool_tensor(file,B__);
+    file.close();
+    file.open("test.bin",std::ios::in|std::ios::binary);
+    auto test2=Ouroboros::Utils::read_bin_tensor(file);
+    std::cout << test2 << std::endl;
+    auto B__2=Ouroboros::Utils::read_bin_bool_tensor(file);
+    std::cout << B__2 << std::endl;
+    file.close();
+    auto t_t=Ouroboros::reduce<acc>(test,2);
+    std::cout << t_t << std::endl;
+    t_t=Ouroboros::reduce<acc>(test,1);
+    std::cout << t_t << std::endl;
+    t_t=Ouroboros::reduce<acc>(test,0);
+    std::cout << t_t << std::endl;
 }

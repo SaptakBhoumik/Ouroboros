@@ -23,7 +23,7 @@ subdir : 'ouroboros')
 ouroboros=static_library(
     'ouroboros',
     include_directories:include,
-    sources:tensor_src+op_src,
+    sources:tensor_src+op_src+utils_src,
     dependencies:[omp,cblas],
     install:true
 )

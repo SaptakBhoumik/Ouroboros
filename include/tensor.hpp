@@ -227,7 +227,7 @@ class Tensor{
     }
     __always_inline Tensor slice(const Shape& start,const Shape& end,const Shape& step){
         if (start.dim() != m_shape.dim() || end.dim() != m_shape.dim() || step.dim() != m_shape.dim()) {
-            throw std::invalid_argument("Start, end, and step vectors must have the same length as the number of dimensions in the tensor");
+            throw std::invalid_argument("Start, end, and step must have the same length as the number of dimensions in the tensor");
         }
 
         // Calculate the shape of the sliced tensor
