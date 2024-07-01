@@ -100,6 +100,7 @@ class Tensor{
     Tensor& operator=(Tensor&& tensor);
 
     void reshape(const Shape& shape);
+    void flatten();
     //Modify the tensor data but not the shape
     void fill(double value);
     void fill(std::function<double()> func);
@@ -127,9 +128,9 @@ class Tensor{
 
     void fill_nan_inf_neg_inf(double value=0.0);    
 
-    bool is_zero();
-    bool is_finite();
-    bool has_nan();
+    bool is_zero()const;
+    bool is_finite()const;
+    bool has_nan()const;
 
     __always_inline double& operator[](size_t index){
         #ifdef __OUROBOROS_CHECK__
@@ -188,6 +189,12 @@ class Tensor{
     Shape strides() const;
     size_t count() const;
     size_t dim() const;
+
+    double norm()const;
+    double norm2()const;
+    double sum()const;
+    double prod()const;
+    void normalize();
 
     ~Tensor();
 };

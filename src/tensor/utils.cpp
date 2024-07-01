@@ -1,5 +1,4 @@
 #include "tensor.hpp"
-#include "func/func.hpp"
 #include <functional>
 #include <stdlib.h>
 #include <random>
@@ -80,7 +79,7 @@ void Tensor::threshold(double a,double new_val){
 void Tensor::replace(double a,double b){
     auto epsilon=std::numeric_limits<double>::epsilon();
     for(size_t i=0;i<m_shape.count();i++){
-        if(Scalar::abs(m_data[i]-a)<epsilon){
+        if(std::abs(m_data[i]-a)<epsilon){
             m_data[i]=b;
         }
     }
@@ -137,17 +136,17 @@ void Tensor::fill_nan_inf_neg_inf(double value){
     }
 } 
 
-bool Tensor::is_zero(){
+bool Tensor::is_zero()const{
     auto epsilon=std::numeric_limits<double>::epsilon();
     for(size_t i=0;i<m_shape.count();i++){
-        if(Scalar::abs(m_data[i])>epsilon){
+        if(std::abs(m_data[i])>epsilon){
             return false;
         }
     }
     return true;
 
 }
-bool Tensor::is_finite(){
+bool Tensor::is_finite()const{
     for(size_t i=0;i<m_shape.count();i++){
         if(!std::isfinite(m_data[i])){
             return false;
@@ -155,12 +154,42 @@ bool Tensor::is_finite(){
     }
     return true;
 }
-bool Tensor::has_nan(){
+bool Tensor::has_nan()const{
     for(size_t i=0;i<m_shape.count();i++){
         if(std::isnan(m_data[i])){
             return true;
         }
     }
     return false;
+}
+double Tensor::norm()const{
+    return std::sqrt(norm2());
+}
+double Tensor::norm2()const{
+    double res=0.0;
+    for(size_t i=0;i<m_shape.count();i++){
+        res+=m_data[i]*m_data[i];
+    }
+    return res;
+}
+double Tensor::sum()const{
+    double res=0.0;
+    for(size_t i=0;i<m_shape.count();i++){
+        res+=m_data[i];
+    }
+    return res;
+}
+double Tensor::prod()const{
+    double res=1.0;
+    for(size_t i=0;i<m_shape.count();i++){
+        res*=m_data[i];
+    }
+    return res;
+}
+void Tensor::normalize(){
+    double n=norm();
+    for(size_t i=0;i<m_shape.count();i++){
+        m_data[i]/=n;
+    }
 }
 }

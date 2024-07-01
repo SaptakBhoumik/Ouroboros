@@ -1,4 +1,4 @@
-#include "func/func.hpp"
+#include "func.hpp"
 double func(double a,double b,double c){
     return a*b+c;
 }
@@ -59,40 +59,21 @@ int main(){
     D = Ouroboros::CreateTensor::diagonal_matrix({2, 1, 2});
     std::cout << D << std::endl;
     //Transform is used to apply a function to each element of a tensor
-    D = Ouroboros::transform(Ouroboros::Scalar::sin,D);
+    auto sin=[](double x)->double{return std::sin(x);};
+    D = Ouroboros::transform<sin>(D);
     std::cout << D << std::endl;
+    auto bool_test=[](double x)->bool{return x>0.9;};
+    auto B__=Ouroboros::transform<bool_test>(D);
+    std::cout << B__ << std::endl;
     auto E = Ouroboros::CreateTensor::fill({2, 2}, 1);
     std::cout<<E<<std::endl;
     auto F = Ouroboros::CreateTensor::fill({2, 2}, 2);
     std::cout<<F<<std::endl;
     auto G = Ouroboros::CreateTensor::fill({2, 2}, 3);
     std::cout<<G<<std::endl;
-    auto H = Ouroboros::transform(func,E,F,G);
+    auto H = Ouroboros::transform<func>(E,F,G);
     std::cout<<H<<std::endl;
 
-    H=Ouroboros::sin(H);
-    std::cout<<H<<std::endl;
-    H=Ouroboros::pow(F,2);
-    std::cout<<H<<std::endl;
-    H=Ouroboros::pow(3,F);
-    std::cout<<H<<std::endl;
-    H=Ouroboros::pow(F,2.5*E);
-    std::cout<<H<<std::endl;
-    std::cout<<L1(E,F)<<std::endl;
-    std::cout<<L(E,F,1)<<std::endl;
-    std::cout<<L2(E,F)<<std::endl;
-    std::cout<<L(E,F,2)<<std::endl;
-    std::cout<<L3(E,F)<<std::endl;
-    std::cout<<L(E,F,3)<<std::endl;
-    std::cout<<L(E,F,4)<<std::endl;
-    std::cout<<L(E,F,5)<<std::endl;
-
-    //TODO:Test bool tensor
-    A=Ouroboros::cos(A);
-    std::cout << A << std::endl;
-    std::cout << B << std::endl;
-    std::cout << (A > B)<< std::endl;
-    std::cout<<Ouroboros::max(A,B)<<std::endl;
     auto new_Tensor=Ouroboros::CreateTensor::where(A > B, A, B);//Basically max function
     std::cout << new_Tensor << std::endl;
     new_Tensor=Ouroboros::CreateTensor::where(A > B, 1, 0);

@@ -17,11 +17,13 @@ public:
 
     Shape& operator=(const Shape& shape);
     Shape& operator=(Shape&& shape);
+    
+    Shape& operator=(std::initializer_list<size_t> shape);
 
     size_t get(size_t index) const;//This one checks for errors
     size_t operator[](size_t index) const;
-    size_t* begin() const;
-    size_t* end() const;
+    const size_t* begin() const;
+    const size_t* end() const;
 
     bool operator==(const Shape& shape) const;
     bool operator!=(const Shape& shape) const;

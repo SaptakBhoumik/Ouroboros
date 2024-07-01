@@ -1,26 +1,12 @@
 tensor_src=[
-    'src/cpu/op.cpp',
-    'src/shape.cpp',
+    'src/tensor/shape.cpp',
     'src/tensor/tensor.cpp',
     'src/tensor/booltensor.cpp',
     'src/tensor/utils.cpp',
     'src/tensor/create_tensor.cpp',
 ]
 op_src=[
+    'src/cpu/op.cpp',
     'src/op/op.cpp',
     'src/op/bool_op.cpp',
-]
-scalar_func_src=[
-    'src/func/scalar/basic.cpp',
-    'src/func/scalar/err_func.cpp',
-    'src/func/scalar/h_trig.cpp',
-    'src/func/scalar/sf_func.cpp',
-    'src/func/scalar/trig.cpp',
-]
-tensor_func_src=[
-    'src/func/tensor/basic.cpp',
-    'src/func/tensor/err_func.cpp',
-    'src/func/tensor/h_trig.cpp',
-    'src/func/tensor/sf_func.cpp',
-    'src/func/tensor/trig.cpp',
 ]

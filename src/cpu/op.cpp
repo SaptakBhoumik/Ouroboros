@@ -1,13 +1,11 @@
-#include "op.hpp"
 #include <omp.h>
 #include <limits>
+#include <cmath>
+#include "op.hpp"
 #include "macros.hpp"
 //NOTE:-We use abs for checking equality of floating point numbers because of floating point errors
 //Since it is a slow operation so we use threads only for equality operations to speed up the process
 namespace Ouroboros{
-namespace Scalar{
-double abs(double a);//Defined in src/func/scalar/basic.cpp
-}
 namespace CPU{
 double* neg_ptr(const double* a,size_t size){
     double* result=new double[size];
@@ -146,13 +144,13 @@ bool* eq_ptr(const double* a,const double* b,size_t size){
     bool* result=new bool[size];
     if(size<=__MIN__COUNT__FOR__THREAD__){
         for(size_t i=0;i<size;i++){
-            result[i]=Scalar::abs(a[i]-b[i])<eps;
+            result[i]=std::abs(a[i]-b[i])<eps;
         }
     }
     else{
         #pragma omp parallel for
         for(size_t i=0;i<size;i++){
-            result[i]=Scalar::abs(a[i]-b[i])<eps;
+            result[i]=std::abs(a[i]-b[i])<eps;
         }
     }
     return result;
@@ -162,13 +160,13 @@ bool* neq_ptr(const double* a,const double* b,size_t size){
     bool* result=new bool[size];
     if(size<=__MIN__COUNT__FOR__THREAD__){
         for(size_t i=0;i<size;i++){
-            result[i]=Scalar::abs(a[i]-b[i])>=eps;
+            result[i]=std::abs(a[i]-b[i])>=eps;
         }
     }
     else{
         #pragma omp parallel for
         for(size_t i=0;i<size;i++){
-            result[i]=Scalar::abs(a[i]-b[i])>=eps;
+            result[i]=std::abs(a[i]-b[i])>=eps;
         }
     }
     return result;
@@ -193,13 +191,13 @@ bool* lteq_ptr(const double* a,const double* b,size_t size){
     bool* result=new bool[size];
     if(size<=__MIN__COUNT__FOR__THREAD__){
         for(size_t i=0;i<size;i++){
-            result[i]=(a[i]<b[i])||(Scalar::abs(a[i]-b[i])<eps);
+            result[i]=(a[i]<b[i])||(std::abs(a[i]-b[i])<eps);
         }
     }
     else{
         #pragma omp parallel for
         for(size_t i=0;i<size;i++){
-            result[i]=(a[i]<b[i])||(Scalar::abs(a[i]-b[i])<eps);
+            result[i]=(a[i]<b[i])||(std::abs(a[i]-b[i])<eps);
         }
     }
     return result;
@@ -209,13 +207,13 @@ bool* gteq_ptr(const double* a,const double* b,size_t size){
     bool* result=new bool[size];
     if(size<=__MIN__COUNT__FOR__THREAD__){
         for(size_t i=0;i<size;i++){
-            result[i]=(a[i]>b[i])||(Scalar::abs(a[i]-b[i])<eps);
+            result[i]=(a[i]>b[i])||(std::abs(a[i]-b[i])<eps);
         }
     }
     else{
         #pragma omp parallel for
         for(size_t i=0;i<size;i++){
-            result[i]=(a[i]>b[i])||(Scalar::abs(a[i]-b[i])<eps);
+            result[i]=(a[i]>b[i])||(std::abs(a[i]-b[i])<eps);
         }
     }
     return result;
@@ -226,13 +224,13 @@ bool* eq_ptr(const double* a,double b,size_t size){
     bool* result=new bool[size];
     if(size<=__MIN__COUNT__FOR__THREAD__){
         for(size_t i=0;i<size;i++){
-            result[i]=Scalar::abs(a[i]-b)<eps;
+            result[i]=std::abs(a[i]-b)<eps;
         }
     }
     else{
         #pragma omp parallel for
         for(size_t i=0;i<size;i++){
-            result[i]=Scalar::abs(a[i]-b)<eps;
+            result[i]=std::abs(a[i]-b)<eps;
         }
     }
     return result;
@@ -242,13 +240,13 @@ bool* neq_ptr(const double* a,double b,size_t size){
     bool* result=new bool[size];
     if(size<=__MIN__COUNT__FOR__THREAD__){
         for(size_t i=0;i<size;i++){
-            result[i]=Scalar::abs(a[i]-b)>=eps;
+            result[i]=std::abs(a[i]-b)>=eps;
         }
     }
     else{
         #pragma omp parallel for
         for(size_t i=0;i<size;i++){
-            result[i]=Scalar::abs(a[i]-b)>=eps;
+            result[i]=std::abs(a[i]-b)>=eps;
         }
     }
     return result;
@@ -272,13 +270,13 @@ bool* lteq_ptr(const double* a,double b,size_t size){
     bool* result=new bool[size];
     if(size<=__MIN__COUNT__FOR__THREAD__){
         for(size_t i=0;i<size;i++){
-            result[i]=(a[i]<b)||(Scalar::abs(a[i]-b)<eps);
+            result[i]=(a[i]<b)||(std::abs(a[i]-b)<eps);
         }
     }
     else{
         #pragma omp parallel for
         for(size_t i=0;i<size;i++){
-            result[i]=(a[i]<b)||(Scalar::abs(a[i]-b)<eps);
+            result[i]=(a[i]<b)||(std::abs(a[i]-b)<eps);
         }
     }
     return result;
@@ -288,13 +286,13 @@ bool* gteq_ptr(const double* a,double b,size_t size){
     bool* result=new bool[size];
     if(size<=__MIN__COUNT__FOR__THREAD__){
         for(size_t i=0;i<size;i++){
-            result[i]=(a[i]>b)||(Scalar::abs(a[i]-b)<eps);
+            result[i]=(a[i]>b)||(std::abs(a[i]-b)<eps);
         }
     }
     else{
         #pragma omp parallel for
         for(size_t i=0;i<size;i++){
-            result[i]=(a[i]>b)||(Scalar::abs(a[i]-b)<eps);
+            result[i]=(a[i]>b)||(std::abs(a[i]-b)<eps);
         }
     }
     return result;

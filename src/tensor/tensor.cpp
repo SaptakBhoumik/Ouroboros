@@ -78,7 +78,10 @@ void Tensor::reshape(const Shape& shape){
     m_shape=shape;
     m_strides = getStride(m_shape);
 }
-
+void Tensor::flatten(){
+    m_shape={m_shape.count()};
+    m_strides = {1};
+}
 double* Tensor::data(){
     return m_data;
 }
