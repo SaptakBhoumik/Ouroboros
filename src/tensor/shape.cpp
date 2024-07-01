@@ -1,6 +1,17 @@
 
 #include "shape.hpp"
 namespace Ouroboros{
+Shape::Shape(size_t dim,size_t val){
+    if(dim==0){
+        throw std::invalid_argument("Shape cannot be empty");
+    }
+    m_dim=dim;
+    m_shape=new size_t[m_dim];
+    for(size_t i=0;i<m_dim;i++){
+        m_shape[i]=val;
+        m_count*=val;
+    }
+}
 Shape::Shape(size_t dim,size_t* shape){
     if(dim==0){
         throw std::invalid_argument("Shape cannot be empty");
@@ -99,9 +110,6 @@ size_t Shape::get(size_t index) const{
     if(index>=m_dim){
         throw std::out_of_range("Index out of range");
     }
-    return m_shape[index];
-}
-size_t Shape::operator[](size_t index) const{
     return m_shape[index];
 }
 const size_t* Shape::begin() const{

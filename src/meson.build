@@ -3,6 +3,7 @@ tensor_src=[
     'src/tensor/tensor.cpp',
     'src/tensor/booltensor.cpp',
     'src/tensor/utils.cpp',
+    'src/tensor/slice.cpp',
     'src/tensor/create_tensor.cpp',
 ]
 op_src=[

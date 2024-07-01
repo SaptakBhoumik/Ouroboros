@@ -78,4 +78,7 @@ int main(){
     std::cout << new_Tensor << std::endl;
     new_Tensor=Ouroboros::CreateTensor::where(A > B, 1, 0);
     std::cout << new_Tensor << std::endl;
+    auto test=Ouroboros::CreateTensor::linspace({2,3,4},0,23);
+    std::cout << test << std::endl;
+    std::cout << test.slice({0, 1, 1},{2,3,4}); 
 }
