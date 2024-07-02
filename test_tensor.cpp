@@ -119,4 +119,9 @@ int main(){
     std::cout<<t_t3<<std::endl;
     t_t3=Ouroboros::accumulate<cum_sum>(test,0);
     std::cout<<t_t3<<std::endl;
+    auto _t1=Ouroboros::CreateTensor::linspace({2,3},1,6);
+    auto _t2=Ouroboros::CreateTensor::linspace({4},1,4);
+    auto dot=[](double a,double b)->double{return a*b;};
+    auto t3=Ouroboros::outer<dot>(_t1,_t2);
+    std::cout<<t3<<std::endl;
 }

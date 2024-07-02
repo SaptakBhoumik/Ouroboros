@@ -9,11 +9,12 @@
 #define __Ouroboros__ 
 #include "private_impl.hpp"
 #undef __Ouroboros__
-#define PERMUTE(A,B,C,D) \
+#define PERMUTE_OFFSET(A,B,C,D) \
 {\
     size_t j=0;\
     while (true) {\
         size_t offset=0;\
+        _Pragma("omp simd reduction(+:offset)")\
         for (size_t i = 0; i < B.size(); ++i) {\
             offset+=B[i]*C[i];\
         }\
@@ -32,6 +33,32 @@
         for (size_t i = k + 1; i < A.size(); ++i) {\
             B[i] = 0;\
         }\
+    }\
+}
+
+#define PERMUTE_IDX(A,B,C,D,count) \
+{\
+    /*D is a matrix of dim(count,B.size())*/\
+    size_t j=0;\
+    while (true) {\
+        for (size_t i = 0; i < B.size(); ++i) {\
+            D[j*count+i]=B[i];\
+        }\
+        /*Find the rightmost index that can be incremented*/\
+        int64_t k = (int64_t)A.size() - 1;\
+        while (k >= 0 && B[k] == A[k] - 1){\
+            k--;\
+        }\
+        /*If no such index exists, we are done*/\
+        if (k < 0) {\
+            break;\
+        }\
+        /*Increment the current index and reset all subsequent indices*/\
+        B[k]++;\
+        for (size_t i = k + 1; i < A.size(); ++i) {\
+            B[i] = 0;\
+        }\
+        j++;\
     }\
 }
 
@@ -80,7 +107,7 @@ __always_inline Tensor reduce(const Tensor& t,size_t axis=0){
         }
     }
     size_t* offsets=new size_t[count];
-    PERMUTE(A,B,C,offsets);
+    PERMUTE_OFFSET(A,B,C,offsets);
     Tensor res(output_shape);
     double* res_data=res.data();
     size_t sh=input_shape[axis];
@@ -132,7 +159,7 @@ __always_inline Tensor accumulate(const Tensor& t,size_t axis=0,double initial =
         }
     }
     size_t* offsets=new size_t[count];
-    PERMUTE(A,B,C,offsets);
+    PERMUTE_OFFSET(A,B,C,offsets);
     Tensor res(shape);
     double* res_data=res.data();
     size_t sh=shape[axis];
@@ -159,8 +186,126 @@ __always_inline Tensor accumulate(const Tensor& t,size_t axis=0,double initial =
     delete[] offsets;
     return res;
 }
+template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor outer(const Tensor& t1,const Tensor& t2){
+    auto t1_shape=t1.shape();
+    auto t2_shape=t2.shape();
+    auto t1_strides=t1.strides();
+    auto t2_strides=t2.strides();
+    size_t t1_count=t1_shape.count();
+    size_t t2_count=t2_shape.count();
+    size_t t1_dim=t1_shape.dim();
+    size_t t2_dim=t2_shape.dim();
+
+    size_t* res_shape_ptr=new size_t[t1_dim+t2_dim];
+    for(size_t i=0;i<t1_dim;i++){
+        res_shape_ptr[i]=t1_shape[i];
+    }
+    for(size_t i=0;i<t2_dim;i++){
+        res_shape_ptr[i+t1_dim]=t2_shape[i];
+    }
+    Shape res_shape(t1_dim+t2_dim,res_shape_ptr);
+    delete[] res_shape_ptr;
+    Tensor res(res_shape);
+    Shape res_strides=res.strides();
+    double* res_data=res.data();
+    size_t* t1_idxs=new size_t[t1_dim*t1_count];
+    {
+        std::vector<size_t> A;
+        std::vector<size_t> B(t1_dim, 0);
+        std::vector<size_t> C;
+        A.reserve(t1_dim);
+        C.reserve(t1_dim);
+        for(size_t i=0;i<t1_shape.dim();i++){
+            A.emplace_back(t1_shape[i]);
+            C.emplace_back(t1_strides[i]);
+        }
+        PERMUTE_IDX(A,B,C,t1_idxs,t1_dim);
+    }
+    size_t* t2_idxs=new size_t[t2_dim*t2_count];
+    {
+        std::vector<size_t> A;
+        std::vector<size_t> B(t2_dim, 0);
+        std::vector<size_t> C;
+        A.reserve(t2_dim);
+        C.reserve(t2_dim);
+        for(size_t i=0;i<t2_dim;i++){
+            A.emplace_back(t2_shape[i]);
+            C.emplace_back(t2_strides[i]);
+        }
+        PERMUTE_IDX(A,B,C,t2_idxs,t2_dim);
+    }
+    
+    const double* t1_data=t1.data();
+    const double* t2_data=t2.data();
+    if(res_shape.count()<=min_count){
+        for(size_t i=0;i<t1_count;i++){
+            for(size_t j=0;j<t2_count;j++){
+                size_t t1_off=0;
+                size_t t2_off=0;
+                size_t res_off=0;
+                #pragma omp simd reduction(+:t1_off,t2_off,res_off)
+                for(size_t k=0;k<t1_dim;k++){
+                    t1_off+=t1_idxs[i*t1_dim+k]*t1_strides[k];
+                    res_off+=t1_idxs[i*t1_dim+k]*res_strides[k];
+                }
+                for(size_t k=0;k<t2_dim;k++){
+                    t2_off+=t2_idxs[j*t2_dim+k]*t2_strides[k];
+                    res_off+=t2_idxs[j*t2_dim+k]*res_strides[k+t1_dim];
+                }
+                res_data[res_off]=func(t1_data[t1_off],t2_data[t2_off]);
+            }
+        }
+    }
+    else{
+        if(t1_count>t2_count){
+            #pragma omp parallel for num_threads(thread_c)
+            for(size_t i=0;i<t1_count;i++){
+                for(size_t j=0;j<t2_count;j++){
+                    size_t t1_off=0;
+                    size_t t2_off=0;
+                    size_t res_off=0;
+                    #pragma omp simd reduction(+:t1_off,t2_off,res_off)
+                    for(size_t k=0;k<t1_dim;k++){
+                        t1_off+=t1_idxs[i*t1_dim+k]*t1_strides[k];
+                        res_off+=t1_idxs[i*t1_dim+k]*res_strides[k];
+                    }
+                    for(size_t k=0;k<t2_dim;k++){
+                        t2_off+=t2_idxs[j*t2_dim+k]*t2_strides[k];
+                        res_off+=t2_idxs[j*t2_dim+k]*res_strides[k+t1_dim];
+                    }
+                    res_data[res_off]=func(t1_data[t1_off],t2_data[t2_off]);
+                }
+            }
+        }
+        else{
+            #pragma omp parallel for num_threads(thread_c)
+            for(size_t j=0;j<t2_count;j++){
+                for(size_t i=0;i<t1_count;i++){
+                    size_t t1_off=0;
+                    size_t t2_off=0;
+                    size_t res_off=0;
+                    #pragma omp simd reduction(+:t1_off,t2_off,res_off)
+                    for(size_t k=0;k<t1_dim;k++){
+                        t1_off+=t1_idxs[i*t1_dim+k]*t1_strides[k];
+                        res_off+=t1_idxs[i*t1_dim+k]*res_strides[k];
+                    }
+                    for(size_t k=0;k<t2_dim;k++){
+                        t2_off+=t2_idxs[j*t2_dim+k]*t2_strides[k];
+                        res_off+=t2_idxs[j*t2_dim+k]*res_strides[k+t1_dim];
+                    }
+                    res_data[res_off]=func(t1_data[t1_off],t2_data[t2_off]);
+                }
+            }
+        }
+    }
+    delete[] t1_idxs;
+    delete[] t2_idxs;
+    return res;
+}
 __always_inline Tensor normalize(const Tensor& t){
     return t/t.norm();
 }
 }
-#undef PERMUTE
+#undef PERMUTE_OFFSET
+#undef PERMUTE_IDX
