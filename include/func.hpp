@@ -63,6 +63,35 @@
 #include "private_impl.hpp"//Has to be declared after PERMUTE_IDX and PERMUTE_OFFSET are defined
 #undef __Ouroboros__
 namespace Ouroboros{
+template<typename T,
+        size_t thread_c=8,
+        size_t min_count=__MIN__COUNT__FOR__THREAD__,
+        typename func_type,
+        typename ... Ts>
+__always_inline typename __Private__Impl__::Typer<std::is_same<__Private__Impl__::return_type_t<func_type>, bool>{}>::Type
+         transform(const func_type& func,const T& t,const Ts&... args){
+    static_assert(std::is_same<__Private__Impl__::return_type_t<func_type>, bool>{} ||
+                  std::is_same<__Private__Impl__::return_type_t<func_type>, double>{}, 
+                    "Function must return double or bool");
+    constexpr size_t n = sizeof...(Ts)+1;
+    auto arg_data = std::make_tuple(t.data(),args.data()...);
+    auto shape = t.shape();
+    typename __Private__Impl__::Typer<std::is_same<__Private__Impl__::return_type_t<func_type>, bool>{}>::Type res(shape);
+    size_t count=shape.count();
+    auto res_data=res.data();
+    if(count<=min_count){
+        for(size_t i=0;i<count;i++){
+            __Private__Impl__::__apply<n>(func,arg_data,res_data,i);
+        }
+    }
+    else{
+        #pragma omp parallel for num_threads(thread_c)
+        for(size_t i=0;i<count;i++){
+            __Private__Impl__::__apply<n>(func,arg_data,res_data,i);
+        }
+    }
+    return res;
+}
 template<const auto func,
         typename T,
         size_t thread_c=8,
@@ -70,30 +99,14 @@ template<const auto func,
         typename ... Ts>
 __always_inline typename __Private__Impl__::Typer<std::is_same<__Private__Impl__::return_type_t<decltype(func)>, bool>{}>::Type
          transform(const T& t,const Ts&... args){
-    static_assert(std::is_same<__Private__Impl__::return_type_t<decltype(func)>, bool>{} ||
-                  std::is_same<__Private__Impl__::return_type_t<decltype(func)>, double>{}, 
-                    "Function must return double or bool");
-    constexpr size_t n = sizeof...(Ts)+1;
-    auto arg_data = std::make_tuple(t.data(),args.data()...);
-    auto shape = t.shape();
-    typename __Private__Impl__::Typer<std::is_same<__Private__Impl__::return_type_t<decltype(func)>, bool>{}>::Type res(shape);
-    size_t count=shape.count();
-    auto res_data=res.data();
-    if(count<=min_count){
-        for(size_t i=0;i<count;i++){
-            __Private__Impl__::__apply<n,func>(arg_data,res_data,i);
-        }
-    }
-    else{
-        #pragma omp parallel for num_threads(thread_c)
-        for(size_t i=0;i<count;i++){
-            __Private__Impl__::__apply<n,func>(arg_data,res_data,i);
-        }
-    }
-    return res;
+    return transform<T,thread_c,min_count>(func,t,args...);
 }
-template<double(*func)(Utils::Iterator<double>),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
-__always_inline Tensor reduce(const Tensor& t,size_t axis=0){
+
+
+
+template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor reduce(const std::function<double(Utils::Iterator<double>)>& func
+                                ,const Tensor& t,size_t axis=0){
     if(axis>=t.shape().dim()){
         throw std::invalid_argument("Invalid axis");
     }
@@ -141,18 +154,32 @@ __always_inline Tensor reduce(const Tensor& t,size_t axis=0){
     return res;
 }
 template<double(*func)(Utils::Iterator<double>),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
-__always_inline Tensor reduce(const Tensor& t,std::vector<size_t> axes){
+__always_inline Tensor reduce(const Tensor& t,size_t axis=0){
+    return reduce<thread_c,min_count>(func,t,axis);
+}
+
+
+template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor reduce(const std::function<double(Utils::Iterator<double>)>& func
+                                ,const Tensor& t,std::vector<size_t> axes){
     if(axes.size()==0){
         return Tensor({1},func(Utils::Iterator<double>(t.data(),t.count())));
     }
-    Tensor res=reduce<func,thread_c,min_count>(t,axes[0]);
+    Tensor res=reduce<thread_c,min_count>(func,t,axes[0]);
     for(size_t i=1;i<axes.size();i++){
-        res=reduce<func,thread_c,min_count>(res,axes[i]);
+        res=reduce<thread_c,min_count>(func,res,axes[i]);
     }
     return res;
 }
-template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
-__always_inline Tensor accumulate(const Tensor& t,size_t axis=0,double initial = 0){
+template<double(*func)(Utils::Iterator<double>),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor reduce(const Tensor& t,std::vector<size_t> axes){
+    return reduce<thread_c,min_count>(func,t,axes);
+}
+
+
+template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor accumulate(const std::function<double(double,double)>& func,
+                                  const Tensor& t,size_t axis=0,double initial = 0){
     if(axis>=t.shape().dim()){
         throw std::invalid_argument("Invalid axis");
     }
@@ -210,7 +237,13 @@ __always_inline Tensor accumulate(const Tensor& t,size_t axis=0,double initial =
     return res;
 }
 template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
-__always_inline Tensor outer(const Tensor& t1,const Tensor& t2){
+__always_inline Tensor accumulate(const Tensor& t,size_t axis=0,double initial = 0){
+    return accumulate<thread_c,min_count>(func,t,axis,initial);
+}
+
+
+template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor outer(const std::function<double(double,double)>& func,const Tensor& t1,const Tensor& t2){
     const auto t1_shape=t1.shape();
     const auto t2_shape=t2.shape();
     const auto t1_strides=t1.strides();
@@ -320,12 +353,18 @@ __always_inline Tensor outer(const Tensor& t1,const Tensor& t2){
     delete[] t2_idxs;
     return res;
 }
-template<const auto func,
+template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor outer(const Tensor& t1,const Tensor& t2){
+    return outer<thread_c,min_count>(func,t1,t2);
+}
+
+
+template<typename func_type,
         typename T,
         size_t thread_c=8,
         size_t min_count=__MIN__COUNT__FOR__THREAD__,
         typename ... Ts>
-__always_inline T at(const T& t1,const Shape& from,const Shape& to,const Ts&... t2){
+__always_inline T at(const func_type& func,const T& t1,const Shape& from,const Shape& to,const Ts&... t2){
     T res=t1;
     auto res_data=res.data();
     const size_t dim=from.dim();
@@ -370,7 +409,7 @@ __always_inline T at(const T& t1,const Shape& from,const Shape& to,const Ts&... 
                 res_off+=t1_strides[j]*(temp+from[j]);
                 t2_off+=t2_strides[j]*temp;
             }
-            __Private__Impl__::__apply_self<n,func>(tuple,res_data,t2_off,res_off);
+            __Private__Impl__::__apply_self<n>(func,tuple,res_data,t2_off,res_off);
         }
     }
     else{
@@ -384,14 +423,24 @@ __always_inline T at(const T& t1,const Shape& from,const Shape& to,const Ts&... 
                 res_off+=t1_strides[j]*(temp+from[j]);
                 t2_off+=t2_strides[j]*temp;
             }
-            __Private__Impl__::__apply_self<n,func>(tuple,res_data,t2_off,res_off);
+            __Private__Impl__::__apply_self<n>(func,tuple,res_data,t2_off,res_off);
         }
     }
     delete[] t2_idxs;
     return res;
 }
-template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
-__always_inline Tensor broadcast(const Tensor& t1,const Tensor& t2){
+template<const auto func,
+        typename T,
+        size_t thread_c=8,
+        size_t min_count=__MIN__COUNT__FOR__THREAD__,
+        typename ... Ts>
+__always_inline T at(const T& t1,const Shape& from,const Shape& to,const Ts&... t2){
+   return at<decltype(func),T,thread_c,min_count>(func,t1,from,to,t2...); 
+}
+
+
+template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor broadcast(const std::function<double(double,double)>& func,const Tensor& t1,const Tensor& t2){
     const auto t1_shape=t1.shape();
     const auto t2_shape=t2.shape();
     if(t1_shape.dim()!=t2_shape.dim()){
@@ -402,34 +451,75 @@ __always_inline Tensor broadcast(const Tensor& t1,const Tensor& t2){
     }
     else if(t2_shape.count()==1){
         double scalar=t2[0];
-        auto temp_f=func;
-        auto new_func=[scalar,temp_f](double a)->double{
+        auto new_func=[scalar,func](double a)->double{
             return func(a,scalar);
         };
-        exit(1);
-        // return transform<new_func,Tensor,thread_c,min_count>(t1);
+        return transform<Tensor,thread_c,min_count>(new_func,t1);
     }
     else if(t1_shape.count()==1){
         double scalar=t1[0];
-        auto temp_f=func;
-        auto new_func=[scalar,temp_f](double a)->double{
+        auto new_func=[scalar,func](double a)->double{
             return func(scalar,a);
         };
-        exit(1);
-        // return transform<new_func,Tensor,thread_c,min_count>(t2);
+        return transform<Tensor,thread_c,min_count>(new_func,t2);
     }
     for(size_t i=0;i<t1_shape.dim();i++){
         if(t1_shape[i]>t2_shape[i]){
-            return __Private__Impl__::___broadcast<func,thread_c,min_count>(t1,t2);
+            return __Private__Impl__::___broadcast<thread_c,min_count>(func,t1,t2);
         }
         else if(t1_shape[i]<t2_shape[i]){
-            return __Private__Impl__::___broadcast<func,thread_c,min_count>(t2,t1);
+            auto new_func=[func](double a,double b)->double{
+                return func(b,a);
+            };
+            return __Private__Impl__::___broadcast<thread_c,min_count>(new_func,t2,t1);
         }
     }
-    return transform<func,Tensor,thread_c,min_count>(t1,t2);
+    return transform<Tensor,thread_c,min_count>(func,t1,t2);
 }
+template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor broadcast(const Tensor& t1,const Tensor& t2){
+    return broadcast<thread_c,min_count>(func,t1,t2);
+}
+__always_inline Tensor norm(const Tensor& t,std::vector<size_t> axes){
+    auto func=[](Ouroboros::Utils::Iterator<double> a){
+                    double sum=0;
+                    for(auto x:a){
+                        sum+=x*x;
+                    }
+                    return std::sqrt(sum);
+                };
+    Tensor res=reduce<func>(t,axes);
+    return res;
+}  
+__always_inline Tensor norm2(const Tensor& t,std::vector<size_t> axes){
+    auto func=[](Ouroboros::Utils::Iterator<double> a){
+                    double sum=0;
+                    for(auto x:a){
+                        sum+=x*x;
+                    }
+                    return sum;
+                };
+    Tensor res=reduce<func>(t,axes);
+    return res;
+}  
+__always_inline Tensor norm(const Tensor& t,size_t axis){
+    return norm(t,std::vector<size_t>{axis});
+}
+__always_inline Tensor norm2(const Tensor& t,size_t axis){
+    return norm2(t,std::vector<size_t>{axis});
+}   
 __always_inline Tensor normalize(const Tensor& t){
     return t/t.norm();
+}
+__always_inline Tensor normalize(const Tensor& t,std::vector<size_t> axes){
+    auto norm_t=norm(t,axes);
+    auto func=[](double a,double norm){
+                    return a/norm;
+                };
+    return broadcast(func,t,norm_t);
+}
+__always_inline Tensor normalize(const Tensor& t,size_t axis){
+    return normalize(t,std::vector<size_t>{axis});
 }
 }
 #undef PERMUTE_OFFSET

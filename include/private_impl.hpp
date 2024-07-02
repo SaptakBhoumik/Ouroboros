@@ -34,22 +34,22 @@
 namespace Ouroboros{
 namespace __Private__Impl__{
 //Do not use this functions from here in your code
-template<auto func,typename tuple,typename T, std::size_t ... Is>
-__always_inline void __apply_impl(const tuple& t,T* res,size_t idx, std::index_sequence<Is...>){
+template<typename tuple,typename T,typename func_type, std::size_t ... Is>
+__always_inline void __apply_impl(func_type func,const tuple& t,T* res,size_t idx, std::index_sequence<Is...>){
     res[idx]=func(std::get<Is>(t)[idx]...);
 }
-template<std::size_t N,auto func, typename tuple,typename T,typename Indices = std::make_index_sequence<N>>
-__always_inline void __apply(const tuple& t,T* res,size_t idx){
-    __apply_impl<func>(t,res,idx,Indices{});
+template<std::size_t N, typename tuple,typename T,typename func_type,typename Indices = std::make_index_sequence<N>>
+__always_inline void __apply(func_type func,const tuple& t,T* res,size_t idx){
+    __apply_impl(func,t,res,idx,Indices{});
 }
-template<auto func,typename tuple,typename T, std::size_t ... Is>
-__always_inline void __apply_impl_self(const tuple& t,T* self,size_t idx1,size_t idx2, std::index_sequence<Is...>){
+template<typename tuple,typename T,typename func_type, std::size_t ... Is>
+__always_inline void __apply_impl_self(func_type func,const tuple& t,T* self,size_t idx1,size_t idx2, std::index_sequence<Is...>){
     auto temp=self[idx2];
     self[idx2]=func(temp,std::get<Is>(t)[idx1]...);
 }
-template<std::size_t N,auto func, typename tuple,typename T,typename Indices = std::make_index_sequence<N>>
-__always_inline void __apply_self(const tuple& t,T* self,size_t idx1,size_t idx2){
-    __apply_impl_self<func>(t,self,idx1,idx2,Indices{});
+template<std::size_t N, typename tuple,typename T,typename func_type,typename Indices = std::make_index_sequence<N>>
+__always_inline void __apply_self(func_type func,const tuple& t,T* self,size_t idx1,size_t idx2){
+    __apply_impl_self(func,t,self,idx1,idx2,Indices{});
 }
 //Credit:-https://stackoverflow.com/questions/27822277/finding-out-the-return-type-of-a-function-lambda-or-function
 
@@ -170,8 +170,8 @@ template<>
 struct Typer<1>{
     typedef BoolTensor Type;
 };
-template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
-__always_inline Tensor ___broadcast(const Tensor& t1,const Tensor& t2){
+template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor ___broadcast(const std::function<double(double,double)>& func,const Tensor& t1,const Tensor& t2){
     const Shape t1_shape=t1.shape();
     const Shape t2_shape=t2.shape();
     const Shape t1_strides=t1.strides();
