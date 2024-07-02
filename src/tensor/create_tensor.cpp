@@ -9,11 +9,9 @@ Tensor ones(const Shape& shape){
     return fill(shape,1.0);
 }
 Tensor rand(const Shape& shape,double start,double end){
-    #ifdef __OUROBOROS_CHECK__
     if(start>end){
         throw std::invalid_argument("Invalid range");
     }
-    #endif
     std::random_device __dev;
     std::mt19937 __rng(__dev());
     std::uniform_real_distribution<double> dist(start,end);

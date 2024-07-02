@@ -76,6 +76,14 @@ __always_inline typename __Private__Impl__::Typer<std::is_same<__Private__Impl__
     constexpr size_t n = sizeof...(Ts)+1;
     auto arg_data = std::make_tuple(t.data(),args.data()...);
     auto shape = t.shape();
+    if constexpr(n>1){
+        std::vector<bool> check = {args.shape()==shape...};
+        for(auto x:check){
+            if(!x){
+                throw std::invalid_argument("Shapes must be the same");
+            }
+        }
+    }
     typename __Private__Impl__::Typer<std::is_same<__Private__Impl__::return_type_t<func_type>, bool>{}>::Type res(shape);
     size_t count=shape.count();
     auto res_data=res.data();
@@ -372,12 +380,13 @@ __always_inline T at(const func_type& func,const T& t1,const Shape& from,const S
         throw std::invalid_argument("Shapes must have the same number of elements");
     }
     size_t* t2_shape_ptr=new size_t[dim];
+    const Shape t1_shape=t1.shape();
     for(size_t i=0;i<dim;i++){
-        if(from[i]>=to[i]){
+        if(from[i]>=to[i]||to[i]>t1_shape[i]){
             throw std::invalid_argument("Invalid shape");
         }
         t2_shape_ptr[i]=to[i]-from[i];
-    }
+    }    
 
     const Shape t2_shape(dim,t2_shape_ptr);
     const Shape t2_strides=getStride(t2_shape);
@@ -385,6 +394,16 @@ __always_inline T at(const func_type& func,const T& t1,const Shape& from,const S
     const size_t t2_count=t2_shape.count();
 
     delete[] t2_shape_ptr;
+
+    {
+        std::vector<bool> check = {t2.shape()==t2_shape...};
+        for(auto x:check){
+            if(!x){
+                throw std::invalid_argument("Invalid shape ");
+            }
+        }
+    }
+
     
     size_t* t2_idxs=new size_t[dim*t2_count];
     {
@@ -449,19 +468,19 @@ __always_inline Tensor broadcast(const std::function<double(double,double)>& fun
     if(t1_shape.count()==1&&t2_shape.count()==1){
         return Tensor({1},func(t1[0],t2[0]));
     }
-    else if(t2_shape.count()==1){
-        double scalar=t2[0];
-        auto new_func=[scalar,func](double a)->double{
-            return func(a,scalar);
-        };
-        return transform<Tensor,thread_c,min_count>(new_func,t1);
-    }
     else if(t1_shape.count()==1){
         double scalar=t1[0];
         auto new_func=[scalar,func](double a)->double{
             return func(scalar,a);
         };
         return transform<Tensor,thread_c,min_count>(new_func,t2);
+    }
+    else if(t2_shape.count()==1){
+        double scalar=t2[0];
+        auto new_func=[scalar,func](double a)->double{
+            return func(a,scalar);
+        };
+        return transform<Tensor,thread_c,min_count>(new_func,t1);
     }
     for(size_t i=0;i<t1_shape.dim();i++){
         if(t1_shape[i]>t2_shape[i]){
@@ -480,6 +499,65 @@ template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__
 __always_inline Tensor broadcast(const Tensor& t1,const Tensor& t2){
     return broadcast<thread_c,min_count>(func,t1,t2);
 }
+
+template<typename T,
+        size_t thread_c=8,
+        size_t min_count=__MIN__COUNT__FOR__THREAD__,
+        typename ... Ts>
+__always_inline T concat(size_t axis,const T& t1,const T& t2,const Ts&... t3){
+    const std::vector<T> tensors={t1,t2,t3...};
+    const Shape shape=t1.shape();
+    const size_t dim=shape.dim();
+    if(axis>=dim){
+        throw std::invalid_argument("Invalid axis");
+    }
+    if(dim==1){
+        size_t count=0;
+        for(const auto& t:tensors){
+            count+=t.count();
+        }
+        T res({count});
+        double* res_data=res.data();
+        size_t offset=0;
+        for(const auto& t:tensors){
+            const double* data=t.data();
+            const size_t t_count=t.count();
+            for(size_t i=0;i<t_count;i++){
+                res_data[offset+i]=data[i];
+            }
+            offset+=t_count;
+        }
+        return res;
+    }
+    Shape res_shape=shape;
+    size_t count=shape[axis];
+    for(size_t i=1;i<tensors.size();i++){
+        const T& t=tensors[i];
+        if(t.dim()!=dim){
+            throw std::invalid_argument("Shapes must be of same dimension");
+        }
+        const auto s=t.shape();
+        for(size_t i=0;i<dim;i++){
+            if(i==axis){
+                count+=s[i];
+            }
+            else if(s[i]!=shape[i]){
+                throw std::invalid_argument("Shapes must be the same");
+            }
+        }
+    }
+    res_shape.set(axis,count);
+    return __Private__Impl__::concat<T,thread_c,min_count>(axis,tensors,res_shape);
+}
+
+template<typename T,
+        size_t thread_c=8,
+        size_t min_count=__MIN__COUNT__FOR__THREAD__,
+        typename ... Ts>
+__always_inline T concat(const T& t1,const T& t2,const Ts&... t3){
+    return concat<T,thread_c,min_count>(0,t1,t2,t3...);
+}
+
 __always_inline Tensor norm(const Tensor& t,std::vector<size_t> axes){
     auto func=[](Ouroboros::Utils::Iterator<double> a){
                     double sum=0;

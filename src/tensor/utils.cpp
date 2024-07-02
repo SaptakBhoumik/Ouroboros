@@ -179,17 +179,55 @@ double Tensor::sum()const{
     }
     return res;
 }
+double Tensor::mean()const{
+    return sum()/m_shape.count();
+}
+double Tensor::max()const{
+    double res=m_data[0];
+    for(size_t i=1;i<m_shape.count();i++){
+        if(m_data[i]>res){
+            res=m_data[i];
+        }
+    }
+    return res;
+}
+double Tensor::min()const{
+    double res=m_data[0];
+    for(size_t i=1;i<m_shape.count();i++){
+        if(m_data[i]<res){
+            res=m_data[i];
+        }
+    }
+    return res;
+}
+std::pair<double,size_t> Tensor::min_index()const{
+    double res=m_data[0];
+    size_t idx=0;
+    for(size_t i=1;i<m_shape.count();i++){
+        if(m_data[i]<res){
+            res=m_data[i];
+            idx=i;
+        }
+    }
+    return std::make_pair(res,idx);
+
+}
+std::pair<double,size_t> Tensor::max_index()const{
+    double res=m_data[0];
+    size_t idx=0;
+    for(size_t i=1;i<m_shape.count();i++){
+        if(m_data[i]>res){
+            res=m_data[i];
+            idx=i;
+        }
+    }
+    return std::make_pair(res,idx);
+}
 double Tensor::prod()const{
     double res=1.0;
     for(size_t i=0;i<m_shape.count();i++){
         res*=m_data[i];
     }
     return res;
-}
-void Tensor::normalize(){
-    double n=norm();
-    for(size_t i=0;i<m_shape.count();i++){
-        m_data[i]/=n;
-    }
 }
 }

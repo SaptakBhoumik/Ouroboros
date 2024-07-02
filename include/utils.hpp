@@ -105,7 +105,7 @@ class Iterator{
         this->m_step=step;
     }
     Iterator(const T* data,size_t count,size_t step=1){
-        this->m_data=const_cast<T*>(data);
+        this->m_data=const_cast<T*>(data);//We never modify the data so it is safe to cast it
         this->m_count=count;
         this->m_step=step;
     }

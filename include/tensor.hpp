@@ -259,8 +259,12 @@ class Tensor{
     double norm()const;
     double norm2()const;
     double sum()const;
+    double mean()const;
+    double max()const;
+    double min()const;
+    std::pair<double,size_t> max_index()const;
+    std::pair<double,size_t> min_index()const;
     double prod()const;
-    void normalize();
 
     ~Tensor();
 };

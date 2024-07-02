@@ -151,4 +151,10 @@ int main(){
         t3=Ouroboros::reduce(acc,t,{0,1});
         std::cout<<t3<<std::endl;
     }
+    t1=Ouroboros::CreateTensor::linspace({2,2},1,4);
+    std::cout<<t1<<std::endl;
+    t2=Ouroboros::CreateTensor::linspace({1,2},1,2);
+    std::cout<<t2<<std::endl;
+    t3=Ouroboros::concat(0,t1,t2);
+    std::cout<<t3<<std::endl;
 }
