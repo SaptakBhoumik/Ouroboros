@@ -6,9 +6,7 @@
 #include <type_traits>
 #include "utils.hpp"
 #include "macros.hpp"
-#define __Ouroboros__ 
-#include "private_impl.hpp"
-#undef __Ouroboros__
+
 #define PERMUTE_OFFSET(A,B,C,D) \
 {\
     size_t j=0;\
@@ -61,7 +59,9 @@
         j++;\
     }\
 }
-
+#define __Ouroboros__ 
+#include "private_impl.hpp"//Has to be declared after PERMUTE_IDX and PERMUTE_OFFSET are defined
+#undef __Ouroboros__
 namespace Ouroboros{
 template<const auto func,
         typename T,
@@ -73,12 +73,24 @@ __always_inline typename __Private__Impl__::Typer<std::is_same<__Private__Impl__
     static_assert(std::is_same<__Private__Impl__::return_type_t<decltype(func)>, bool>{} ||
                   std::is_same<__Private__Impl__::return_type_t<decltype(func)>, double>{}, 
                     "Function must return double or bool");
-    if constexpr(std::is_same<__Private__Impl__::return_type_t<decltype(func)>, bool>{}){
-        return __Private__Impl__::bool_transform<func,T,thread_c,min_count>(t,args...);
+    constexpr size_t n = sizeof...(Ts)+1;
+    auto arg_data = std::make_tuple(t.data(),args.data()...);
+    auto shape = t.shape();
+    typename __Private__Impl__::Typer<std::is_same<__Private__Impl__::return_type_t<decltype(func)>, bool>{}>::Type res(shape);
+    size_t count=shape.count();
+    auto res_data=res.data();
+    if(count<=min_count){
+        for(size_t i=0;i<count;i++){
+            __Private__Impl__::__apply<n,func>(arg_data,res_data,i);
+        }
     }
-    else if constexpr(std::is_same<__Private__Impl__::return_type_t<decltype(func)>, double>{}){
-        return __Private__Impl__::double_transform<func,T,thread_c,min_count>(t,args...);
+    else{
+        #pragma omp parallel for num_threads(thread_c)
+        for(size_t i=0;i<count;i++){
+            __Private__Impl__::__apply<n,func>(arg_data,res_data,i);
+        }
     }
+    return res;
 }
 template<double(*func)(Utils::Iterator<double>),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor reduce(const Tensor& t,size_t axis=0){
@@ -88,7 +100,7 @@ __always_inline Tensor reduce(const Tensor& t,size_t axis=0){
     const Shape input_shape=t.shape();
     const Shape input_strides=t.strides();
     Shape output_shape=input_shape;
-    output_shape[axis]=1;
+    output_shape.set(axis,1);
     const double* data=t.data();
     if(input_shape.dim()==1){
         return Tensor({1},func(Utils::Iterator<double>(data,input_shape[0])));
@@ -126,6 +138,17 @@ __always_inline Tensor reduce(const Tensor& t,size_t axis=0){
         }
     }
     delete[] offsets;
+    return res;
+}
+template<double(*func)(Utils::Iterator<double>),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor reduce(const Tensor& t,std::vector<size_t> axes){
+    if(axes.size()==0){
+        return Tensor({1},func(Utils::Iterator<double>(t.data(),t.count())));
+    }
+    Tensor res=reduce<func,thread_c,min_count>(t,axes[0]);
+    for(size_t i=1;i<axes.size();i++){
+        res=reduce<func,thread_c,min_count>(res,axes[i]);
+    }
     return res;
 }
 template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
@@ -297,25 +320,33 @@ __always_inline Tensor outer(const Tensor& t1,const Tensor& t2){
     delete[] t2_idxs;
     return res;
 }
-template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
-__always_inline Tensor at(const Tensor& t1,const Tensor& t2,const Shape& from,const Shape& to){
-    const auto t1_shape=t1.shape();
-    const auto t2_shape=t2.shape();
-    const auto t1_strides=t1.strides();
-    const auto t2_strides=t2.strides();
-    const size_t t2_count=t2_shape.count();
+template<const auto func,
+        typename T,
+        size_t thread_c=8,
+        size_t min_count=__MIN__COUNT__FOR__THREAD__,
+        typename ... Ts>
+__always_inline T at(const T& t1,const Shape& from,const Shape& to,const Ts&... t2){
+    T res=t1;
+    auto res_data=res.data();
     const size_t dim=from.dim();
-    if(from.dim()!=to.dim() || from.dim()!=t2.shape().dim() || from.dim()!=t1.shape().dim()){
-        throw std::invalid_argument("Invalid shape");
+    if(from.dim()!=to.dim()){
+        throw std::invalid_argument("Shapes must have the same number of elements");
     }
+    size_t* t2_shape_ptr=new size_t[dim];
     for(size_t i=0;i<dim;i++){
-        if(to[i]>t1_shape[i] || to[i]<=from[i] || (to[i]-from[i])!=t2_shape[i]){
-            throw std::invalid_argument("Invalid index");
+        if(from[i]>=to[i]){
+            throw std::invalid_argument("Invalid shape");
         }
+        t2_shape_ptr[i]=to[i]-from[i];
     }
 
-    Tensor res=t1;
-    double* res_data=res.data();
+    const Shape t2_shape(dim,t2_shape_ptr);
+    const Shape t2_strides=getStride(t2_shape);
+    const Shape t1_strides=t1.strides();
+    const size_t t2_count=t2_shape.count();
+
+    delete[] t2_shape_ptr;
+    
     size_t* t2_idxs=new size_t[dim*t2_count];
     {
         std::vector<size_t> A;
@@ -326,9 +357,10 @@ __always_inline Tensor at(const Tensor& t1,const Tensor& t2,const Shape& from,co
         }
         PERMUTE_IDX(A,B,t2_idxs,dim);
     }
-    const double* t1_data=t1.data();
-    const double* t2_data=t2.data();
-    if(t2_count<=min_count){
+
+    constexpr size_t n=sizeof...(Ts);
+    auto tuple=std::make_tuple(t2.data()...);
+     if(t2_count<=min_count){
         for(size_t i=0;i<t2_count;i++){
             size_t res_off=0;
             size_t t2_off=0;
@@ -338,7 +370,7 @@ __always_inline Tensor at(const Tensor& t1,const Tensor& t2,const Shape& from,co
                 res_off+=t1_strides[j]*(temp+from[j]);
                 t2_off+=t2_strides[j]*temp;
             }
-            res_data[res_off]=func(t1_data[res_off],t2_data[t2_off]);
+            __Private__Impl__::__apply_self<n,func>(tuple,res_data,t2_off,res_off);
         }
     }
     else{
@@ -352,11 +384,49 @@ __always_inline Tensor at(const Tensor& t1,const Tensor& t2,const Shape& from,co
                 res_off+=t1_strides[j]*(temp+from[j]);
                 t2_off+=t2_strides[j]*temp;
             }
-            res_data[res_off]=func(t1_data[res_off],t2_data[t2_off]);
+            __Private__Impl__::__apply_self<n,func>(tuple,res_data,t2_off,res_off);
         }
     }
     delete[] t2_idxs;
     return res;
+}
+template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor broadcast(const Tensor& t1,const Tensor& t2){
+    const auto t1_shape=t1.shape();
+    const auto t2_shape=t2.shape();
+    if(t1_shape.dim()!=t2_shape.dim()){
+        throw std::invalid_argument("Shapes must have the same number of elements");
+    }
+    if(t1_shape.count()==1&&t2_shape.count()==1){
+        return Tensor({1},func(t1[0],t2[0]));
+    }
+    else if(t2_shape.count()==1){
+        double scalar=t2[0];
+        auto temp_f=func;
+        auto new_func=[scalar,temp_f](double a)->double{
+            return func(a,scalar);
+        };
+        exit(1);
+        // return transform<new_func,Tensor,thread_c,min_count>(t1);
+    }
+    else if(t1_shape.count()==1){
+        double scalar=t1[0];
+        auto temp_f=func;
+        auto new_func=[scalar,temp_f](double a)->double{
+            return func(scalar,a);
+        };
+        exit(1);
+        // return transform<new_func,Tensor,thread_c,min_count>(t2);
+    }
+    for(size_t i=0;i<t1_shape.dim();i++){
+        if(t1_shape[i]>t2_shape[i]){
+            return __Private__Impl__::___broadcast<func,thread_c,min_count>(t1,t2);
+        }
+        else if(t1_shape[i]<t2_shape[i]){
+            return __Private__Impl__::___broadcast<func,thread_c,min_count>(t2,t1);
+        }
+    }
+    return transform<func,Tensor,thread_c,min_count>(t1,t2);
 }
 __always_inline Tensor normalize(const Tensor& t){
     return t/t.norm();

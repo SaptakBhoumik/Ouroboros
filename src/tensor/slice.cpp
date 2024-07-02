@@ -9,8 +9,8 @@ void BoolTensor::sliceRecursive(BoolTensor& output, const Shape& start, const Sh
         for (size_t i = start[dimension], out_idx = 0; 
                     i < start[dimension] + step[dimension] * output.m_shape[dimension]; i += step[dimension],
                      ++out_idx) {
-            indices[dimension] = i;
-            output_indices[dimension] = out_idx;
+            indices.set(dimension, i);
+            output_indices.set(dimension, out_idx);
             sliceRecursive(output, start, step, indices, output_indices, dimension + 1);
         }
     }
@@ -24,8 +24,8 @@ void Tensor::sliceRecursive(Tensor& output, const Shape& start, const Shape& ste
         for (size_t i = start[dimension], out_idx = 0; 
                     i < start[dimension] + step[dimension] * output.m_shape[dimension]; i += step[dimension],
                      ++out_idx) {
-            indices[dimension] = i;
-            output_indices[dimension] = out_idx;
+            indices.set(dimension, i);
+            output_indices.set(dimension, out_idx);
             sliceRecursive(output, start, step, indices, output_indices, dimension + 1);
         }
     }

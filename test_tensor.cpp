@@ -126,9 +126,25 @@ int main(){
     std::cout<<t3<<std::endl;
     t1=Ouroboros::CreateTensor::linspace({4,1},1,4);
     std::cout<<t1<<std::endl;
-    std::cout<<t1.strides()<<std::endl;
     t2=Ouroboros::CreateTensor::linspace({2,1},1,2);
     std::cout<<t2<<std::endl;
-    t3=Ouroboros::at<dot>(t1,t2,{0,0},{2,1});
+    t3=Ouroboros::at<dot>(t1,{0,0},{2,1},t2);
     std::cout<<t3<<std::endl;
+    auto test_f=[](double a)->double{return a*a;};
+    t3=Ouroboros::at<test_f>(t1,{1,0},{3,1});
+    std::cout<<t3<<std::endl;
+
+    t1=Ouroboros::CreateTensor::linspace({2,2},1,4);
+    std::cout<<t1<<std::endl;
+    t2=Ouroboros::CreateTensor::linspace({2,1},1,2);
+    std::cout<<t2<<std::endl;
+    auto func2=[](double a,double b)->double{return a+b;};
+    t3=Ouroboros::broadcast<func2>(t1,t2);
+    std::cout<<t3<<std::endl;
+    {
+        // size_t g=0;
+        // auto func3=[g](double a,double b)->double{return a+b+g;};
+        // auto t=Ouroboros::CreateTensor::linspace({2,2},1,4);
+        // auto t3=Ouroboros::transform<func3>(t,t);
+    }
 }

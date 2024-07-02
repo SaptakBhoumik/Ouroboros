@@ -106,12 +106,6 @@ Shape& Shape::operator=(std::initializer_list<size_t> shape){
     }
     return *this;
 }
-size_t Shape::get(size_t index) const{
-    if(index>=m_dim){
-        throw std::out_of_range("Index out of range");
-    }
-    return m_shape[index];
-}
 const size_t* Shape::begin() const{
     return m_shape;
 }

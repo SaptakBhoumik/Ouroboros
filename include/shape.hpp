@@ -21,16 +21,19 @@ public:
     
     Shape& operator=(std::initializer_list<size_t> shape);
 
-    size_t get(size_t index) const;//This one checks for errors
-    __always_inline size_t& operator[](size_t index){
+    __always_inline void set(size_t index,size_t val){
         #ifdef __OUROBOROS_CHECK__
         if(index>=m_dim){
             throw std::invalid_argument("Invalid index");
         }
         #endif
-        return m_shape[index];
-    }
-    __always_inline const size_t& operator[](size_t index) const{
+        m_shape[index]=val;
+        m_count=1;//Cuz the prev value may be 0
+        for(size_t i=0;i<m_dim;i++){
+            m_count*=m_shape[i];
+        }
+    }   
+    __always_inline const size_t operator[](size_t index) const{
         #ifdef __OUROBOROS_CHECK__
         if(index>=m_dim){
             throw std::invalid_argument("Invalid index");

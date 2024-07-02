@@ -24,17 +24,17 @@ BoolTensor::BoolTensor(const Shape& shape,bool* data):m_shape(shape){
     m_data=data;
     m_strides = getStride(m_shape);
 }
-BoolTensor::BoolTensor(const BoolTensor& BoolTensor):m_shape(BoolTensor.m_shape){
+BoolTensor::BoolTensor(const BoolTensor& tensor):m_shape(tensor.m_shape){
     m_data=new bool[m_shape.count()];
     for(size_t i=0;i<m_shape.count();i++){
-        m_data[i]=BoolTensor.m_data[i];
+        m_data[i]=tensor.m_data[i];
     }
-    m_strides = getStride(m_shape);
+    m_strides = tensor.m_strides;
 }
-BoolTensor::BoolTensor(BoolTensor&& BoolTensor):m_shape(BoolTensor.m_shape){
-    m_data=BoolTensor.m_data;
-    m_strides = BoolTensor.m_strides;
-    BoolTensor.m_data=nullptr;
+BoolTensor::BoolTensor(BoolTensor&& tensor):m_shape(tensor.m_shape){
+    m_data=tensor.m_data;
+    m_strides = tensor.m_strides;
+    tensor.m_data=nullptr;
 }
 
 BoolTensor& BoolTensor::operator=(const BoolTensor& tensor){
@@ -47,10 +47,12 @@ BoolTensor& BoolTensor::operator=(const BoolTensor& tensor){
             m_data=new bool[tensor.m_shape.count()];
         }
         m_shape=tensor.m_shape;
+        m_strides = tensor.m_strides;
     }
     else{
         m_shape=tensor.m_shape;
         m_data=new bool[m_shape.count()];
+        m_strides = tensor.m_strides;
     }
     for(size_t i=0;i<m_shape.count();i++){
         m_data[i]=tensor.m_data[i];
@@ -65,6 +67,7 @@ BoolTensor& BoolTensor::operator=(BoolTensor&& tensor){
         delete[] m_data;
     }
     m_shape=tensor.m_shape;
+    m_strides = tensor.m_strides;
     m_data=tensor.m_data;
     tensor.m_data=nullptr;
     return *this;
