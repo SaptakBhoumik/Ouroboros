@@ -29,7 +29,7 @@ Tensor::Tensor(const Tensor& tensor):m_shape(tensor.m_shape){
     for(size_t i=0;i<m_shape.count();i++){
         m_data[i]=tensor.m_data[i];
     }
-    m_strides = getStride(m_shape);
+    m_strides = tensor.m_strides;
 }
 Tensor::Tensor(Tensor&& tensor):m_shape(tensor.m_shape){
     m_data=tensor.m_data;
@@ -48,9 +48,11 @@ Tensor& Tensor::operator=(const Tensor& tensor){
             m_data=new double[tensor.m_shape.count()];
         }
         m_shape=tensor.m_shape;
+        m_strides = tensor.m_strides;
     }
     else{
         m_shape=tensor.m_shape;
+        m_strides = tensor.m_strides;
         m_data=new double[m_shape.count()];
     }
     for(size_t i=0;i<m_shape.count();i++){
@@ -66,6 +68,7 @@ Tensor& Tensor::operator=(Tensor&& tensor){
         delete[] m_data;
     }
     m_shape=tensor.m_shape;
+    m_strides = tensor.m_strides;
     m_data=tensor.m_data;
     tensor.m_data=nullptr;
     return *this;

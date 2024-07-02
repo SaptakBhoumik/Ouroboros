@@ -85,8 +85,8 @@ __always_inline Tensor reduce(const Tensor& t,size_t axis=0){
     if(axis>=t.shape().dim()){
         throw std::invalid_argument("Invalid axis");
     }
-    Shape input_shape=t.shape();
-    Shape input_strides=t.strides();
+    const Shape input_shape=t.shape();
+    const Shape input_strides=t.strides();
     Shape output_shape=input_shape;
     output_shape[axis]=1;
     const double* data=t.data();
@@ -133,8 +133,8 @@ __always_inline Tensor accumulate(const Tensor& t,size_t axis=0,double initial =
     if(axis>=t.shape().dim()){
         throw std::invalid_argument("Invalid axis");
     }
-    Shape shape=t.shape();
-    Shape strides=t.strides();
+    const Shape shape=t.shape();
+    const Shape strides=t.strides();
     const double* data=t.data();
     if(shape.dim()==1){
         Tensor res(shape);
@@ -188,14 +188,14 @@ __always_inline Tensor accumulate(const Tensor& t,size_t axis=0,double initial =
 }
 template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor outer(const Tensor& t1,const Tensor& t2){
-    auto t1_shape=t1.shape();
-    auto t2_shape=t2.shape();
-    auto t1_strides=t1.strides();
-    auto t2_strides=t2.strides();
-    size_t t1_count=t1_shape.count();
-    size_t t2_count=t2_shape.count();
-    size_t t1_dim=t1_shape.dim();
-    size_t t2_dim=t2_shape.dim();
+    const auto t1_shape=t1.shape();
+    const auto t2_shape=t2.shape();
+    const auto t1_strides=t1.strides();
+    const auto t2_strides=t2.strides();
+    const size_t t1_count=t1_shape.count();
+    const size_t t2_count=t2_shape.count();
+    const size_t t1_dim=t1_shape.dim();
+    const size_t t2_dim=t2_shape.dim();
 
     size_t* res_shape_ptr=new size_t[t1_dim+t2_dim];
     for(size_t i=0;i<t1_dim;i++){
@@ -299,13 +299,12 @@ __always_inline Tensor outer(const Tensor& t1,const Tensor& t2){
 }
 template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor at(const Tensor& t1,const Tensor& t2,const Shape& from,const Shape& to){
-    auto t1_shape=t1.shape();
-    auto t2_shape=t2.shape();
-    auto t1_strides=t1.strides();
-    auto t2_strides=t2.strides();
-    size_t t1_count=t1_shape.count();
-    size_t t2_count=t2_shape.count();
-    size_t dim=from.dim();
+    const auto t1_shape=t1.shape();
+    const auto t2_shape=t2.shape();
+    const auto t1_strides=t1.strides();
+    const auto t2_strides=t2.strides();
+    const size_t t2_count=t2_shape.count();
+    const size_t dim=from.dim();
     if(from.dim()!=to.dim() || from.dim()!=t2.shape().dim() || from.dim()!=t1.shape().dim()){
         throw std::invalid_argument("Invalid shape");
     }
@@ -338,9 +337,7 @@ __always_inline Tensor at(const Tensor& t1,const Tensor& t2,const Shape& from,co
                 size_t temp=t2_idxs[i*dim+j];
                 res_off+=t1_strides[j]*(temp+from[j]);
                 t2_off+=t2_strides[j]*temp;
-                std::cout<<temp<<" "<<res_off<<" "<<t2_off<<" "<<from[j]<<" "<<t1_strides[j];
             }
-            std::cout<<std::endl;
             res_data[res_off]=func(t1_data[res_off],t2_data[t2_off]);
         }
     }
