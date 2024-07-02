@@ -36,7 +36,7 @@
     }\
 }
 
-#define PERMUTE_IDX(A,B,C,D,count) \
+#define PERMUTE_IDX(A,B,D,count) \
 {\
     /*D is a matrix of dim(count,B.size())*/\
     size_t j=0;\
@@ -213,27 +213,21 @@ __always_inline Tensor outer(const Tensor& t1,const Tensor& t2){
     {
         std::vector<size_t> A;
         std::vector<size_t> B(t1_dim, 0);
-        std::vector<size_t> C;
         A.reserve(t1_dim);
-        C.reserve(t1_dim);
-        for(size_t i=0;i<t1_shape.dim();i++){
+        for(size_t i=0;i<t1_dim;i++){
             A.emplace_back(t1_shape[i]);
-            C.emplace_back(t1_strides[i]);
         }
-        PERMUTE_IDX(A,B,C,t1_idxs,t1_dim);
+        PERMUTE_IDX(A,B,t1_idxs,t1_dim);
     }
     size_t* t2_idxs=new size_t[t2_dim*t2_count];
     {
         std::vector<size_t> A;
         std::vector<size_t> B(t2_dim, 0);
-        std::vector<size_t> C;
         A.reserve(t2_dim);
-        C.reserve(t2_dim);
         for(size_t i=0;i<t2_dim;i++){
             A.emplace_back(t2_shape[i]);
-            C.emplace_back(t2_strides[i]);
         }
-        PERMUTE_IDX(A,B,C,t2_idxs,t2_dim);
+        PERMUTE_IDX(A,B,t2_idxs,t2_dim);
     }
     
     const double* t1_data=t1.data();
@@ -300,6 +294,70 @@ __always_inline Tensor outer(const Tensor& t1,const Tensor& t2){
         }
     }
     delete[] t1_idxs;
+    delete[] t2_idxs;
+    return res;
+}
+template<double(*func)(double,double),size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline Tensor at(const Tensor& t1,const Tensor& t2,const Shape& from,const Shape& to){
+    auto t1_shape=t1.shape();
+    auto t2_shape=t2.shape();
+    auto t1_strides=t1.strides();
+    auto t2_strides=t2.strides();
+    size_t t1_count=t1_shape.count();
+    size_t t2_count=t2_shape.count();
+    size_t dim=from.dim();
+    if(from.dim()!=to.dim() || from.dim()!=t2.shape().dim() || from.dim()!=t1.shape().dim()){
+        throw std::invalid_argument("Invalid shape");
+    }
+    for(size_t i=0;i<dim;i++){
+        if(to[i]>t1_shape[i] || to[i]<=from[i] || (to[i]-from[i])!=t2_shape[i]){
+            throw std::invalid_argument("Invalid index");
+        }
+    }
+
+    Tensor res=t1;
+    double* res_data=res.data();
+    size_t* t2_idxs=new size_t[dim*t2_count];
+    {
+        std::vector<size_t> A;
+        std::vector<size_t> B(dim, 0);
+        A.reserve(dim);
+        for(size_t i=0;i<dim;i++){
+            A.emplace_back(t2_shape[i]);
+        }
+        PERMUTE_IDX(A,B,t2_idxs,dim);
+    }
+    const double* t1_data=t1.data();
+    const double* t2_data=t2.data();
+    if(t2_count<=min_count){
+        for(size_t i=0;i<t2_count;i++){
+            size_t res_off=0;
+            size_t t2_off=0;
+            #pragma omp simd reduction(+:res_off,t2_off)
+            for(size_t j=0;j<dim;j++){
+                size_t temp=t2_idxs[i*dim+j];
+                res_off+=t1_strides[j]*(temp+from[j]);
+                t2_off+=t2_strides[j]*temp;
+                std::cout<<temp<<" "<<res_off<<" "<<t2_off<<" "<<from[j]<<" "<<t1_strides[j];
+            }
+            std::cout<<std::endl;
+            res_data[res_off]=func(t1_data[res_off],t2_data[t2_off]);
+        }
+    }
+    else{
+        #pragma omp parallel for num_threads(thread_c)
+        for(size_t i=0;i<t2_count;i++){
+            size_t res_off=0;
+            size_t t2_off=0;
+            #pragma omp simd reduction(+:res_off,t2_off)
+            for(size_t j=0;j<dim;j++){
+                size_t temp=t2_idxs[i*dim+j];
+                res_off+=t1_strides[j]*(temp+from[j]);
+                t2_off+=t2_strides[j]*temp;
+            }
+            res_data[res_off]=func(t1_data[res_off],t2_data[t2_off]);
+        }
+    }
     delete[] t2_idxs;
     return res;
 }
