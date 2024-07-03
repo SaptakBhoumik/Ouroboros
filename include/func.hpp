@@ -473,10 +473,10 @@ __always_inline T concat(size_t axis,const T& t1,const T& t2,const Ts&... t3){
             count+=t.count();
         }
         T res({count});
-        double* res_data=res.data();
+        auto res_data=res.data();
         size_t offset=0;
         for(const auto& t:tensors){
-            const double* data=t.data();
+            const auto data=t.data();
             const size_t t_count=t.count();
             for(size_t i=0;i<t_count;i++){
                 res_data[offset+i]=data[i];

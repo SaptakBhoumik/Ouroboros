@@ -40,17 +40,22 @@ int main(){
 }
 ```
 
+More examples can be found [HERE](https://github.com/SaptakBhoumik/Ouroboros/tree/master/example) 
+
 ## Documentation
 
 You can find the documentation and installation guide 
 [HERE](https://github.com/SaptakBhoumik/Ouroboros/wiki)
 
-## Future goals
+## Future TODOs
 
 - Support block wise reduction
 - Support GPU
 - Improve threading(Current implimentation is not up to the mark) 
 - Improve template
+- Create a logo
+- Reduce the amount of heap allocation
+- Improve it based on the feedback I recieve
 
 ## Have questions?
 
