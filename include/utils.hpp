@@ -1,4 +1,5 @@
 #pragma once
+#include "macros.hpp"
 #include <fstream>
 #include <cstdint>
 #include <memory>

@@ -4,14 +4,16 @@
 #include <random>
 namespace Ouroboros{
 Shape getStride(const Shape& shape){
-    size_t* strides_data=new size_t[shape.dim()];
+    if(shape.dim()==1){
+        return {1};
+    }
+    size_t strides_data[shape.dim()];
     size_t stride = 1;
     for (int i = shape.dim() - 1; i >= 0; --i) {
         strides_data[i] = stride;
         stride *= shape[i];
     }
     auto strides=Shape(shape.dim(), strides_data);
-    delete[] strides_data;
     return strides;
 }
 void Tensor::fill(double value){

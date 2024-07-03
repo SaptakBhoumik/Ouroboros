@@ -2,7 +2,6 @@
 #include <limits>
 #include <cmath>
 #include "op.hpp"
-#include "macros.hpp"
 //NOTE:-We use abs for checking equality of floating point numbers because of floating point errors
 //Since it is a slow operation so we use threads only for equality operations to speed up the process
 namespace Ouroboros{

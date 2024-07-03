@@ -82,7 +82,8 @@ void Tensor::reshape(const Shape& shape){
     m_strides = getStride(m_shape);
 }
 void Tensor::flatten(){
-    m_shape={m_shape.count()};
+    size_t c=m_shape.count();
+    m_shape={c};
     m_strides = {1};
 }
 double* Tensor::data(){
@@ -140,7 +141,7 @@ void printTensorRecursively(std::ostream& os,const Tensor& tensor,
 void printTensorAsArray(std::ostream& os , const Tensor& tensor) {
     auto shape=tensor.shape();
     
-    auto strides = getStride(shape);
+    auto strides = tensor.strides();
     printTensorRecursively(os,tensor, strides, 0, 0);
     os << std::endl;
 }

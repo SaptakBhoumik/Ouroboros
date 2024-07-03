@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstddef>
+#include "macros.hpp"
 namespace Ouroboros{
 namespace CPU{
 double* neg_ptr(const double* a,size_t size);//-a

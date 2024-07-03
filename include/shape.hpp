@@ -1,5 +1,6 @@
 
 #pragma once
+#include "macros.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <initializer_list>
@@ -18,7 +19,6 @@ public:
 
     Shape& operator=(const Shape& shape);
     Shape& operator=(Shape&& shape);
-    
     Shape& operator=(std::initializer_list<size_t> shape);
 
     __always_inline void set(size_t index,size_t val){

@@ -1,4 +1,5 @@
 #include "tensor.hpp"
+#include "op.hpp"
 #include "../cpu/op.hpp"
 #include <cblas.h>
 namespace Ouroboros{
@@ -164,6 +165,97 @@ Tensor matvecmul(const Tensor& a,const Tensor& b){
     cblas_dgemv(CblasRowMajor, CblasNoTrans, a_shape[0], a_shape[1], 1.0, 
                 a.data(), a_shape[1], b.data(), 1, 0.0, data, 1);
     return Tensor({a_shape[0]},data);
+}
+
+
+double cofactor(const Tensor& a,size_t row,size_t col){
+    return minor(a,row,col)*((row+col)%2==0?1:-1);
+}
+double minor(const Tensor& a,size_t row,size_t col){
+    auto shape=a.shape();
+    #ifdef __OUROBOROS_CHECK__
+    if(shape.dim()!=2){
+        throw std::invalid_argument("Invalid shape. Expected a square matrix");
+    }
+    else if(shape[0]<=1||shape[1]<=1){
+        throw std::invalid_argument("Invalid shape.Should be atleast 2x2");
+    }
+    else if(shape[0]!=shape[1]){
+        throw std::invalid_argument("Invalid shape. Expected a square matrix");
+    }
+    else if(row>=shape[0]||col>=shape[1]){
+        throw std::invalid_argument("Invalid row and column index");
+    }
+    #endif
+    size_t row_count=shape[0];
+    Tensor m({row_count-1,row_count-1});
+    double* data=m.data();
+    const double* a_data=a.data();
+    for(size_t i=0;i<row;i++){
+        for(size_t j=0;j<col;j++){
+            data[i*(row_count-1)+j]=a_data[i*row_count+j];
+        }
+        for(size_t j=col+1;j<row_count;j++){
+            data[i*(row_count-1)+j-1]=a_data[i*row_count+j];
+        }
+    }
+    for(size_t i=row+1;i<row_count;i++){
+        for(size_t j=0;j<col;j++){
+            data[(i-1)*(row_count-1)+j]=a_data[i*row_count+j];
+        }
+        for(size_t j=col+1;j<row_count;j++){
+            data[(i-1)*(row_count-1)+j-1]=a_data[i*row_count+j];
+        }
+    }
+    return determinant(m);
+}
+double determinant(const Tensor& a){
+    auto shape=a.shape();
+    #ifdef __OUROBOROS_CHECK__
+    if(shape.dim()!=2){
+        throw std::invalid_argument("Invalid shape. Expected a square matrix");
+    }
+    else if(shape[0]!=shape[1]){
+        throw std::invalid_argument("Invalid shape. Expected a square matrix");
+    }
+    #endif
+    size_t row_count=shape[0];
+    if(row_count==1){
+        return a[0];
+    }
+    else if(row_count==2){
+        return a[0]*a[3]-a[1]*a[2];
+    }
+    else if(row_count==3){
+        return a[0]*(a[4]*a[8]-a[5]*a[7])-a[1]*(a[3]*a[8]-a[5]*a[6])+a[2]*(a[3]*a[7]-a[4]*a[6]);
+    }
+    else{
+        double det=0;
+        for(size_t i=0;i<row_count;i++){
+            det+=a[i]*cofactor(a,0,i);
+        }
+        return det;
+    }
+}
+Tensor adjoint(const Tensor& a){
+    auto shape=a.shape();
+    #ifdef __OUROBOROS_CHECK__
+    if(a.shape().dim()!=2){
+        throw std::invalid_argument("Invalid shape. Expected a square matrix");
+    }
+    else if(shape[0]!=shape[1]){
+        throw std::invalid_argument("Invalid shape. Expected a square matrix");
+    }
+    #endif
+    size_t row_count=shape[0];
+    Tensor adj({row_count,row_count});
+    double* data=adj.data();
+    for(size_t i=0;i<row_count;i++){
+        for(size_t j=0;j<row_count;j++){
+            data[j*row_count+i]=cofactor(a,i,j);
+        }
+    }
+    return adj;
 }
 
 BoolTensor operator==(const Tensor& a,const Tensor& b){

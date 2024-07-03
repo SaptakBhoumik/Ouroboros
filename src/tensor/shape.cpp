@@ -31,6 +31,7 @@ Shape::Shape(std::initializer_list<size_t> shape){
         throw std::invalid_argument("Shape cannot be empty");
     }
     m_shape=new size_t[m_dim];
+    m_count=1;
     size_t* ptr=m_shape;
     for(auto it=shape.begin();it!=shape.end();it++){
         *ptr=*it;
@@ -98,6 +99,7 @@ Shape& Shape::operator=(std::initializer_list<size_t> shape){
         throw std::invalid_argument("Shape cannot be empty");
     }
     m_shape=new size_t[m_dim];
+    m_count=1;
     size_t* ptr=m_shape;
     for(auto it=shape.begin();it!=shape.end();it++){
         *ptr=*it;

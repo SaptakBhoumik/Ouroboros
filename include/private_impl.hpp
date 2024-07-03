@@ -1,6 +1,58 @@
 #ifndef __Ouroboros__
 #error "This file should not be included directly"
 #endif
+#define PERMUTE_OFFSET(A,B,C,D) \
+{\
+    size_t j=0;\
+    while (true) {\
+        size_t offset=0;\
+        _Pragma("omp simd reduction(+:offset)")\
+        for (size_t i = 0; i < B.size(); ++i) {\
+            offset+=B[i]*C[i];\
+        }\
+        D[j++]=offset;\
+        /*Find the rightmost index that can be incremented*/\
+        int64_t k = (int64_t)A.size() - 1;\
+        while (k >= 0 && B[k] == A[k] - 1){\
+            k--;\
+        }\
+        /*If no such index exists, we are done*/\
+        if (k < 0) {\
+            break;\
+        }\
+        /*Increment the current index and reset all subsequent indices*/\
+        B[k]++;\
+        for (size_t i = k + 1; i < A.size(); ++i) {\
+            B[i] = 0;\
+        }\
+    }\
+}
+
+#define PERMUTE_IDX(A,B,D,count) \
+{\
+    /*D is a matrix of dim(count,B.size())*/\
+    size_t j=0;\
+    while (true) {\
+        for (size_t i = 0; i < B.size(); ++i) {\
+            D[j*count+i]=B[i];\
+        }\
+        /*Find the rightmost index that can be incremented*/\
+        int64_t k = (int64_t)A.size() - 1;\
+        while (k >= 0 && B[k] == A[k] - 1){\
+            k--;\
+        }\
+        /*If no such index exists, we are done*/\
+        if (k < 0) {\
+            break;\
+        }\
+        /*Increment the current index and reset all subsequent indices*/\
+        B[k]++;\
+        for (size_t i = k + 1; i < A.size(); ++i) {\
+            B[i] = 0;\
+        }\
+        j++;\
+    }\
+}
 #define PERMUTE_2OFFSET(A,B,C1,C2,D1,D2) \
 {\
     size_t j=0;\
@@ -276,7 +328,7 @@ __always_inline T concat(size_t axis,const std::vector<T>& tensors,const Shape& 
         PERMUTE_IDX(A, B,perm_idxs,perm_count);
     }
     
-    T res(res_shape,0.0);//TODO:remove the 0.0
+    T res(res_shape);//TODO:remove the 0.0
     const Shape res_strides=res.strides();
     const size_t res_stride_at_axis=res_strides[axis];
     auto res_data=res.data();
@@ -285,24 +337,44 @@ __always_inline T concat(size_t axis,const std::vector<T>& tensors,const Shape& 
         size_t temp=cumm_shape_at_axis.back()+tensors[i].shape()[axis];
         cumm_shape_at_axis.push_back(temp);
     }
-    for(size_t i=0;i<tensors.size();i++){
-        const auto data=tensors[i].data();
-        const Shape strides=tensors[i].strides();
-        const size_t shape_at_axis=tensors[i].shape()[axis];
-        const size_t stride_at_axis=strides[axis];
-        const size_t idx=cumm_shape_at_axis[i];
-        for(size_t j=0;j<perm_count;j++){
-            size_t idx1=0;//for data
-            size_t idx2=0;//for res
-            for(size_t k=0;k<dim;k++){
-                idx1+=perm_idxs[j*dim+k]*strides[k];
-                idx2+=perm_idxs[j*dim+k]*res_strides[k];
+    if(perm_count<=min_count){
+        for(size_t i=0;i<tensors.size();i++){
+            const auto data=tensors[i].data();
+            const Shape strides=tensors[i].strides();
+            const size_t shape_at_axis=tensors[i].shape()[axis];
+            const size_t stride_at_axis=strides[axis];
+            const size_t idx=cumm_shape_at_axis[i];
+            for(size_t j=0;j<perm_count;j++){
+                size_t idx1=0;//for data
+                size_t idx2=0;//for res
+                for(size_t k=0;k<dim;k++){
+                    idx1+=perm_idxs[j*dim+k]*strides[k];
+                    idx2+=perm_idxs[j*dim+k]*res_strides[k];
+                }
+                for(size_t k=0;k<shape_at_axis;k++){
+                    res_data[idx2+res_stride_at_axis*(idx+k)]=data[idx1+stride_at_axis*k];
+                }
             }
-            for(size_t k=0;k<shape_at_axis;k++){
-                std::cout<<idx2<<" ";
-                res_data[idx2]=data[idx1];
-                idx1+=stride_at_axis*k;
-                idx2+=res_stride_at_axis*(idx+k);
+        }
+    }
+    else{
+        #pragma omp parallel for num_threads(thread_c)//Copying the tensor and is not time consuming so we thread this part
+        for(size_t i=0;i<tensors.size();i++){
+            const auto data=tensors[i].data();
+            const Shape strides=tensors[i].strides();
+            const size_t shape_at_axis=tensors[i].shape()[axis];
+            const size_t stride_at_axis=strides[axis];
+            const size_t idx=cumm_shape_at_axis[i];
+            for(size_t j=0;j<perm_count;j++){
+                size_t idx1=0;//for data
+                size_t idx2=0;//for res
+                for(size_t k=0;k<dim;k++){
+                    idx1+=perm_idxs[j*dim+k]*strides[k];
+                    idx2+=perm_idxs[j*dim+k]*res_strides[k];
+                }
+                for(size_t k=0;k<shape_at_axis;k++){
+                    res_data[idx2+res_stride_at_axis*(idx+k)]=data[idx1+stride_at_axis*k];
+                }
             }
         }
     }

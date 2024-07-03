@@ -1,4 +1,5 @@
 #pragma once
+#include "macros.hpp"
 #include "shape.hpp"
 #include <memory>
 #include <functional>
@@ -23,6 +24,7 @@ class BoolTensor{
     BoolTensor& operator=(BoolTensor&& tensor);
 
     void reshape(const Shape& shape);
+    void flatten();
 
     __always_inline bool& operator[](size_t index){
         #ifdef __OUROBOROS_CHECK__
@@ -109,6 +111,7 @@ class BoolTensor{
 
     bool* data();
     const bool* data() const;
+
     Shape shape() const;
     Shape strides() const;
     size_t count() const;
@@ -231,12 +234,11 @@ class Tensor{
         }
 
         // Calculate the shape of the sliced tensor
-        size_t* data=new size_t[m_shape.dim()];
+        size_t data[m_shape.dim()];
         for (size_t i = 0; i < m_shape.dim(); ++i) {
             data[i] = (end[i] - start[i] + step[i] - 1) / step[i];
         }
         Shape output_shape(m_shape.dim(),data);
-
         Tensor output(output_shape);
 
         size_t i=0;
@@ -259,12 +261,12 @@ class Tensor{
     double norm()const;
     double norm2()const;
     double sum()const;
+    double prod()const;
     double mean()const;
     double max()const;
     double min()const;
     std::pair<double,size_t> max_index()const;
     std::pair<double,size_t> min_index()const;
-    double prod()const;
 
     ~Tensor();
 };
@@ -280,7 +282,7 @@ Tensor linspace(const Shape& shape,double start,double end);
 //base^start,base^(start+step),base^(start+2*step),...,base^end
 //step=(end-start)/(count-1)
 Tensor logspace(const Shape& shape,double start,double end,double base=10.0);	
-Tensor scalar_matrix(size_t col_count,double value);
+Tensor scalar_matrix(size_t col_count,double value=1.0);
 Tensor diagonal_matrix(std::vector<double> diag);
 //If condition is true then x else y
 Tensor where(const BoolTensor& condition,const Tensor& x,const Tensor& y);

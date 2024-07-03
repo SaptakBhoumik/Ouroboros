@@ -79,6 +79,10 @@ void BoolTensor::reshape(const Shape& shape){
     m_shape=shape;
     m_strides = getStride(m_shape);
 }
+void BoolTensor::flatten(){
+    m_shape={m_shape.count()};
+    m_strides = {1};
+}
 
 bool* BoolTensor::data(){
     return m_data;

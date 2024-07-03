@@ -13,6 +13,7 @@ double acc(Ouroboros::Utils::Iterator<double> a){
 double cum_sum(double a,double b){
     return a+b;
 }
+
 int main(){
     Ouroboros::Tensor A({2, 2});
     Ouroboros::Tensor B({2, 2});
@@ -94,10 +95,12 @@ int main(){
     std::cout << test.slice({0, 1, 1},{2,3,4}); 
     std::fstream file;
     file.open("test.bin",std::ios::out|std::ios::binary);
+    std::cout<<"Writing to file\n";
     Ouroboros::Utils::write_bin_tensor(file,test,Ouroboros::Utils::TensorType::FLOAT);
     std::cout << B__ << std::endl;
     Ouroboros::Utils::write_bin_bool_tensor(file,B__);
     file.close();
+    std::cout<<"Reading from file\n";
     file.open("test.bin",std::ios::in|std::ios::binary);
     auto test2=Ouroboros::Utils::read_bin_tensor(file);
     std::cout << test2 << std::endl;
@@ -153,8 +156,16 @@ int main(){
     }
     t1=Ouroboros::CreateTensor::linspace({2,2},1,4);
     std::cout<<t1<<std::endl;
-    t2=Ouroboros::CreateTensor::linspace({1,2},1,2);
+    t2=Ouroboros::CreateTensor::linspace({2,1},1,2);
     std::cout<<t2<<std::endl;
-    t3=Ouroboros::concat(0,t1,t2);
+    t3=Ouroboros::concat(1,t1,t2);
     std::cout<<t3<<std::endl;
+    t3=Ouroboros::flip(t1,1);
+    std::cout<<t3<<std::endl;
+    t3=Ouroboros::flip(t1,0);
+    std::cout<<t3<<std::endl;
+    std::cout<<Ouroboros::transpose(t1)<<std::endl;
+    t1=Ouroboros::CreateTensor::linspace({2,2,2},1,8);
+    std::cout<<t1<<std::endl;
+    std::cout<<Ouroboros::transpose(t1,1,2)<<std::endl;
 }

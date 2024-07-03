@@ -7,60 +7,8 @@
 #include "utils.hpp"
 #include "macros.hpp"
 
-#define PERMUTE_OFFSET(A,B,C,D) \
-{\
-    size_t j=0;\
-    while (true) {\
-        size_t offset=0;\
-        _Pragma("omp simd reduction(+:offset)")\
-        for (size_t i = 0; i < B.size(); ++i) {\
-            offset+=B[i]*C[i];\
-        }\
-        D[j++]=offset;\
-        /*Find the rightmost index that can be incremented*/\
-        int64_t k = (int64_t)A.size() - 1;\
-        while (k >= 0 && B[k] == A[k] - 1){\
-            k--;\
-        }\
-        /*If no such index exists, we are done*/\
-        if (k < 0) {\
-            break;\
-        }\
-        /*Increment the current index and reset all subsequent indices*/\
-        B[k]++;\
-        for (size_t i = k + 1; i < A.size(); ++i) {\
-            B[i] = 0;\
-        }\
-    }\
-}
-
-#define PERMUTE_IDX(A,B,D,count) \
-{\
-    /*D is a matrix of dim(count,B.size())*/\
-    size_t j=0;\
-    while (true) {\
-        for (size_t i = 0; i < B.size(); ++i) {\
-            D[j*count+i]=B[i];\
-        }\
-        /*Find the rightmost index that can be incremented*/\
-        int64_t k = (int64_t)A.size() - 1;\
-        while (k >= 0 && B[k] == A[k] - 1){\
-            k--;\
-        }\
-        /*If no such index exists, we are done*/\
-        if (k < 0) {\
-            break;\
-        }\
-        /*Increment the current index and reset all subsequent indices*/\
-        B[k]++;\
-        for (size_t i = k + 1; i < A.size(); ++i) {\
-            B[i] = 0;\
-        }\
-        j++;\
-    }\
-}
 #define __Ouroboros__ 
-#include "private_impl.hpp"//Has to be declared after PERMUTE_IDX and PERMUTE_OFFSET are defined
+#include "private_impl.hpp"//Has to be declared here
 #undef __Ouroboros__
 namespace Ouroboros{
 template<typename T,
@@ -70,6 +18,7 @@ template<typename T,
         typename ... Ts>
 __always_inline typename __Private__Impl__::Typer<std::is_same<__Private__Impl__::return_type_t<func_type>, bool>{}>::Type
          transform(const func_type& func,const T& t,const Ts&... args){
+    //Applies a function to each element of the tensor and returns a new tensor
     static_assert(std::is_same<__Private__Impl__::return_type_t<func_type>, bool>{} ||
                   std::is_same<__Private__Impl__::return_type_t<func_type>, double>{}, 
                     "Function must return double or bool");
@@ -115,6 +64,7 @@ __always_inline typename __Private__Impl__::Typer<std::is_same<__Private__Impl__
 template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor reduce(const std::function<double(Utils::Iterator<double>)>& func
                                 ,const Tensor& t,size_t axis=0){
+    //Reduces the tensor along the axis using the function
     if(axis>=t.shape().dim()){
         throw std::invalid_argument("Invalid axis");
     }
@@ -170,6 +120,7 @@ __always_inline Tensor reduce(const Tensor& t,size_t axis=0){
 template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor reduce(const std::function<double(Utils::Iterator<double>)>& func
                                 ,const Tensor& t,std::vector<size_t> axes){
+    //Reduces the tensor along the multiple axes one after the other 
     if(axes.size()==0){
         return Tensor({1},func(Utils::Iterator<double>(t.data(),t.count())));
     }
@@ -188,6 +139,7 @@ __always_inline Tensor reduce(const Tensor& t,std::vector<size_t> axes){
 template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor accumulate(const std::function<double(double,double)>& func,
                                   const Tensor& t,size_t axis=0,double initial = 0){
+    //Accumulates the tensor along the axis using the function
     if(axis>=t.shape().dim()){
         throw std::invalid_argument("Invalid axis");
     }
@@ -252,6 +204,7 @@ __always_inline Tensor accumulate(const Tensor& t,size_t axis=0,double initial =
 
 template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor outer(const std::function<double(double,double)>& func,const Tensor& t1,const Tensor& t2){
+    //Computes the outer 
     const auto t1_shape=t1.shape();
     const auto t2_shape=t2.shape();
     const auto t1_strides=t1.strides();
@@ -373,6 +326,7 @@ template<typename func_type,
         size_t min_count=__MIN__COUNT__FOR__THREAD__,
         typename ... Ts>
 __always_inline T at(const func_type& func,const T& t1,const Shape& from,const Shape& to,const Ts&... t2){
+    //Applies an element wise function to a slice of the tensor
     T res=t1;
     auto res_data=res.data();
     const size_t dim=from.dim();
@@ -460,6 +414,7 @@ __always_inline T at(const T& t1,const Shape& from,const Shape& to,const Ts&... 
 
 template<size_t thread_c=8,size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor broadcast(const std::function<double(double,double)>& func,const Tensor& t1,const Tensor& t2){
+    //Broadcasts the tensors and applies the function
     const auto t1_shape=t1.shape();
     const auto t2_shape=t2.shape();
     if(t1_shape.dim()!=t2_shape.dim()){
@@ -505,6 +460,7 @@ template<typename T,
         size_t min_count=__MIN__COUNT__FOR__THREAD__,
         typename ... Ts>
 __always_inline T concat(size_t axis,const T& t1,const T& t2,const Ts&... t3){
+    //Concatenates the tensors along the axis
     const std::vector<T> tensors={t1,t2,t3...};
     const Shape shape=t1.shape();
     const size_t dim=shape.dim();
@@ -558,6 +514,176 @@ __always_inline T concat(const T& t1,const T& t2,const Ts&... t3){
     return concat<T,thread_c,min_count>(0,t1,t2,t3...);
 }
 
+template<typename T,
+        size_t thread_c=8,
+        size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline T flip(const T& t,size_t axis){
+    //Flips the tensor along the axes
+    const Shape shape=t.shape();
+    const Shape strides=t.strides();
+    const size_t dim=shape.dim();
+    if(axis>=dim){
+        throw std::invalid_argument("Invalid axis");
+    }
+    else if(shape[axis]==1){
+        return shape;
+    }
+
+    std::vector<size_t> A;
+    std::vector<size_t> B(dim-1, 0);
+    std::vector<size_t> C;
+    A.reserve(dim-1);
+    C.reserve(dim-1);
+    size_t count=1;
+    for(size_t i=0;i<dim;i++){
+        if(i!=axis){
+            count*=shape[i];
+            A.emplace_back(shape[i]);
+            C.emplace_back(strides[i]);
+        }
+    }
+    size_t* offsets=new size_t[count];
+    PERMUTE_OFFSET(A,B,C,offsets);   
+    const auto data=t.data();
+    size_t shape_at_axis=shape[axis];
+    size_t stride_at_axis=strides[axis];
+
+    T res(shape);
+    auto res_data=res.data();
+    if(count<=min_count){
+        for(size_t i=0;i<count;i++){
+            size_t off=offsets[i];
+            for(size_t j=0;j<shape_at_axis;j++){
+                res_data[off+j*stride_at_axis]=data[off+(shape_at_axis-j-1)*stride_at_axis];
+            }
+        }
+    }
+    else{
+        #pragma omp parallel for num_threads(thread_c)
+        for(size_t i=0;i<count;i++){
+            size_t off=offsets[i];
+            for(size_t j=0;j<shape_at_axis;j++){
+                res_data[off+j*stride_at_axis]=data[off+(shape_at_axis-j-1)*stride_at_axis];
+            }
+        }
+    }
+    delete[] offsets;
+    return res;
+}
+template<typename T,
+        size_t thread_c=8,
+        size_t min_count=__MIN__COUNT__FOR__THREAD__>
+__always_inline T flip(const T& t,std::vector<size_t> axis={}){
+    //Flips the tensor along the axes
+    if(axis.size()==0){
+        const auto data=t.data();
+        size_t count=t.count();
+        T res(t.shape());
+        auto res_data=res.data();
+        for(size_t i=0;i<count;i++){
+            res_data[i]=data[count-i-1];
+        }
+        return res;
+    }
+    T res=t;
+    for(size_t i=0;i<axis.size();i++){
+        res=flip<T,thread_c,min_count>(res,axis[i]);
+    }
+    return res;
+}
+
+template<typename T,
+        size_t thread_c=8,
+        size_t min_count=__MIN__COUNT__FOR__THREAD__>
+T transpose(const T& t,size_t ax1=0,size_t ax2=1){
+    //swaps the axes
+    const Shape shape=t.shape();
+    const size_t dim=shape.dim();
+    if(ax1>=dim||ax2>=dim){
+        throw std::invalid_argument("Invalid axis");
+    }
+    else if(ax1==ax2){
+        return t;
+    }
+    else if(dim==1){
+        return t;
+    }
+    else if(dim==2){
+        size_t row=shape[0];
+        size_t col=shape[1];
+        T res({col,row});
+        const auto data=t.data();
+        auto res_data=res.data();
+        for(size_t i=0;i<row;i++){
+            for(size_t j=0;j<col;j++){
+                res_data[j*row+i]=data[i*col+j];
+            }
+        }
+    }
+
+    Shape output_shape=shape;
+    output_shape.set(ax1,shape[ax2]);
+    output_shape.set(ax2,shape[ax1]);
+    T res(output_shape);
+    const auto data=t.data();
+    auto res_data=res.data();
+    const Shape strides=t.strides();
+    const Shape res_strides=res.strides();
+    
+    size_t off_count=shape.count()/(shape[ax1]*shape[ax2]);
+    size_t* t_offset_ptr=new size_t[off_count];
+    size_t* res_offset_ptr=new size_t[off_count];
+
+    {
+        std::vector<size_t> A;
+        std::vector<size_t> B(dim-2, 0);
+        std::vector<size_t> t_stride;
+        std::vector<size_t> res_stride;
+        A.reserve(dim-2);
+        t_stride.reserve(dim-2);
+        res_stride.reserve(dim-2);
+        for(size_t i=0;i<dim;i++){
+            if(i!=ax1&&i!=ax2){
+                A.emplace_back(shape[i]);
+                t_stride.emplace_back(strides[i]);
+                res_stride.emplace_back(res_strides[i]);
+            }
+        }
+        PERMUTE_2OFFSET(A, B, t_stride, res_stride, t_offset_ptr, res_offset_ptr);
+    }
+    size_t res_stride_1=res_strides[ax1];
+    size_t res_stride_2=res_strides[ax2];
+    size_t stride_1=strides[ax1];
+    size_t stride_2=strides[ax2];
+    
+    if(off_count<=__MIN__COUNT__FOR__THREAD__){
+        for(size_t i=0;i<off_count;i++){
+            size_t t_off=t_offset_ptr[i];
+            size_t res_off=res_offset_ptr[i];
+            for(size_t j=0;j<shape[ax1];j++){
+                for(size_t k=0;k<shape[ax2];k++){
+                    res_data[res_off+k*res_stride_1+j*res_stride_2]=data[t_off+j*stride_1+k*stride_2];
+                }
+            }
+        }
+    }
+    else{
+        #pragma omp parallel for num_threads(thread_c)
+        for(size_t i=0;i<off_count;i++){
+            size_t t_off=t_offset_ptr[i];
+            size_t res_off=res_offset_ptr[i];
+            for(size_t j=0;j<shape[ax1];j++){
+                for(size_t k=0;k<shape[ax2];k++){
+                    res_data[res_off+k*res_stride_1+j*res_stride_2]=data[t_off+j*stride_1+k*stride_2];
+                }
+            }
+        }
+    }
+    delete[] t_offset_ptr;
+    delete[] res_offset_ptr;
+    return res;
+}
+
 __always_inline Tensor norm(const Tensor& t,std::vector<size_t> axes){
     auto func=[](Ouroboros::Utils::Iterator<double> a){
                     double sum=0;
@@ -602,3 +728,4 @@ __always_inline Tensor normalize(const Tensor& t,size_t axis){
 }
 #undef PERMUTE_OFFSET
 #undef PERMUTE_IDX
+#undef PERMUTE_2OFFSET

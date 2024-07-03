@@ -226,7 +226,7 @@ std::string read_bin_str(std::fstream& file){
 }
 Shape read_bin_shape(std::fstream& file){
     uint64_t dim=read_bin_uint64(file);
-    size_t* shape=new size_t[dim];
+    size_t shape[dim];
     for(size_t i=0;i<dim;i++){
         shape[i]=read_bin_uint64(file);
     }

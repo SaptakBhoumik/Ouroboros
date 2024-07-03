@@ -1,5 +1,6 @@
 #pragma once
 #include "tensor.hpp"
+#include "macros.hpp"
 
 namespace Ouroboros{
 Tensor operator-(const Tensor& a);
@@ -31,6 +32,13 @@ void operator/=(Tensor& a,double b);
 
 Tensor matmul(const Tensor& a,const Tensor& b);
 Tensor matvecmul(const Tensor& a,const Tensor& b);
+
+double cofactor(const Tensor& a,size_t row,size_t col);
+double minor(const Tensor& a,size_t row,size_t col);
+double determinant(const Tensor& a);
+
+Tensor adjoint(const Tensor& a);
+
 
 BoolTensor operator==(const Tensor& a,const Tensor& b);
 BoolTensor operator!=(const Tensor& a,const Tensor& b);

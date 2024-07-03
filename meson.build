@@ -12,11 +12,14 @@ subdir('src')
 
 install_headers(
     [
+        'include/func.hpp',
+        'include/macros.hpp',
         'include/op.hpp',
+        'include/ouroboros.hpp',
+        'include/private_impl.hpp',
         'include/shape.hpp',
         'include/tensor.hpp',
-        'include/macros.hpp',
-        'include/func.hpp',
+        'include/utils.hpp',
     ],
 subdir : 'ouroboros')
 
