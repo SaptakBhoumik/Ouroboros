@@ -18,6 +18,7 @@ int main(){
         Like the following is not a const expression function so we use Ouroboros::transform(func,t) 
         auto func=[a](double x)->double{return a*x;};
         This method applies for transform,reduce,accumulate,outer,at,broadcast,
+        2 method are provided because I prefer to use transform<func>(t) instead of transform(func,t) but it is not always possible for every function
         */
     }
     //Reduce i.e apply a function along an axis of a tensor and reduce the dimension of the tensor
