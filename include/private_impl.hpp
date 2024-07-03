@@ -328,7 +328,7 @@ __always_inline T concat(size_t axis,const std::vector<T>& tensors,const Shape& 
         PERMUTE_IDX(A, B,perm_idxs,perm_count);
     }
     
-    T res(res_shape);//TODO:remove the 0.0
+    T res(res_shape);
     const Shape res_strides=res.strides();
     const size_t res_stride_at_axis=res_strides[axis];
     auto res_data=res.data();

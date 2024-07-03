@@ -110,6 +110,12 @@ class Iterator{
         this->m_count=count;
         this->m_step=step;
     }
+    Iterator& operator=(const Iterator& other){
+        this->m_data=other.m_data;
+        this->m_count=other.m_count;
+        this->m_step=other.m_step;
+        return *this;
+    }
     It begin(){
         return It(m_data,0,m_step);
     }

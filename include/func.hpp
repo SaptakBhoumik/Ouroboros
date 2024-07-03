@@ -656,7 +656,7 @@ T transpose(const T& t,size_t ax1=0,size_t ax2=1){
     size_t stride_1=strides[ax1];
     size_t stride_2=strides[ax2];
     
-    if(off_count<=__MIN__COUNT__FOR__THREAD__){
+    if(off_count<=min_count){
         for(size_t i=0;i<off_count;i++){
             size_t t_off=t_offset_ptr[i];
             size_t res_off=res_offset_ptr[i];
