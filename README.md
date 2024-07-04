@@ -31,7 +31,7 @@ int main(){
     auto sin=[](double x)->double{
         return std::sin(x);
     };
-    t3=Ouroboros::transform<sin>(t3);//Apply sin to all elements of t1
+    t3=Ouroboros::transform<sin>(t3);//Apply sin to all elements of t3
     std::cout<<"sin(t3):\n"<<t3<<"\n";
     
     std::cout<<"t1+t2:\n"<<t1+t2<<"\n";//Element wise addition
