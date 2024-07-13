@@ -168,10 +168,10 @@ Tensor matvecmul(const Tensor& a,const Tensor& b){
 }
 
 
-double cofactor(const Tensor& a,size_t row,size_t col){
+double cofactor(const Tensor& a,std::size_t row,std::size_t col){
     return minor(a,row,col)*((row+col)%2==0?1:-1);
 }
-double minor(const Tensor& a,size_t row,size_t col){
+double minor(const Tensor& a,std::size_t row,std::size_t col){
     auto shape=a.shape();
     #ifdef __OUROBOROS_CHECK__
     if(shape.dim()!=2){
@@ -187,23 +187,23 @@ double minor(const Tensor& a,size_t row,size_t col){
         throw std::invalid_argument("Invalid row and column index");
     }
     #endif
-    size_t row_count=shape[0];
+    std::size_t row_count=shape[0];
     Tensor m({row_count-1,row_count-1});
     double* data=m.data();
     const double* a_data=a.data();
-    for(size_t i=0;i<row;i++){
-        for(size_t j=0;j<col;j++){
+    for(std::size_t i=0;i<row;i++){
+        for(std::size_t j=0;j<col;j++){
             data[i*(row_count-1)+j]=a_data[i*row_count+j];
         }
-        for(size_t j=col+1;j<row_count;j++){
+        for(std::size_t j=col+1;j<row_count;j++){
             data[i*(row_count-1)+j-1]=a_data[i*row_count+j];
         }
     }
-    for(size_t i=row+1;i<row_count;i++){
-        for(size_t j=0;j<col;j++){
+    for(std::size_t i=row+1;i<row_count;i++){
+        for(std::size_t j=0;j<col;j++){
             data[(i-1)*(row_count-1)+j]=a_data[i*row_count+j];
         }
-        for(size_t j=col+1;j<row_count;j++){
+        for(std::size_t j=col+1;j<row_count;j++){
             data[(i-1)*(row_count-1)+j-1]=a_data[i*row_count+j];
         }
     }
@@ -219,7 +219,7 @@ double determinant(const Tensor& a){
         throw std::invalid_argument("Invalid shape. Expected a square matrix");
     }
     #endif
-    size_t row_count=shape[0];
+    std::size_t row_count=shape[0];
     if(row_count==1){
         return a[0];
     }
@@ -231,7 +231,7 @@ double determinant(const Tensor& a){
     }
     else{
         double det=0;
-        for(size_t i=0;i<row_count;i++){
+        for(std::size_t i=0;i<row_count;i++){
             det+=a[i]*cofactor(a,0,i);
         }
         return det;
@@ -247,11 +247,11 @@ Tensor adjoint(const Tensor& a){
         throw std::invalid_argument("Invalid shape. Expected a square matrix");
     }
     #endif
-    size_t row_count=shape[0];
+    std::size_t row_count=shape[0];
     Tensor adj({row_count,row_count});
     double* data=adj.data();
-    for(size_t i=0;i<row_count;i++){
-        for(size_t j=0;j<row_count;j++){
+    for(std::size_t i=0;i<row_count;i++){
+        for(std::size_t j=0;j<row_count;j++){
             data[j*row_count+i]=cofactor(a,i,j);
         }
     }

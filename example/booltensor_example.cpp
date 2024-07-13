@@ -8,7 +8,7 @@ int main(){
     std::cout<<"t1="<<t1<<std::endl;
     std::cout<<"t2="<<t2<<std::endl;
     bool* data=new bool[shape.count()];//It has to be heap allocated
-    for(size_t i=0;i<shape.count();i++){
+    for(std::size_t i=0;i<shape.count();i++){
         data[i]=i%2==0;
     }
     //This method is useful when you have a preallocated array and you want to use it as the data for the tensor
@@ -30,7 +30,7 @@ int main(){
     t1.flatten();
     std::cout<<"t1="<<t1<<std::endl;
     //Indexing
-    //When we use size_t as index then we get tensor.data[index] as the return value    
+    //When we use std::size_t as index then we get tensor.data[index] as the return value    
     //When we use the [] operator we get a reference to the value so we can modify it
     t1[0]=true;
     std::cout<<"t2[0]="<<t2[0]<<std::endl;
@@ -62,10 +62,10 @@ int main(){
     Ouroboros::Shape strides=t1.strides();
     std::cout<<"Strides of t1="<<strides<<std::endl;
     //Getting the count i.e. the number of elements in the tensor
-    size_t count=t1.count();
+    std::size_t count=t1.count();
     std::cout<<"Count of t1="<<count<<std::endl;
     //Getting the no of dimensions
-    size_t dim=t1.dim();
+    std::size_t dim=t1.dim();
     std::cout<<"Dim of t1="<<dim<<std::endl;
     //Operators 
     Ouroboros::BoolTensor t7({2,3,4},true);

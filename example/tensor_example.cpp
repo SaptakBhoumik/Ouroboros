@@ -8,7 +8,7 @@ int main(){
     std::cout<<"t1="<<t1<<std::endl;
     std::cout<<"t2="<<t2<<std::endl;
     double* data=new double[shape.count()];//It has to be heap allocated
-    for(size_t i=0;i<shape.count();i++){
+    for(std::size_t i=0;i<shape.count();i++){
         data[i]=i;
     }
     //This method is useful when you have a preallocated array and you want to use it as the data for the tensor
@@ -183,10 +183,10 @@ int main(){
     std::cout<<"Min of t5="<<t5.min()<<std::endl;//min(x1,x2,x3...)  where xi is the ith element of the tensor data ptr
 
     //Max index of the tensor elements
-    std::pair<double,size_t> max_index=t5.max_index();
+    std::pair<double,std::size_t> max_index=t5.max_index();
     std::cout<<"Max of t5="<<max_index.first<<" Offset where it was first found="<<max_index.second<<std::endl;//max(x1,x2,x3...) where xi is the ith element of the tensor data ptr
     //Min index of the tensor elements
-    std::pair<double,size_t> min_index=t5.min_index();
+    std::pair<double,std::size_t> min_index=t5.min_index();
     std::cout<<"Min of t5="<<min_index.first<<" Offset where it was first found="<<min_index.second<<std::endl;//min(x1,x2,x3...)  where xi is the ith element of the tensor data ptr
 
     //Tensor operations

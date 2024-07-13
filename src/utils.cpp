@@ -42,99 +42,99 @@ void write_bin_double(std::fstream& file,double value){
     double val=handle_endian_d(value);
     file.write(reinterpret_cast<char*>(&val),sizeof(double));
 }
-void write_bin_uint8(std::fstream& file,uint8_t value){
-    file.write(reinterpret_cast<char*>(&value),sizeof(uint8_t));
+void write_bin_uint8(std::fstream& file,std::uint8_t value){
+    file.write(reinterpret_cast<char*>(&value),sizeof(std::uint8_t));
 }
-void write_bin_uint16(std::fstream& file,uint16_t value){
-    uint16_t val=htobe16(value);
-    file.write(reinterpret_cast<char*>(&val),sizeof(uint16_t));
+void write_bin_uint16(std::fstream& file,std::uint16_t value){
+    std::uint16_t val=htobe16(value);
+    file.write(reinterpret_cast<char*>(&val),sizeof(std::uint16_t));
 }
-void write_bin_uint32(std::fstream& file,uint32_t value){
-    uint32_t val=htobe32(value);
-    file.write(reinterpret_cast<char*>(&val),sizeof(uint32_t));
+void write_bin_uint32(std::fstream& file,std::uint32_t value){
+    std::uint32_t val=htobe32(value);
+    file.write(reinterpret_cast<char*>(&val),sizeof(std::uint32_t));
 }
-void write_bin_uint64(std::fstream& file,uint64_t value){
-    uint64_t val=htobe64(value);
-    file.write(reinterpret_cast<char*>(&val),sizeof(uint64_t));
+void write_bin_uint64(std::fstream& file,std::uint64_t value){
+    std::uint64_t val=htobe64(value);
+    file.write(reinterpret_cast<char*>(&val),sizeof(std::uint64_t));
 }
 
 
-void write_bin_int8(std::fstream& file,int8_t value){
-    file.write(reinterpret_cast<char*>(&value),sizeof(int8_t));
+void write_bin_int8(std::fstream& file,std::int8_t value){
+    file.write(reinterpret_cast<char*>(&value),sizeof(std::int8_t));
 }
-void write_bin_int16(std::fstream& file,int16_t value){
-    int16_t val=htobe16(value);
-    file.write(reinterpret_cast<char*>(&val),sizeof(int16_t));
+void write_bin_int16(std::fstream& file,std::int16_t value){
+    std::int16_t val=htobe16(value);
+    file.write(reinterpret_cast<char*>(&val),sizeof(std::int16_t));
 }
-void write_bin_int32(std::fstream& file,int32_t value){
-    int32_t val=htobe32(value);
-    file.write(reinterpret_cast<char*>(&val),sizeof(int32_t));
+void write_bin_int32(std::fstream& file,std::int32_t value){
+    std::int32_t val=htobe32(value);
+    file.write(reinterpret_cast<char*>(&val),sizeof(std::int32_t));
 }
-void write_bin_int64(std::fstream& file,int64_t value){
-    int64_t val=htobe64(value);
-    file.write(reinterpret_cast<char*>(&val),sizeof(int64_t));
+void write_bin_int64(std::fstream& file,std::int64_t value){
+    std::int64_t val=htobe64(value);
+    file.write(reinterpret_cast<char*>(&val),sizeof(std::int64_t));
 }
 
 void write_bin_shape(std::fstream& file,const Shape& shape){
     write_bin_uint64(file,shape.dim());
-    for(size_t i=0;i<shape.dim();i++){
+    for(std::size_t i=0;i<shape.dim();i++){
         write_bin_uint64(file,shape[i]);
     }
 }
 
 void write_bin_tensor(std::fstream& file,const Tensor& tensor,TensorType type){
     write_bin_shape(file,tensor.shape());
-    write_bin_uint8(file,static_cast<uint8_t>(type));
+    write_bin_uint8(file,static_cast<std::uint8_t>(type));
     const double* data=tensor.data();
-    size_t count=tensor.count();
+    std::size_t count=tensor.count();
     switch(type){
         case TensorType::INT8:
-            for(size_t i=0;i<count;i++){
-                write_bin_int8(file,static_cast<int8_t>(data[i]));
+            for(std::size_t i=0;i<count;i++){
+                write_bin_int8(file,static_cast<std::int8_t>(data[i]));
             }
             break;
         case TensorType::INT16:
-            for(size_t i=0;i<count;i++){
-                write_bin_int16(file,static_cast<int16_t>(data[i]));
+            for(std::size_t i=0;i<count;i++){
+                write_bin_int16(file,static_cast<std::int16_t>(data[i]));
             }
             break;
         case TensorType::INT32:
-            for(size_t i=0;i<count;i++){
-                write_bin_int32(file,static_cast<int32_t>(data[i]));
+            for(std::size_t i=0;i<count;i++){
+                write_bin_int32(file,static_cast<std::int32_t>(data[i]));
             }
             break;
         case TensorType::INT64:
-            for(size_t i=0;i<count;i++){
-                write_bin_int64(file,static_cast<int64_t>(data[i]));
+            for(std::size_t i=0;i<count;i++){
+                write_bin_int64(file,static_cast<std::int64_t>(data[i]));
             }
             break;
         case TensorType::UINT8:
-            for(size_t i=0;i<count;i++){
-                write_bin_uint8(file,static_cast<uint8_t>(data[i]));
+            for(std::size_t i=0;i<count;i++){
+                write_bin_uint8(file,static_cast<std::uint8_t>(data[i]));
             }
             break;
         case TensorType::UINT16:
-            for(size_t i=0;i<count;i++){
-                write_bin_uint16(file,static_cast<uint16_t>(data[i]));
+            for(std::size_t i=0;i<count;i++){
+                write_bin_uint16(file,static_cast<std::uint16_t>(data[i]));
             }
             break;
         case TensorType::UINT32:
-            for(size_t i=0;i<count;i++){
-                write_bin_uint32(file,static_cast<uint32_t>(data[i]));
+            for(std::size_t i=0;i<count;i++){
+                write_bin_uint32(file,static_cast<std::uint32_t>(data[i]));
             }
             break;
         case TensorType::UINT64:
-            for(size_t i=0;i<count;i++){
-                write_bin_uint64(file,static_cast<uint64_t>(data[i]));
+            for(std::size_t i=0;i<count;i++){
+                write_bin_uint64(file,static_cast<std::uint64_t>(data[i]));
             }
             break;
         case TensorType::FLOAT:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 write_bin_float(file,static_cast<float>(data[i]));
             }
             break;
         case TensorType::DOUBLE:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 write_bin_double(file,data[i]);
             }
             break;
@@ -142,12 +142,12 @@ void write_bin_tensor(std::fstream& file,const Tensor& tensor,TensorType type){
 }
 void write_bin_bool_tensor(std::fstream& file,const BoolTensor& tensor){
     write_bin_shape(file,tensor.shape());
-    size_t count=tensor.count();
+    std::size_t count=tensor.count();
     const bool* data=tensor.data();       
-    size_t byte_count=(count+7)/8;
-    for(size_t i=0;i<byte_count;i++){
-        uint8_t byte=0;
-        for(size_t j=0;j<8;j++){
+    std::size_t byte_count=(count+7)/8;
+    for(std::size_t i=0;i<byte_count;i++){
+        std::uint8_t byte=0;
+        for(std::size_t j=0;j<8;j++){
             if(i*8+j<count){
                 byte|=(data[i*8+j]?1:0)<<j;
             }
@@ -172,52 +172,52 @@ float read_bin_float(std::fstream& file){
 }
 
 
-uint8_t read_bin_uint8(std::fstream& file){
-    uint8_t val;
-    file.read(reinterpret_cast<char*>(&val),sizeof(uint8_t));
+std::uint8_t read_bin_uint8(std::fstream& file){
+    std::uint8_t val;
+    file.read(reinterpret_cast<char*>(&val),sizeof(std::uint8_t));
     return val;
 }
-uint16_t read_bin_uint16(std::fstream& file){
-    uint16_t val;
-    file.read(reinterpret_cast<char*>(&val),sizeof(uint16_t));
+std::uint16_t read_bin_uint16(std::fstream& file){
+    std::uint16_t val;
+    file.read(reinterpret_cast<char*>(&val),sizeof(std::uint16_t));
     return be16toh(val);
 }
-uint32_t read_bin_uint32(std::fstream& file){
-    uint32_t val;
-    file.read(reinterpret_cast<char*>(&val),sizeof(uint32_t));
+std::uint32_t read_bin_uint32(std::fstream& file){
+    std::uint32_t val;
+    file.read(reinterpret_cast<char*>(&val),sizeof(std::uint32_t));
     return be32toh(val);
 }
-uint64_t read_bin_uint64(std::fstream& file){
-    uint64_t val;
-    file.read(reinterpret_cast<char*>(&val),sizeof(uint64_t));
+std::uint64_t read_bin_uint64(std::fstream& file){
+    std::uint64_t val;
+    file.read(reinterpret_cast<char*>(&val),sizeof(std::uint64_t));
     return be64toh(val);
 }
 
 
-int8_t read_bin_int8(std::fstream& file){
-    int8_t val;
-    file.read(reinterpret_cast<char*>(&val),sizeof(int8_t));
+std::int8_t read_bin_int8(std::fstream& file){
+    std::int8_t val;
+    file.read(reinterpret_cast<char*>(&val),sizeof(std::int8_t));
     return val;
 }
-int16_t read_bin_int16(std::fstream& file){
-    int16_t val;
-    file.read(reinterpret_cast<char*>(&val),sizeof(int16_t));
+std::int16_t read_bin_int16(std::fstream& file){
+    std::int16_t val;
+    file.read(reinterpret_cast<char*>(&val),sizeof(std::int16_t));
     return be16toh(val);
 }
-int32_t read_bin_int32(std::fstream& file){
-    int32_t val;
-    file.read(reinterpret_cast<char*>(&val),sizeof(int32_t));
+std::int32_t read_bin_int32(std::fstream& file){
+    std::int32_t val;
+    file.read(reinterpret_cast<char*>(&val),sizeof(std::int32_t));
     return be32toh(val);
 }
-int64_t read_bin_int64(std::fstream& file){
-    int64_t val;
-    file.read(reinterpret_cast<char*>(&val),sizeof(int64_t));
+std::int64_t read_bin_int64(std::fstream& file){
+    std::int64_t val;
+    file.read(reinterpret_cast<char*>(&val),sizeof(std::int64_t));
     return be64toh(val);
 }
 
 
 std::string read_bin_str(std::fstream& file){
-    uint64_t size=read_bin_uint64(file);
+    std::uint64_t size=read_bin_uint64(file);
     char* buffer=new char[size];
     file.read(buffer,size);
     std::string val(buffer,size);
@@ -225,9 +225,9 @@ std::string read_bin_str(std::fstream& file){
     return val;
 }
 Shape read_bin_shape(std::fstream& file){
-    uint64_t dim=read_bin_uint64(file);
-    size_t shape[dim];
-    for(size_t i=0;i<dim;i++){
+    std::uint64_t dim=read_bin_uint64(file);
+    std::size_t shape[dim];
+    for(std::size_t i=0;i<dim;i++){
         shape[i]=read_bin_uint64(file);
     }
     return Shape(dim,shape);
@@ -235,57 +235,57 @@ Shape read_bin_shape(std::fstream& file){
 Tensor read_bin_tensor(std::fstream& file){
     Shape shape=read_bin_shape(file);
     TensorType type=(TensorType)read_bin_uint8(file);
-    size_t count=shape.count();
+    std::size_t count=shape.count();
     Tensor tensor(shape);
     double* data=tensor.data();
     switch(type){
         case TensorType::INT8:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_int8(file);
             }
             break;
         case TensorType::INT16:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_int16(file);
             }
             break;
         case TensorType::INT32:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_int32(file);
             }
             break;
         case TensorType::INT64:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_int64(file);
             }
             break;
         case TensorType::UINT8:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_uint8(file);
             }
             break;
         case TensorType::UINT16:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_uint16(file);
             }
             break;
         case TensorType::UINT32:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_uint32(file);
             }
             break;
         case TensorType::UINT64:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_uint64(file);
             }
             break;
         case TensorType::FLOAT:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_float(file);
             }
             break;
         case TensorType::DOUBLE:
-            for(size_t i=0;i<count;i++){
+            for(std::size_t i=0;i<count;i++){
                 data[i]=read_bin_double(file);
             }
             break;
@@ -294,13 +294,13 @@ Tensor read_bin_tensor(std::fstream& file){
 }
 BoolTensor read_bin_bool_tensor(std::fstream& file){
     Shape shape=read_bin_shape(file);
-    size_t count=shape.count();
-    size_t byte_count=(count+7)/8;
+    std::size_t count=shape.count();
+    std::size_t byte_count=(count+7)/8;
     BoolTensor tensor(shape);
     bool* data=tensor.data();
-    for(size_t i=0;i<byte_count;i++){
-        uint8_t byte=read_bin_uint8(file);
-        for(size_t j=0;j<8;j++){
+    for(std::size_t i=0;i<byte_count;i++){
+        std::uint8_t byte=read_bin_uint8(file);
+        for(std::size_t j=0;j<8;j++){
             if(i*8+j<count){
                 data[i*8+j]=(byte&(1<<j))==1;
             }

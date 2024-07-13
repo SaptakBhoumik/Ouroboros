@@ -12,7 +12,7 @@ BoolTensor::BoolTensor(const Shape& shape,bool value):m_shape(shape){
         throw std::invalid_argument("BoolTensor cannot have 0 elements");
     }
     m_data=new bool[m_shape.count()];
-    for(size_t i=0;i<m_shape.count();i++){
+    for(std::size_t i=0;i<m_shape.count();i++){
         m_data[i]=value;
     }
     m_strides = getStride(m_shape);
@@ -26,7 +26,7 @@ BoolTensor::BoolTensor(const Shape& shape,bool* data):m_shape(shape){
 }
 BoolTensor::BoolTensor(const BoolTensor& tensor):m_shape(tensor.m_shape){
     m_data=new bool[m_shape.count()];
-    for(size_t i=0;i<m_shape.count();i++){
+    for(std::size_t i=0;i<m_shape.count();i++){
         m_data[i]=tensor.m_data[i];
     }
     m_strides = tensor.m_strides;
@@ -54,7 +54,7 @@ BoolTensor& BoolTensor::operator=(const BoolTensor& tensor){
         m_data=new bool[m_shape.count()];
         m_strides = tensor.m_strides;
     }
-    for(size_t i=0;i<m_shape.count();i++){
+    for(std::size_t i=0;i<m_shape.count();i++){
         m_data[i]=tensor.m_data[i];
     }
     return *this;
@@ -96,10 +96,10 @@ Shape BoolTensor::shape() const{
 Shape BoolTensor::strides() const{
     return m_strides;
 }
-size_t BoolTensor::count() const{
+std::size_t BoolTensor::count() const{
     return m_shape.count();
 }
-size_t BoolTensor::dim() const{
+std::size_t BoolTensor::dim() const{
     return m_shape.dim();
 }
 BoolTensor::~BoolTensor(){
@@ -109,12 +109,12 @@ BoolTensor::~BoolTensor(){
     }
 }
 void printTensorRecursively(std::ostream& os,const BoolTensor& tensor, 
-                            const Shape& strides, size_t dim, size_t offset) {
+                            const Shape& strides, std::size_t dim, std::size_t offset) {
     auto shape=tensor.shape();
     auto data=tensor.data();
     if (dim == shape.dim() - 1) {
         os << "[";
-        for (size_t i = 0; i < shape[dim]; i++) {
+        for (std::size_t i = 0; i < shape[dim]; i++) {
             os << data[offset + i];
             if (i != shape[dim] - 1) {
                 os << ", ";
@@ -123,7 +123,7 @@ void printTensorRecursively(std::ostream& os,const BoolTensor& tensor,
         os << "]";
     } else {
         os << "[";
-        for (size_t i = 0; i < shape[dim]; i++) {
+        for (std::size_t i = 0; i < shape[dim]; i++) {
             printTensorRecursively(os,tensor, strides, dim + 1, offset + i * strides[dim]);
             if (i != shape[dim] - 1) {
                 os << ", ";

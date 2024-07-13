@@ -12,7 +12,7 @@ Tensor::Tensor(const Shape& shape,double value):m_shape(shape){
         throw std::invalid_argument("Tensor cannot have 0 elements");
     }
     m_data=new double[m_shape.count()];
-    for(size_t i=0;i<m_shape.count();i++){
+    for(std::size_t i=0;i<m_shape.count();i++){
         m_data[i]=value;
     }
     m_strides = getStride(m_shape);
@@ -26,7 +26,7 @@ Tensor::Tensor(const Shape& shape,double* data):m_shape(shape){
 }
 Tensor::Tensor(const Tensor& tensor):m_shape(tensor.m_shape){
     m_data=new double[m_shape.count()];
-    for(size_t i=0;i<m_shape.count();i++){
+    for(std::size_t i=0;i<m_shape.count();i++){
         m_data[i]=tensor.m_data[i];
     }
     m_strides = tensor.m_strides;
@@ -55,7 +55,7 @@ Tensor& Tensor::operator=(const Tensor& tensor){
         m_strides = tensor.m_strides;
         m_data=new double[m_shape.count()];
     }
-    for(size_t i=0;i<m_shape.count();i++){
+    for(std::size_t i=0;i<m_shape.count();i++){
         m_data[i]=tensor.m_data[i];
     }
     return *this;
@@ -82,7 +82,7 @@ void Tensor::reshape(const Shape& shape){
     m_strides = getStride(m_shape);
 }
 void Tensor::flatten(){
-    size_t c=m_shape.count();
+    std::size_t c=m_shape.count();
     m_shape={c};
     m_strides = {1};
 }
@@ -98,10 +98,10 @@ Shape Tensor::shape() const{
 Shape Tensor::strides() const{
     return m_strides;
 }
-size_t Tensor::count() const{
+std::size_t Tensor::count() const{
     return m_shape.count();
 }
-size_t Tensor::dim() const{
+std::size_t Tensor::dim() const{
     return m_shape.dim();
 }
 
@@ -113,12 +113,12 @@ Tensor::~Tensor(){
     }
 }
 void printTensorRecursively(std::ostream& os,const Tensor& tensor, 
-                            const Shape& strides, size_t dim, size_t offset) {
+                            const Shape& strides, std::size_t dim, std::size_t offset) {
     auto shape=tensor.shape();
     auto data=tensor.data();
     if (dim == shape.dim() - 1) {
         os << "[";
-        for (size_t i = 0; i < shape[dim]; i++) {
+        for (std::size_t i = 0; i < shape[dim]; i++) {
             os << data[offset + i];
             if (i != shape[dim] - 1) {
                 os << ", ";
@@ -127,7 +127,7 @@ void printTensorRecursively(std::ostream& os,const Tensor& tensor,
         os << "]";
     } else {
         os << "[";
-        for (size_t i = 0; i < shape[dim]; i++) {
+        for (std::size_t i = 0; i < shape[dim]; i++) {
             printTensorRecursively(os,tensor, strides, dim + 1, offset + i * strides[dim]);
             if (i != shape[dim] - 1) {
                 os << ", ";

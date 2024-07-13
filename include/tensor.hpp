@@ -10,7 +10,7 @@ class BoolTensor{
     Shape m_shape;
     Shape m_strides={1};
     void sliceRecursive(BoolTensor& output, const Shape& start, const Shape& step, Shape& indices, 
-                        Shape& output_indices, size_t dimension);
+                        Shape& output_indices, std::size_t dimension);
     public:
     BoolTensor(const Shape& shape);
     BoolTensor(const Shape& shape,bool value);
@@ -26,7 +26,7 @@ class BoolTensor{
     void reshape(const Shape& shape);
     void flatten();
 
-    __always_inline bool& operator[](size_t index){
+    __always_inline bool& operator[](std::size_t index){
         #ifdef __OUROBOROS_CHECK__
         if(index>=m_shape.count()){
             throw std::invalid_argument("Invalid index");
@@ -34,7 +34,7 @@ class BoolTensor{
         #endif
         return m_data[index];
     }
-    __always_inline const bool& operator[](size_t index) const{
+    __always_inline const bool& operator[](std::size_t index) const{
         #ifdef __OUROBOROS_CHECK__
         if(index>=m_shape.count()){
             throw std::invalid_argument("Invalid index");
@@ -42,9 +42,9 @@ class BoolTensor{
         #endif
         return m_data[index];
     }
-    __always_inline size_t offset(const Shape& index) const{
-        size_t idx=0;
-        for(size_t i=0;i<m_strides.dim();i++){
+    __always_inline std::size_t offset(const Shape& index) const{
+        std::size_t idx=0;
+        for(std::size_t i=0;i<m_strides.dim();i++){
             idx+=m_strides[i]*index[i];
         }
         return idx;
@@ -54,8 +54,8 @@ class BoolTensor{
         if(index.dim()!=m_shape.dim()){
             throw std::invalid_argument("Invalid index");
         }
-        size_t idx=0;
-        for(size_t i=0;i<index.dim();i++){
+        std::size_t idx=0;
+        for(std::size_t i=0;i<index.dim();i++){
             if(index[i]>=m_shape[i]){
                 throw std::invalid_argument("Invalid index");
             }
@@ -71,8 +71,8 @@ class BoolTensor{
         if(index.dim()!=m_shape.dim()){
             throw std::invalid_argument("Invalid index");
         }
-        size_t idx=0;
-        for(size_t i=0;i<index.dim();i++){
+        std::size_t idx=0;
+        for(std::size_t i=0;i<index.dim();i++){
             if(index[i]>=m_shape[i]){
                 throw std::invalid_argument("Invalid index");
             }
@@ -90,22 +90,22 @@ class BoolTensor{
         }
 
         // Calculate the shape of the sliced tensor
-        size_t* data=new size_t[m_shape.dim()];
-        for (size_t i = 0; i < m_shape.dim(); ++i) {
+        std::size_t* data=new std::size_t[m_shape.dim()];
+        for (std::size_t i = 0; i < m_shape.dim(); ++i) {
             data[i] = (end[i] - start[i] + step[i] - 1) / step[i];
         }
         Shape output_shape(m_shape.dim(),data);
 
         BoolTensor output(output_shape);
 
-        size_t i=0;
+        std::size_t i=0;
         Shape indices(m_shape.dim(), i);
         Shape output_indices(m_shape.dim(), i);
         sliceRecursive(output, start, step, indices, output_indices, 0);
 
         return output;
     }
-    __always_inline BoolTensor slice(const Shape& start,const Shape& end,size_t step=1){
+    __always_inline BoolTensor slice(const Shape& start,const Shape& end,std::size_t step=1){
         return slice(start,end,Shape(m_shape.dim(),step));
     }
 
@@ -114,8 +114,8 @@ class BoolTensor{
 
     Shape shape() const;
     Shape strides() const;
-    size_t count() const;
-    size_t dim() const;
+    std::size_t count() const;
+    std::size_t dim() const;
 
     ~BoolTensor();
 };
@@ -125,7 +125,7 @@ class Tensor{
     Shape m_shape;
     Shape m_strides={1};
     void sliceRecursive(Tensor& output, const Shape& start, const Shape& step, Shape& indices, 
-                        Shape& output_indices, size_t dimension);
+                        Shape& output_indices, std::size_t dimension);
     public:
     Tensor(const Shape& shape);
     Tensor(const Shape& shape,double value);
@@ -171,7 +171,7 @@ class Tensor{
     bool is_finite()const;
     bool has_nan()const;
 
-    __always_inline double& operator[](size_t index){
+    __always_inline double& operator[](std::size_t index){
         #ifdef __OUROBOROS_CHECK__
         if(index>=m_shape.count()){
             throw std::invalid_argument("Invalid index");
@@ -179,7 +179,7 @@ class Tensor{
         #endif
         return m_data[index];
     }
-    __always_inline const double& operator[](size_t index) const{
+    __always_inline const double& operator[](std::size_t index) const{
         #ifdef __OUROBOROS_CHECK__
         if(index>=m_shape.count()){
             throw std::invalid_argument("Invalid index");
@@ -187,9 +187,9 @@ class Tensor{
         #endif
         return m_data[index];
     }
-    __always_inline size_t offset(const Shape& index) const{
-        size_t idx=0;
-        for(size_t i=0;i<m_strides.dim();i++){
+    __always_inline std::size_t offset(const Shape& index) const{
+        std::size_t idx=0;
+        for(std::size_t i=0;i<m_strides.dim();i++){
             idx+=m_strides[i]*index[i];
         }
         return idx;
@@ -199,8 +199,8 @@ class Tensor{
         if(index.dim()!=m_shape.dim()){
             throw std::invalid_argument("Invalid index");
         }
-        size_t idx=0;
-        for(size_t i=0;i<index.dim();i++){
+        std::size_t idx=0;
+        for(std::size_t i=0;i<index.dim();i++){
             if(index[i]>=m_shape[i]){
                 throw std::invalid_argument("Invalid index");
             }
@@ -216,8 +216,8 @@ class Tensor{
         if(index.dim()!=m_shape.dim()){
             throw std::invalid_argument("Invalid index");
         }
-        size_t idx=0;
-        for(size_t i=0;i<index.dim();i++){
+        std::size_t idx=0;
+        for(std::size_t i=0;i<index.dim();i++){
             if(index[i]>=m_shape[i]){
                 throw std::invalid_argument("Invalid index");
             }
@@ -234,29 +234,29 @@ class Tensor{
         }
 
         // Calculate the shape of the sliced tensor
-        size_t data[m_shape.dim()];
-        for (size_t i = 0; i < m_shape.dim(); ++i) {
+        std::size_t data[m_shape.dim()];
+        for (std::size_t i = 0; i < m_shape.dim(); ++i) {
             data[i] = (end[i] - start[i] + step[i] - 1) / step[i];
         }
         Shape output_shape(m_shape.dim(),data);
         Tensor output(output_shape);
 
-        size_t i=0;
+        std::size_t i=0;
         Shape indices(m_shape.dim(), i);
         Shape output_indices(m_shape.dim(), i);
         sliceRecursive(output, start, step, indices, output_indices, 0);
 
         return output;
     }
-    __always_inline Tensor slice(const Shape& start,const Shape& end,size_t step=1){
+    __always_inline Tensor slice(const Shape& start,const Shape& end,std::size_t step=1){
         return slice(start,end,Shape(m_shape.dim(),step));
     }
     double* data();
     const double* data() const;
     Shape shape() const;
     Shape strides() const;
-    size_t count() const;
-    size_t dim() const;
+    std::size_t count() const;
+    std::size_t dim() const;
 
     double norm()const;
     double norm2()const;
@@ -265,8 +265,8 @@ class Tensor{
     double mean()const;
     double max()const;
     double min()const;
-    std::pair<double,size_t> max_index()const;
-    std::pair<double,size_t> min_index()const;
+    std::pair<double,std::size_t> max_index()const;
+    std::pair<double,std::size_t> min_index()const;
 
     ~Tensor();
 };
@@ -282,7 +282,7 @@ Tensor linspace(const Shape& shape,double start,double end);
 //base^start,base^(start+step),base^(start+2*step),...,base^end
 //step=(end-start)/(count-1)
 Tensor logspace(const Shape& shape,double start,double end,double base=10.0);	
-Tensor scalar_matrix(size_t col_count,double value=1.0);
+Tensor scalar_matrix(std::size_t col_count,double value=1.0);
 Tensor diagonal_matrix(std::vector<double> diag);
 //If condition is true then x else y
 Tensor where(const BoolTensor& condition,const Tensor& x,const Tensor& y);

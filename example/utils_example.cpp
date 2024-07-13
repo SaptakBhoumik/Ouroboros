@@ -13,14 +13,14 @@ int main(){
         /*
         enum class TensorType{
             //Done to reduce the size of the tensor in the file
-            INT8,//Save the tensor as int8_t
-            INT16,//Save the tensor as int16_t
-            INT32,//Save the tensor as int32_t
-            INT64,//Save the tensor as int64_t
-            UINT8,//Save the tensor as uint8_t
-            UINT16,//Save the tensor as uint16_t
-            UINT32,//Save the tensor as uint32_t
-            UINT64,//Save the tensor as uint64_t
+            INT8,//Save the tensor as std::int8_t
+            INT16,//Save the tensor as std::int16_t
+            INT32,//Save the tensor as std::int32_t
+            INT64,//Save the tensor as std::int64_t
+            UINT8,//Save the tensor as std::uint8_t
+            UINT16,//Save the tensor as std::uint16_t
+            UINT32,//Save the tensor as std::uint32_t
+            UINT64,//Save the tensor as std::uint64_t
             FLOAT,//Save the tensor as float
             DOUBLE,//Save the tensor as double
         };

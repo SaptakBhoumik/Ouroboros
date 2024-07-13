@@ -22,15 +22,15 @@ enum class TensorType{
 void write_bin_float(std::fstream& file,float value);
 void write_bin_double(std::fstream& file,double value);
 
-void write_bin_uint8(std::fstream& file,uint8_t value);
-void write_bin_uint16(std::fstream& file,uint16_t value);
-void write_bin_uint32(std::fstream& file,uint32_t value);
-void write_bin_uint64(std::fstream& file,uint64_t value);
+void write_bin_uint8(std::fstream& file,std::uint8_t value);
+void write_bin_uint16(std::fstream& file,std::uint16_t value);
+void write_bin_uint32(std::fstream& file,std::uint32_t value);
+void write_bin_uint64(std::fstream& file,std::uint64_t value);
 
-void write_bin_int8(std::fstream& file,int8_t value);
-void write_bin_int16(std::fstream& file,int16_t value);
-void write_bin_int32(std::fstream& file,int32_t value);
-void write_bin_int64(std::fstream& file,int64_t value);
+void write_bin_int8(std::fstream& file,std::int8_t value);
+void write_bin_int16(std::fstream& file,std::int16_t value);
+void write_bin_int32(std::fstream& file,std::int32_t value);
+void write_bin_int64(std::fstream& file,std::int64_t value);
 
 void write_bin_str(std::fstream& file,std::string value);
 
@@ -41,15 +41,15 @@ void write_bin_bool_tensor(std::fstream& file,const BoolTensor& tensor);
 double read_bin_double(std::fstream& file);
 float read_bin_float(std::fstream& file);
 
-uint8_t read_bin_uint8(std::fstream& file);
-uint16_t read_bin_uint16(std::fstream& file);
-uint32_t read_bin_uint32(std::fstream& file);
-uint64_t read_bin_uint64(std::fstream& file);
+std::uint8_t read_bin_uint8(std::fstream& file);
+std::uint16_t read_bin_uint16(std::fstream& file);
+std::uint32_t read_bin_uint32(std::fstream& file);
+std::uint64_t read_bin_uint64(std::fstream& file);
 
-int8_t read_bin_int8(std::fstream& file);
-int16_t read_bin_int16(std::fstream& file);
-int32_t read_bin_int32(std::fstream& file);
-int64_t read_bin_int64(std::fstream& file);
+std::int8_t read_bin_int8(std::fstream& file);
+std::int16_t read_bin_int16(std::fstream& file);
+std::int32_t read_bin_int32(std::fstream& file);
+std::int64_t read_bin_int64(std::fstream& file);
 
 std::string read_bin_str(std::fstream& file);
 
@@ -60,11 +60,11 @@ BoolTensor read_bin_bool_tensor(std::fstream& file);
 template<typename T>
 class Iterator{
     T* m_data;
-    size_t m_count=0;
-    size_t m_step=0;
+    std::size_t m_count=0;
+    std::size_t m_step=0;
     public:
     struct It{
-        It(T* data,size_t idx,size_t step):data(data),idx(idx),step(step){}
+        It(T* data,std::size_t idx,std::size_t step):data(data),idx(idx),step(step){}
         T operator*(){
             return data[idx*step];
         }
@@ -97,15 +97,15 @@ class Iterator{
         }
         private:
         T* data;
-        size_t idx=0;
-        size_t step=0;
+        std::size_t idx=0;
+        std::size_t step=0;
     };
-    Iterator(T* data,size_t count,size_t step=1){
+    Iterator(T* data,std::size_t count,std::size_t step=1){
         this->m_data=data;
         this->m_count=count;
         this->m_step=step;
     }
-    Iterator(const T* data,size_t count,size_t step=1){
+    Iterator(const T* data,std::size_t count,std::size_t step=1){
         this->m_data=const_cast<T*>(data);//We never modify the data so it is safe to cast it
         this->m_count=count;
         this->m_step=step;
