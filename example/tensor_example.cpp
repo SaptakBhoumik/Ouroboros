@@ -112,6 +112,7 @@ int main(){
     t5.replace(5,10);//Replace all the values 5 with 10
     std::cout<<"t5="<<t5<<std::endl;
 
+    t5.reshape({2,3,4});
     /*
     Few other useful methods of the tensor class:-
     void fill_nan(double value=0.0);//Fill all the nan values with the value
@@ -136,16 +137,16 @@ int main(){
 
     std::cout<<"t5[1]="<<t5[1]<<std::endl;
     t5[1]=20;//Set the value at offset 1 of the tensor data to 20
-    std::cout<<"t5="<<t5[1]<<std::endl;
+    std::cout<<"t5[1]="<<t5[1]<<std::endl;
 
-    std::cout<<"Offset of {1,0,0}= in data"<<t5.offset({1,0,0})<<std::endl;
+    std::cout<<"Offset of {1,0,0} in data of t5="<<t5.offset({1,0,0})<<std::endl;
     
     //Slicing
     t5=Ouroboros::CreateTensor::linspace({2,3,4},0,23);
     std::cout<<"t5="<<t5<<std::endl;
-    Ouroboros::Shape start={0,0,0};
-    Ouroboros::Shape end={1,2,3};
-    Ouroboros::Shape step={1,2,1};
+    std::vector<size_t> start={0,0,0};
+    std::vector<size_t> end={1,2,3};
+    std::vector<size_t> step={1,2,1};
     std::cout<<"Slice from start to end with step="<<t5.slice(start,end,step)<<std::endl;
     /*
     t5.slice(start,end) is same as t5.slice(start,end,{1,1,..})

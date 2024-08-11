@@ -94,8 +94,8 @@ int main(){
         auto func=[](double x,double y)->double{
             return x*y;
         };
-        Ouroboros::Shape from={0,0};
-        Ouroboros::Shape to={1,2};
+        std::vector<size_t> from={0,0};
+        std::vector<size_t> to={1,2};
         Ouroboros::Tensor t3=Ouroboros::at<func>(t1,from,to,t2);
         std::cout<<"t3:\n"<<t3<<"\n";
         /*

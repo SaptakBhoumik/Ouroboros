@@ -95,6 +95,9 @@ class Iterator{
         bool operator!=(It& other){
             return idx!=other.idx;
         }
+        size_t operator-(It& other){
+            return (idx-other.idx)/step;
+        }
         private:
         T* data;
         std::size_t idx=0;

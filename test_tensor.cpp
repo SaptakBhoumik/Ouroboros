@@ -132,10 +132,12 @@ int main(){
     t2=Ouroboros::CreateTensor::linspace({2,1},1,2);
     std::cout<<t2<<std::endl;
     t3=Ouroboros::at<dot>(t1,{0,0},{2,1},t2);
+    std::cout<<t1.slice({0,0},{2,1})<<std::endl;
     std::cout<<t3<<std::endl;
     auto test_f=[](double a)->double{return a*a;};
     t3=Ouroboros::at<test_f>(t1,{1,0},{3,1});
-    std::cout<<t3<<std::endl;
+    std::cout<<t1.slice({1,0},{3,1})<<std::endl;
+    std::cout<<"at:-"<<t3<<std::endl;
 
     t1=Ouroboros::CreateTensor::linspace({2,2},1,4);
     std::cout<<t1<<std::endl;

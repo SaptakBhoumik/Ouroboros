@@ -4,6 +4,7 @@
 #include <tuple>
 #include <cmath>
 #include <type_traits>
+#include "shape.hpp"
 #include "utils.hpp"
 #include "macros.hpp"
 
@@ -24,7 +25,7 @@ __always_inline typename __Private__Impl__::Typer<std::is_same<__Private__Impl__
                     "Function must return double or bool");
     constexpr std::size_t n = sizeof...(Ts)+1;
     auto arg_data = std::make_tuple(t.data(),args.data()...);
-    auto shape = t.shape();
+    Shape shape = t.shape();
     if constexpr(n>1){
         std::vector<bool> check = {args.shape()==shape...};
         for(auto x:check){
@@ -211,10 +212,10 @@ __always_inline Tensor accumulate(const Tensor& t,std::size_t axis=0,double init
 template<std::size_t thread_c=8,std::size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor outer(const std::function<double(double,double)>& func,const Tensor& t1,const Tensor& t2){
     //Computes the outer 
-    const auto t1_shape=t1.shape();
-    const auto t2_shape=t2.shape();
-    const auto t1_strides=t1.strides();
-    const auto t2_strides=t2.strides();
+    const Shape t1_shape=t1.shape();
+    const Shape t2_shape=t2.shape();
+    const Shape t1_strides=t1.strides();
+    const Shape t2_strides=t2.strides();
     const std::size_t t1_count=t1_shape.count();
     const std::size_t t2_count=t2_shape.count();
     const std::size_t t1_dim=t1_shape.dim();
@@ -333,12 +334,12 @@ template<std::size_t thread_c=8,
         typename T,
         typename func_type,
         typename ... Ts>
-__always_inline T at(const func_type& func,const T& t1,const Shape& from,const Shape& to,const Ts&... t2){
+__always_inline T at(const func_type& func,const T& t1,const std::vector<size_t>& from,const std::vector<size_t>& to,const Ts&... t2){
     //Applies an element wise function to a slice of the tensor
     T res=t1;
     auto res_data=res.data();
-    const std::size_t dim=from.dim();
-    if(from.dim()!=to.dim()){
+    const std::size_t dim=from.size();
+    if(from.size()!=to.size()){
         throw std::invalid_argument("Shapes must have the same number of elements");
     }
     std::size_t* t2_shape_ptr=new std::size_t[dim];
@@ -380,7 +381,7 @@ __always_inline T at(const func_type& func,const T& t1,const Shape& from,const S
 
     constexpr std::size_t n=sizeof...(Ts);
     auto tuple=std::make_tuple(t2.data()...);
-     if(t2_count<=min_count){
+    if(t2_count<=min_count){
         for(std::size_t i=0;i<t2_count;i++){
             std::size_t res_off=0;
             std::size_t t2_off=0;
@@ -415,7 +416,7 @@ template<const auto func,
         std::size_t min_count=__MIN__COUNT__FOR__THREAD__,
         typename T,
         typename ... Ts>
-__always_inline T at(const T& t1,const Shape& from,const Shape& to,const Ts&... t2){
+__always_inline T at(const T& t1,const std::vector<size_t>& from,const std::vector<size_t>& to,const Ts&... t2){
    return at<thread_c,min_count,T,decltype(func)>(func,t1,from,to,t2...); 
 }
 
@@ -423,8 +424,8 @@ __always_inline T at(const T& t1,const Shape& from,const Shape& to,const Ts&... 
 template<std::size_t thread_c=8,std::size_t min_count=__MIN__COUNT__FOR__THREAD__>
 __always_inline Tensor broadcast(const std::function<double(double,double)>& func,const Tensor& t1,const Tensor& t2){
     //Broadcasts the tensors and applies the function
-    const auto t1_shape=t1.shape();
-    const auto t2_shape=t2.shape();
+    const Shape t1_shape=t1.shape();
+    const Shape t2_shape=t2.shape();
     if(t1_shape.dim()!=t2_shape.dim()){
         throw std::invalid_argument("Shapes must have the same number of elements");
     }
@@ -502,7 +503,7 @@ __always_inline T concat(std::size_t axis,const T& t1,const T& t2,const Ts&... t
         if(t.dim()!=dim){
             throw std::invalid_argument("Shapes must be of same dimension");
         }
-        const auto s=t.shape();
+        const Shape s=t.shape();
         for(std::size_t i=0;i<dim;i++){
             if(i==axis){
                 count+=s[i];

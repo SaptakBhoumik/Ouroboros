@@ -38,15 +38,15 @@ int main(){
     std::cout<<"t2[1]="<<t2[1]<<std::endl;
     //When we use Shape as index then we get tensor.data[offset] as the return value 
     //Where offset is calculated using the strides and index    
-    Ouroboros::Shape index={0,1,2};
+    std::vector<size_t> index={0,1,2};
     t1[index]=true;//This is equivalent to t1[0,1,2]=true
     std::cout<<"t2[0,1,2]="<<t2[index]<<std::endl;
     //Offset
     std::cout<<"Offset of 0,1,2 is "<<t1.offset(index)<<std::endl;
     //Slicing
-    Ouroboros::Shape start={0,0,0};
-    Ouroboros::Shape step={1,1,1};
-    Ouroboros::Shape end={1,2,3};
+    std::vector<size_t> start={0,0,0};
+    std::vector<size_t> step={1,1,1};
+    std::vector<size_t> end={1,2,3};
     Ouroboros::BoolTensor t6=t2.slice(start,end,step);//This is equivalent to t1[0:1,0:2,0:3] in numpy
     std::cout<<"t6="<<t6<<std::endl;
     /*
