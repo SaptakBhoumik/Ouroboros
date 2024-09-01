@@ -271,6 +271,8 @@ class Tensor{
     double sum()const;
     double prod()const;
     double mean()const;
+    double variance(double _mean)const;//If u already know the mean
+    double SD(double _mean)const;//If u already know the mean
     double variance()const;
     double SD()const;
     double RMS()const;

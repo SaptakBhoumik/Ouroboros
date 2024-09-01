@@ -186,14 +186,20 @@ double Tensor::sum()const{
 double Tensor::mean()const{
     return sum()/m_shape.count();
 }
-double Tensor::variance()const{
-    double _mean=mean();
+double Tensor::variance(double _mean)const{
     double res=0.0;
     for(std::size_t i=0;i<m_shape.count();i++){
         double temp=m_data[i]-_mean;
         res+=temp*temp;
     }
     return res/m_shape.count();
+}
+double Tensor::SD(double _mean)const{
+    return std::sqrt(variance(_mean));
+}
+double Tensor::variance()const{
+    double _mean=mean();
+    return variance(_mean);
 }
 double Tensor::SD()const{
     return std::sqrt(variance());
