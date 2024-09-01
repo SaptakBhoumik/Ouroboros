@@ -22,6 +22,8 @@ class BoolTensor{
     BoolTensor& operator=(const BoolTensor& tensor);
     BoolTensor& operator=(BoolTensor&& tensor);
 
+    void reverse();
+    
     void reshape(const Shape& shape);
     void flatten();
 
@@ -139,6 +141,8 @@ class Tensor{
 
     Tensor& operator=(const Tensor& tensor);
     Tensor& operator=(Tensor&& tensor);
+
+    void reverse();
 
     void reshape(const Shape& shape);
     void flatten();
@@ -267,6 +271,10 @@ class Tensor{
     double sum()const;
     double prod()const;
     double mean()const;
+    double variance()const;
+    double SD()const;
+    double RMS()const;
+
     double max()const;
     double min()const;
     std::pair<double,std::size_t> max_index()const;

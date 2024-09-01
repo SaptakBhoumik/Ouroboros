@@ -1,4 +1,5 @@
 #include "tensor.hpp"
+#include <cstddef>
 #include <functional>
 #include <stdlib.h>
 #include <random>
@@ -7,13 +8,14 @@ Shape getStride(const Shape& shape){
     if(shape.dim()==1){
         return {1};
     }
-    std::size_t strides_data[shape.dim()];
+    std::size_t* strides_data=new size_t[shape.dim()];
     std::size_t stride = 1;
     for (int i = shape.dim() - 1; i >= 0; --i) {
         strides_data[i] = stride;
         stride *= shape[i];
     }
     auto strides=Shape(shape.dim(), strides_data);
+    delete[] strides_data;
     return strides;
 }
 void Tensor::fill(double value){
@@ -183,6 +185,25 @@ double Tensor::sum()const{
 }
 double Tensor::mean()const{
     return sum()/m_shape.count();
+}
+double Tensor::variance()const{
+    double _mean=mean();
+    double res=0.0;
+    for(std::size_t i=0;i<m_shape.count();i++){
+        double temp=m_data[i]-_mean;
+        res+=temp*temp;
+    }
+    return res/m_shape.count();
+}
+double Tensor::SD()const{
+    return std::sqrt(variance());
+}
+double Tensor::RMS()const{
+    double res=0.0;
+    for(std::size_t i=0;i<m_shape.count();i++){
+        res+=m_data[i]*m_data[i];
+    }
+    return std::sqrt(res/m_shape.count());
 }
 double Tensor::max()const{
     double res=m_data[0];

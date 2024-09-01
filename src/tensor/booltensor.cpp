@@ -72,6 +72,12 @@ BoolTensor& BoolTensor::operator=(BoolTensor&& tensor){
     tensor.m_data=nullptr;
     return *this;
 }
+void BoolTensor::reverse(){
+    std::size_t n=m_shape.count();
+    for(std::size_t i=0;i<n/2;i++){
+        std::swap(m_data[i],m_data[n-i-1]);
+    }
+}
 void BoolTensor::reshape(const Shape& shape){
     if(m_shape.count()!=shape.count()){
         throw std::invalid_argument("Invalid shape for reshape");
