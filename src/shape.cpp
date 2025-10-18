@@ -1,112 +1,142 @@
+#include "tensor.hpp"
 
-#include "shape.hpp"
 namespace Ouroboros{
 Shape::Shape(std::size_t dim,std::size_t val){
-    if(dim==0){
-        throw std::invalid_argument("Shape cannot be empty");
-    }
+    // if(dim==0){
+    //     throw std::invalid_argument("Shape cannot be empty");
+    // }
     m_dim=dim;
     m_shape=new std::size_t[m_dim];
+    m_strides=new std::size_t[m_dim];
+    m_strides[m_dim-1]=1;
     for(std::size_t i=0;i<m_dim;i++){
         m_shape[i]=val;
         m_count*=val;
+        if(i<m_dim-1){
+            m_strides[i]=m_strides[i+1]*m_shape[i+1];
+        }
     }
 }
 Shape::Shape(std::size_t dim,std::size_t* shape){
-    if(dim==0){
-        throw std::invalid_argument("Shape cannot be empty");
-    }
+    // if(dim==0){
+    //     throw std::invalid_argument("Shape cannot be empty");
+    // }
     m_dim=dim;
     m_shape=new std::size_t[m_dim];
-    std::size_t* ptr=m_shape;
+    m_strides=new std::size_t[m_dim];
+    m_strides[m_dim-1]=1;
     for(std::size_t i=0;i<m_dim;i++){
-        *ptr=shape[i];
+        m_shape[i]=shape[i];
         m_count*=shape[i];
-        ++ptr;
+        if(i<m_dim-1){
+            m_strides[i]=m_strides[i+1]*m_shape[i+1];
+        }
     }
 }
 Shape::Shape(std::initializer_list<std::size_t> shape){
     m_dim=shape.size();
-    if(m_dim==0){
-        throw std::invalid_argument("Shape cannot be empty");
-    }
+    // if(m_dim==0){
+    //     throw std::invalid_argument("Shape cannot be empty");
+    // }
     m_shape=new std::size_t[m_dim];
+    m_strides=new std::size_t[m_dim];
+    m_strides[m_dim-1]=1;
     m_count=1;
-    std::size_t* ptr=m_shape;
+    std::size_t i = 0;
     for(auto it=shape.begin();it!=shape.end();it++){
-        *ptr=*it;
-        m_count*=(*it);
-        ++ptr;
+        m_shape[i]=*it;
+        m_count*=m_shape[i];
+        if(i<m_dim-1){
+            m_strides[i]=m_strides[i+1]*m_shape[i+1];
+        }
+        i++;
     }
 }
 Shape::Shape(const Shape& shape){
     m_dim=shape.m_dim;
     m_count=shape.m_count;
     m_shape=new std::size_t[m_dim];
-    std::size_t* ptr=m_shape;
+    m_strides=new std::size_t[m_dim];
     for(std::size_t i=0;i<m_dim;i++){
-        *ptr=shape.m_shape[i];
-        ++ptr;
+        m_shape[i]=shape.m_shape[i];
+        m_strides[i]=shape.m_strides[i];
     }
 }
 Shape::Shape(Shape&& shape){
     m_dim=shape.m_dim;
     m_count=shape.m_count;
     m_shape=shape.m_shape;
+    m_strides=shape.m_strides;
     shape.m_dim=0;
     shape.m_count=1;
     shape.m_shape=nullptr;
+    shape.m_strides=nullptr;
 }
 
-Shape& Shape::operator=(const Shape& shape){
+void Shape::operator=(const Shape& shape){
     if(this==&shape){
-        return *this;
+        return;
     }
-    if(m_shape!=nullptr){
-        delete[] m_shape;
+    if(m_dim!=shape.m_dim){
+        if(m_shape!=nullptr){
+            delete[] m_shape;
+        }
+        if(m_strides!=nullptr){
+            delete[] m_strides;
+        }
+        m_shape=new std::size_t[m_dim];
+        m_strides=new std::size_t[m_dim];
     }
     m_dim=shape.m_dim;
     m_count=shape.m_count;
-    m_shape=new std::size_t[m_dim];
-    std::size_t* ptr=m_shape;
     for(std::size_t i=0;i<m_dim;i++){
-        *ptr=shape.m_shape[i];
-        ++ptr;
+        m_shape[i]=shape.m_shape[i];
+        m_strides[i]=shape.m_strides[i];
     }
-    return *this;
 }
-Shape& Shape::operator=(Shape&& shape){
+void Shape::operator=(Shape&& shape){
     if(this==&shape){
-        return *this;
+        return;
     }
     if(m_shape!=nullptr){
         delete[] m_shape;
+    }
+    if(m_strides!=nullptr){
+        delete[] m_strides;
     }
     m_dim=shape.m_dim;
     m_count=shape.m_count;
     m_shape=shape.m_shape;
+    m_strides=shape.m_strides;
     shape.m_dim=0;
     shape.m_count=1;
     shape.m_shape=nullptr;
-    return *this;
+    shape.m_strides=nullptr;
 }
-Shape& Shape::operator=(std::initializer_list<std::size_t> shape){
-    if(m_shape!=nullptr){
-        delete[] m_shape;
+void Shape::operator=(std::initializer_list<std::size_t> shape){
+    if(m_dim!=shape.size()){
+        if(m_shape!=nullptr){
+            delete[] m_shape;
+        }
+        if(m_strides!=nullptr){
+            delete[] m_strides;
+        }
+        m_strides=new std::size_t[shape.size()];
+        m_shape=new std::size_t[shape.size()];
+        m_strides[shape.size()-1]=1;
+        
     }
     m_dim=shape.size();
-    if(m_dim==0){
-        throw std::invalid_argument("Shape cannot be empty");
-    }
-    m_shape=new std::size_t[m_dim];
     m_count=1;
-    std::size_t* ptr=m_shape;
+    std::size_t i = 0;
     for(auto it=shape.begin();it!=shape.end();it++){
-        *ptr=*it;
-        m_count*=(*it);
-        ++ptr;
+        m_shape[i]=*it;
+        m_count*=m_shape[i];
+        if(i<m_dim-1){
+            m_strides[i]=m_strides[i+1]*m_shape[i+1];
+        }
+        i++;
     }
-    return *this;
 }
 const std::size_t* Shape::begin() const{
     return m_shape;
@@ -141,6 +171,10 @@ Shape::~Shape(){
     if(m_shape!=nullptr){
         delete[] m_shape;
         m_shape=nullptr;
+    }
+    if(m_strides!=nullptr){
+        delete[] m_strides;
+        m_strides=nullptr;
     }
     this->m_dim=0;
     this->m_count=1;

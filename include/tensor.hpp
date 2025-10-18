@@ -1,307 +1,149 @@
 #pragma once
-#include "macros.hpp"
-#include "shape.hpp"
-#include <functional>
-#include <vector>   
+#include <cstddef>
+#include <cstdint>
+#include <initializer_list>
+#include <iostream>
+#include <sys/cdefs.h>
+#include <vector>
 namespace Ouroboros{
-class BoolTensor{
-    bool* m_data=nullptr;
-    Shape m_shape;
-    Shape m_strides={1};
-    void sliceRecursive(BoolTensor& output, const std::vector<size_t>& start, const std::vector<size_t>& step, std::vector<size_t>& indices, 
-                        std::vector<size_t>& output_indices, std::size_t dimension);
-    public:
-    BoolTensor(const Shape& shape);
-    BoolTensor(const Shape& shape,bool value);
-    //We dont copy the data and instead this data is shared
-    //So the user should not delete the data/use it
-    BoolTensor(const Shape& shape,bool* data);
-    BoolTensor(const BoolTensor& tensor);
-    BoolTensor(BoolTensor&& tensor);
+class Shape{
+    std::uint64_t* m_shape=nullptr;
+    std::uint64_t* m_strides=nullptr;
+    std::uint64_t m_count=1;//No of elements in the tensor i.e product of elms in m_shape
+    std::uint64_t m_dim=0;//No of dimensions in the tensor i.e no of elms in m_shape
+public:
+    Shape(std::uint64_t dim,std::uint64_t val);
+    Shape(std::uint64_t dim,std::uint64_t* shape);//Note we copy the shape
+    Shape(std::initializer_list<std::uint64_t> shape);
+    Shape(const Shape& shape);
+    Shape(Shape&& shape);
 
-    BoolTensor& operator=(const BoolTensor& tensor);
-    BoolTensor& operator=(BoolTensor&& tensor);
+    void operator=(const Shape& shape);
+    void operator=(Shape&& shape);
+    void operator=(std::initializer_list<std::uint64_t> shape);
 
-    void reverse();
-    
-    void reshape(const Shape& shape);
-    void flatten();
-
-    __always_inline bool& operator[](std::size_t index){
-        #ifdef __OUROBOROS_CHECK__
-        if(index>=m_shape.count()){
-            throw std::invalid_argument("Invalid index");
-        }
-        #endif
-        return m_data[index];
+    __always_inline const std::uint64_t operator[](std::uint64_t index) const{
+        return m_shape[index];
     }
-    __always_inline const bool& operator[](std::size_t index) const{
-        #ifdef __OUROBOROS_CHECK__
-        if(index>=m_shape.count()){
-            throw std::invalid_argument("Invalid index");
+    __always_inline std::size_t offset(const std::vector<std::size_t>& indices) const{
+        std::size_t off=0;
+        for(std::size_t i=0;i<m_dim;i++){
+            off+=indices[i]*m_strides[i];
         }
-        #endif
-        return m_data[index];
+        return off;
     }
-    __always_inline std::size_t offset(const std::vector<size_t>& index) const{
-        std::size_t idx=0;
-        for(std::size_t i=0;i<m_strides.dim();i++){
-            idx+=m_strides[i]*index[i];
-        }
-        return idx;
-    }
-    __always_inline bool& operator[](const std::vector<size_t>& index){
-        #ifdef __OUROBOROS_CHECK__
-        if(index.size()!=m_shape.dim()){
-            throw std::invalid_argument("Invalid index");
-        }
-        std::size_t idx=0;
-        for(std::size_t i=0;i<index.size();i++){
-            if(index[i]>=m_shape[i]){
-                throw std::invalid_argument("Invalid index");
-            }
-            idx+=m_strides[i]*index[i];
-        }
-        return m_data[idx];
-        #else
-        return m_data[offset(index)];
-        #endif
-    }
-    __always_inline const bool& operator[](const std::vector<size_t>& index) const{
-        #ifdef __OUROBOROS_CHECK__
-        if(index.size()!=m_shape.dim()){
-            throw std::invalid_argument("Invalid index");
-        }
-        std::size_t idx=0;
-        for(std::size_t i=0;i<index.size();i++){
-            if(index[i]>=m_shape[i]){
-                throw std::invalid_argument("Invalid index");
-            }
-            idx+=m_strides[i]*index[i];
-        }
-        return m_data[idx];
-        #else
-        return m_data[offset(index)];
-        #endif
-    }
+    const std::uint64_t* begin() const;
+    const std::uint64_t* end() const;
 
-    __always_inline BoolTensor slice(const std::vector<size_t>& start,const std::vector<size_t>& end,const std::vector<size_t>& step){
-        if (start.size() != m_shape.dim() || end.size() != m_shape.dim() || step.size() != m_shape.dim()) {
-            throw std::invalid_argument("Start, end, and step vectors must have the same length as the number of dimensions in the tensor");
-        }
+    bool operator==(const Shape& shape) const;
+    bool operator!=(const Shape& shape) const;
 
-        // Calculate the shape of the sliced tensor
-        std::size_t* data=new std::size_t[m_shape.dim()];
-        for (std::size_t i = 0; i < m_shape.dim(); ++i) {
-            data[i] = (end[i] - start[i] + step[i] - 1) / step[i];
-        }
+    std::uint64_t count() const;
+    std::uint64_t dim() const;
 
-        Shape output_shape(m_shape.dim(),data);
-        delete[] data;
+    ~Shape();
+}; 
+std::ostream& operator<<(std::ostream& os,const Shape& shape);
 
-        BoolTensor output(output_shape);
-
-        std::size_t i=0;
-        std::vector<size_t> indices(m_shape.dim(), i);
-        std::vector<size_t> output_indices(m_shape.dim(), i);
-        sliceRecursive(output, start, step, indices, output_indices, 0);
-
-        return output;
-    }
-    __always_inline BoolTensor slice(const std::vector<size_t>& start,const std::vector<size_t>& end,std::size_t step=1){
-        std::vector<size_t> step_vec(m_shape.dim(),step);
-        return slice(start,end,step_vec);
-    }
-
-    bool* data();
-    const bool* data() const;
-
-    Shape shape() const;
-    Shape strides() const;
-    std::size_t count() const;
-    std::size_t dim() const;
-
-    ~BoolTensor();
-};
-std::ostream& operator<<(std::ostream& os,const BoolTensor& tensor);
+template<typename T>
 class Tensor{
-    double* m_data=nullptr;
     Shape m_shape;
-    Shape m_strides={1};
-    void sliceRecursive(Tensor& output, const std::vector<size_t>& start, const std::vector<size_t>& step, std::vector<size_t>& indices, 
-                        std::vector<size_t>& output_indices, std::size_t dimension);
-    public:
-    Tensor(const Shape& shape);
-    Tensor(const Shape& shape,double value);
-    //We dont copy the data and instead this data is shared
-    //So the user should not delete the data/use it
-    Tensor(const Shape& shape,double* data);
-    Tensor(const Tensor& tensor);
-    Tensor(Tensor&& tensor);
-
-    Tensor& operator=(const Tensor& tensor);
-    Tensor& operator=(Tensor&& tensor);
-
-    void reverse();
-
-    void reshape(const Shape& shape);
-    void flatten();
-    //Modify the tensor data but not the shape
-    void fill(double value);
-    void fill(std::function<double()> func);
-    void zeros();
-    void ones();
-    void rand(double start=0.0,double end=1.0);
-
-    //Clean all values < a and set them to new_val
-    void clean(double a=0.0,double new_val=0.0);
-    //Clip all values to be in the range [a,b] i.e if a>x then x=a and if x>b then x=b else x=x
-    void clamp(double a,double b);
-    //Clip all values to be in the range {a,b,c} i.e if a>x then x=a and if x>b then x=b else x=c
-    void clamp(double a,double b,double c);
-    void threshold(double a,double new_val=0.0);
-    //Replace all values a with b
-    void replace(double a,double b);
-
-    void fill_nan(double value=0.0);
-    void fill_inf(double value=0.0);
-    void fill_neg_inf(double value=0.0);
-
-    void fill_nan_inf(double value=0.0);
-    void fill_nan_neg_inf(double value=0.0);
-    void fill_inf_neg_inf(double value=0.0);
-
-    void fill_nan_inf_neg_inf(double value=0.0);    
-
-    bool is_zero()const;
-    bool is_finite()const;
-    bool has_nan()const;
-
-    __always_inline double& operator[](std::size_t index){
-        #ifdef __OUROBOROS_CHECK__
-        if(index>=m_shape.count()){
-            throw std::invalid_argument("Invalid index");
+    T* m_data=nullptr;
+public:
+    Tensor(const Shape& shape):m_shape(shape){
+        m_data=new T[m_shape.count()];
+    }
+    Tensor(const Shape& shape,T val):m_shape(shape){
+        m_data=new T[m_shape.count()];
+        for(std::size_t i=0;i<m_shape.count();i++){
+            m_data[i]=val;
         }
-        #endif
+    }
+    Tensor(const Shape& shape,const T* data):m_shape(shape){
+        m_data=new T[m_shape.count()];
+        for(std::size_t i=0;i<m_shape.count();i++){
+            m_data[i]=data[i];
+        }
+    }
+    Tensor(const Tensor<T>& tensor):m_shape(tensor.m_shape){
+        m_data=new T[m_shape.count()];
+        for(std::size_t i=0;i<m_shape.count();i++){
+            m_data[i]=tensor.m_data[i];
+        }
+    }
+    Tensor(Tensor<T>&& tensor):m_shape(std::move(tensor.m_shape)){
+        m_data=tensor.m_data;
+        tensor.m_data=nullptr;
+    }
+    ~Tensor(){
+        if(m_data!=nullptr){
+            delete[] m_data;
+            m_data=nullptr;
+        }
+    }
+
+    void operator=(const Tensor<T>& tensor){
+        if(this==&tensor){
+            return;
+        }
+        if(m_shape.count()!=tensor.m_shape.count()){
+            if(m_data!=nullptr){
+                delete[] m_data;
+            }
+            m_shape=tensor.m_shape;
+            m_data=new T[m_shape.count()];
+        }
+        for(std::size_t i=0;i<m_shape.count();i++){
+            m_data[i]=tensor.m_data[i];
+        }
+    }
+    void operator=(Tensor<T>&& tensor){
+        if(this==&tensor){
+            return;
+        }
+        if(m_data!=nullptr){
+            delete[] m_data;
+        }
+        m_shape=std::move(tensor.m_shape);
+        m_data=tensor.m_data;
+        tensor.m_data=nullptr;
+    }
+
+    __always_inline T& operator[](std::size_t index){
         return m_data[index];
     }
-    __always_inline const double& operator[](std::size_t index) const{
-        #ifdef __OUROBOROS_CHECK__
-        if(index>=m_shape.count()){
-            throw std::invalid_argument("Invalid index");
-        }
-        #endif
+    __always_inline const T& operator[](std::size_t index) const{
         return m_data[index];
     }
-    __always_inline std::size_t offset(const std::vector<size_t>& index) const{
-        std::size_t idx=0;
-        for(std::size_t i=0;i<m_strides.dim();i++){
-            idx+=m_strides[i]*index[i];
-        }
-        return idx;
+    __always_inline T& operator[](const std::vector<std::size_t>& indices){
+        std::size_t off=m_shape.offset(indices);
+        return m_data[off];
     }
-    __always_inline double& operator[](const std::vector<size_t>& index){
-        #ifdef __OUROBOROS_CHECK__
-        if(index.size()!=m_shape.dim()){
-            throw std::invalid_argument("Invalid index");
-        }
-        std::size_t idx=0;
-        for(std::size_t i=0;i<index.size();i++){
-            if(index[i]>=m_shape[i]){
-                throw std::invalid_argument("Invalid index");
-            }
-            idx+=m_strides[i]*index[i];
-        }
-        return m_data[idx];
-        #else
-        return m_data[offset(index)];
-        #endif
+    __always_inline const T& operator[](const std::vector<std::size_t>& indices) const{
+        std::size_t off=m_shape.offset(indices);
+        return m_data[off];
     }
-    __always_inline const double& operator[](const std::vector<size_t>& index) const{
-        #ifdef __OUROBOROS_CHECK__
-        if(index.size()!=m_shape.dim()){
-            throw std::invalid_argument("Invalid index");
-        }
-        std::size_t idx=0;
-        for(std::size_t i=0;i<index.size();i++){
-            if(index[i]>=m_shape[i]){
-                throw std::invalid_argument("Invalid index");
-            }
-            idx+=m_strides[i]*index[i];
-        }
-        return m_data[idx];
-        #else
-        return m_data[offset(index)];
-        #endif
+
+    const Shape& shape() const{
+        return m_shape;
     }
-    __always_inline Tensor slice(const std::vector<size_t>& start,const std::vector<size_t>& end,const std::vector<size_t>& step){
-        if (start.size() != m_shape.dim() || end.size() != m_shape.dim() || step.size() != m_shape.dim()) {
-            throw std::invalid_argument("Start, end, and step must have the same length as the number of dimensions in the tensor");
-        }
-
-        // Calculate the shape of the sliced tensor
-        std::size_t* data=new size_t[m_shape.dim()];
-        for (std::size_t i = 0; i < m_shape.dim(); ++i) {
-            data[i] = (end[i] - start[i] + step[i] - 1) / step[i];
-        }
-        Shape output_shape(m_shape.dim(),data);
-        delete[] data;
-        Tensor output(output_shape);
-
-        std::size_t i=0;
-        std::vector<size_t> indices(m_shape.dim(), i);
-        std::vector<size_t> output_indices(m_shape.dim(), i);
-        sliceRecursive(output, start, step, indices, output_indices, 0);
-
-        return output;
+    const T* data() const{
+        return m_data;
     }
-    __always_inline Tensor slice(const std::vector<size_t>& start,const std::vector<size_t>& end,std::size_t step=1){
-        std::vector<size_t> step_vec(m_shape.dim(),step);
-        return slice(start,end,step_vec);
+    T* data(){
+        return m_data;
     }
-    double* data();
-    const double* data() const;
-    Shape shape() const;
-    Shape strides() const;
-    std::size_t count() const;
-    std::size_t dim() const;
-
-    double norm()const;
-    double norm2()const;
-    double sum()const;
-    double prod()const;
-    double mean()const;
-    double variance(double _mean)const;//If u already know the mean
-    double SD(double _mean)const;//If u already know the mean
-    double variance()const;
-    double SD()const;
-    double RMS()const;
-
-    double max()const;
-    double min()const;
-    std::pair<double,std::size_t> max_index()const;
-    std::pair<double,std::size_t> min_index()const;
-
-    ~Tensor();
+    const std::size_t size() const{
+        return m_shape.count();
+    }
+    const std::size_t dim() const{
+        return m_shape.dim();
+    }
 };
-std::ostream& operator<<(std::ostream& os,const Tensor& tensor);
-Shape getStride(const Shape& shape);
-namespace CreateTensor{
-Tensor zeros(const Shape& shape);
-Tensor ones(const Shape& shape);
-Tensor rand(const Shape& shape,double start=0.0,double end=1.0);
-Tensor fill(const Shape& shape,double value);
-Tensor fill(const Shape& shape,std::function<double()> func);
-Tensor linspace(const Shape& shape,double start,double end);	 
-//base^start,base^(start+step),base^(start+2*step),...,base^end
-//step=(end-start)/(count-1)
-Tensor logspace(const Shape& shape,double start,double end,double base=10.0);	
-Tensor scalar_matrix(std::size_t col_count,double value=1.0);
-Tensor diagonal_matrix(std::vector<double> diag);
-//If condition is true then x else y
-Tensor where(const BoolTensor& condition,const Tensor& x,const Tensor& y);
-Tensor where(const BoolTensor& condition,const Tensor& x,double y);
-Tensor where(const BoolTensor& condition,double x,const Tensor& y);
-Tensor where(const BoolTensor& condition,double x,double y);
 }
-}
+
+#include "op0.hpp"
+#include "op1.hpp"
+#include "op2.hpp"
+#include "op3.hpp"
+#include "loss.hpp"
