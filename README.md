@@ -42,6 +42,33 @@ int main(){
 }
 ```
 
+## Documentation
+
+For comprehensive documentation of all public APIs, including detailed examples and NumPy equivalents, see [doc/DOC.MD](doc/DOC.MD).
+
+The documentation includes:
+- Complete API reference for Shape and Tensor classes
+- Iterator classes (NDRange, IdxIterator, IdxIterator2)
+- All operators (bitwise, arithmetic, comparison, logical)
+- Utility functions (transform, reduce, accumulate, outer, concat, transpose, flip, broadcast)
+- NumPy-style examples showing equivalent operations for users familiar with NumPy
+
+```cpp
+// Quick comparison with NumPy:
+// NumPy: arr = np.ones((2, 3))
+Ouroboros::Tensor<double> t({2, 3}, 1.0);
+
+// NumPy: arr2 = arr + 5
+auto t2 = t + 5.0;
+
+// NumPy: result = np.matmul(a, b)
+auto result = Ouroboros::matmul(t1, t2);
+
+// NumPy: transformed = np.sin(arr)
+auto sin_func = [](double x) { return std::sin(x); };
+auto transformed = Ouroboros::transform<sin_func>(t)
+```
+
 More examples can be found [HERE](https://github.com/SaptakBhoumik/Ouroboros/tree/master/example) 
 
 
