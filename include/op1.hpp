@@ -6,7 +6,7 @@ namespace Ouroboros{
 template<typename T>
 Tensor<T> operator-(const Tensor<T>& a){
     Tensor<T> result(a.shape());
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         result[i]=-a[i];
     }
     return result;
@@ -15,7 +15,7 @@ Tensor<T> operator-(const Tensor<T>& a){
 template<typename T>
 Tensor<T> operator+(const Tensor<T>& a,const Tensor<T>& b){
     Tensor<T> result(a.shape());
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         result[i]=a[i]+b[i];
     }
     return result;
@@ -23,7 +23,7 @@ Tensor<T> operator+(const Tensor<T>& a,const Tensor<T>& b){
 template<typename T>
 Tensor<T> operator-(const Tensor<T>& a,const Tensor<T>& b){
     Tensor<T> result(a.shape());
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         result[i]=a[i]-b[i];
     }
     return result;
@@ -31,7 +31,7 @@ Tensor<T> operator-(const Tensor<T>& a,const Tensor<T>& b){
 template<typename T>
 Tensor<T> operator*(const Tensor<T>& a,const Tensor<T>& b){
     Tensor<T> result(a.shape());
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         result[i]=a[i]*b[i];
     }
     return result;
@@ -39,7 +39,7 @@ Tensor<T> operator*(const Tensor<T>& a,const Tensor<T>& b){
 template<typename T>
 Tensor<T> operator/(const Tensor<T>& a,const Tensor<T>& b){
     Tensor<T> result(a.shape());
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         result[i]=a[i]/b[i];
     }
     return result;
@@ -48,7 +48,7 @@ Tensor<T> operator/(const Tensor<T>& a,const Tensor<T>& b){
 template<typename T>
 Tensor<T> operator+(const Tensor<T>& a,T b){
     Tensor<T> result(a.shape());
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         result[i]=a[i]+b;
     }
     return result;
@@ -60,7 +60,7 @@ Tensor<T> operator-(const Tensor<T>& a,T b){
 template<typename T>
 Tensor<T> operator*(const Tensor<T>& a,T b){
     Tensor<T> result(a.shape());
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         result[i]=a[i]*b;
     }
     return result;
@@ -77,7 +77,7 @@ Tensor<T> operator+(T a,const Tensor<T>& b){
 template<typename T>
 Tensor<T> operator-(T a,const Tensor<T>& b){
     Tensor<T> result(b.shape());
-    for(std::size_t i=0;i<b.size();i++){
+    for(std::uint64_t i=0;i<b.size();i++){
         result[i]=a-b[i];
     }
     return result;
@@ -89,7 +89,7 @@ Tensor<T> operator*(T a,const Tensor<T>& b){
 template<typename T>
 Tensor<T> operator/(T a,const Tensor<T>& b){
     Tensor<T> result(b.shape());
-    for(std::size_t i=0;i<b.size();i++){
+    for(std::uint64_t i=0;i<b.size();i++){
         result[i]=a/b[i];
     }
     return result;
@@ -97,32 +97,32 @@ Tensor<T> operator/(T a,const Tensor<T>& b){
 
 template<typename T>
 void operator+=(Tensor<T>& a,const Tensor<T>& b){
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         a[i]+=b[i];
     }
 }
 template<typename T>
 void operator-=(Tensor<T>& a,const Tensor<T>& b){
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         a[i]-=b[i];
     }
 }
 template<typename T>
 void operator*=(Tensor<T>& a,const Tensor<T>& b){
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         a[i]*=b[i];
     }
 }
 template<typename T>
 void operator/=(Tensor<T>& a,const Tensor<T>& b){
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         a[i]/=b[i];
     }
 }
 
 template<typename T>
 void operator+=(Tensor<T>& a,T b){
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         a[i]+=b;
     }
 }
@@ -132,7 +132,7 @@ void operator-=(Tensor<T>& a,T b){
 }
 template<typename T>
 void operator*=(Tensor<T>& a,T b){
-    for(std::size_t i=0;i<a.size();i++){
+    for(std::uint64_t i=0;i<a.size();i++){
         a[i]*=b;
     }
 }

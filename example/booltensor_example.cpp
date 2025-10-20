@@ -8,7 +8,7 @@ int main(){
     std::cout<<"t1="<<t1<<std::endl;
     std::cout<<"t2="<<t2<<std::endl;
     bool* data=new bool[shape.count()];//It has to be heap allocated
-    for(std::size_t i=0;i<shape.count();i++){
+    for(std::uint64_t i=0;i<shape.count();i++){
         data[i]=i%2==0;
     }
     //This method is useful when you have a preallocated array and you want to use it as the data for the tensor
@@ -30,7 +30,7 @@ int main(){
     t1.flatten();
     std::cout<<"t1="<<t1<<std::endl;
     //Indexing
-    //When we use std::size_t as index then we get tensor.data[index] as the return value    
+    //When we use std::uint64_t as index then we get tensor.data[index] as the return value    
     //When we use the [] operator we get a reference to the value so we can modify it
     t1[0]=true;
     std::cout<<"t2[0]="<<t2[0]<<std::endl;
@@ -38,15 +38,15 @@ int main(){
     std::cout<<"t2[1]="<<t2[1]<<std::endl;
     //When we use Shape as index then we get tensor.data[offset] as the return value 
     //Where offset is calculated using the strides and index    
-    std::vector<size_t> index={0,1,2};
+    std::vector<uint64_t> index={0,1,2};
     t1[index]=true;//This is equivalent to t1[0,1,2]=true
     std::cout<<"t2[0,1,2]="<<t2[index]<<std::endl;
     //Offset
     std::cout<<"Offset of 0,1,2 is "<<t1.offset(index)<<std::endl;
     //Slicing
-    std::vector<size_t> start={0,0,0};
-    std::vector<size_t> step={1,1,1};
-    std::vector<size_t> end={1,2,3};
+    std::vector<uint64_t> start={0,0,0};
+    std::vector<uint64_t> step={1,1,1};
+    std::vector<uint64_t> end={1,2,3};
     Ouroboros::BoolTensor t6=t2.slice(start,end,step);//This is equivalent to t1[0:1,0:2,0:3] in numpy
     std::cout<<"t6="<<t6<<std::endl;
     /*
@@ -62,10 +62,10 @@ int main(){
     Ouroboros::Shape strides=t1.strides();
     std::cout<<"Strides of t1="<<strides<<std::endl;
     //Getting the count i.e. the number of elements in the tensor
-    std::size_t count=t1.count();
+    std::uint64_t count=t1.count();
     std::cout<<"Count of t1="<<count<<std::endl;
     //Getting the no of dimensions
-    std::size_t dim=t1.dim();
+    std::uint64_t dim=t1.dim();
     std::cout<<"Dim of t1="<<dim<<std::endl;
     //Operators 
     Ouroboros::BoolTensor t7({2,3,4},true);

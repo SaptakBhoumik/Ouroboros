@@ -37,7 +37,7 @@ int main(){
         std::cout<<"t2:\n"<<t2<<"\n";
         Ouroboros::Tensor t3=Ouroboros::reduce<func>(t,1);//Reduce along the 1st axis
         std::cout<<"t3:\n"<<t3<<"\n";
-        Ouroboros::Tensor t4=Ouroboros::reduce<func>(t,std::vector<std::size_t>{});//Reduce the whole tensor to get tensor with single element 
+        Ouroboros::Tensor t4=Ouroboros::reduce<func>(t,std::vector<std::uint64_t>{});//Reduce the whole tensor to get tensor with single element 
                                                                               //Shape is {1}
         std::cout<<"t4:\n"<<t4<<"\n";
         Ouroboros::Tensor t5=Ouroboros::reduce<func>(t,{0,1});//Reduce along 0 and then 1 axis
@@ -94,8 +94,8 @@ int main(){
         auto func=[](double x,double y)->double{
             return x*y;
         };
-        std::vector<size_t> from={0,0};
-        std::vector<size_t> to={1,2};
+        std::vector<uint64_t> from={0,0};
+        std::vector<uint64_t> to={1,2};
         Ouroboros::Tensor t3=Ouroboros::at<func>(t1,from,to,t2);
         std::cout<<"t3:\n"<<t3<<"\n";
         /*
@@ -145,7 +145,7 @@ int main(){
         std::cout<<"t3:\n"<<t3<<"\n";
         Ouroboros::Tensor t4=Ouroboros::flip(t1,{0,1});//Flip along 0st and then 1th axis
         std::cout<<"t4:\n"<<t4<<"\n";
-        Ouroboros::Tensor t5=Ouroboros::flip(t1,std::vector<std::size_t>{});//Flip the whole data otr
+        Ouroboros::Tensor t5=Ouroboros::flip(t1,std::vector<std::uint64_t>{});//Flip the whole data otr
         std::cout<<"t5:\n"<<t5<<"\n";
     }
     //Transpose i.e swap the axes of a tensor

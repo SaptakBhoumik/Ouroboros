@@ -149,7 +149,7 @@ int main(){
     t3=Ouroboros::broadcast<func2>(t2,t1);
     std::cout<<t3<<std::endl;
     {
-        std::size_t g=0;
+        std::uint64_t g=0;
         auto func3=[g](double a,double b)->double{return a+b+g;};
         auto t=Ouroboros::CreateTensor::linspace({2,2},1,4);
         auto t3=Ouroboros::transform(func3,t,t);

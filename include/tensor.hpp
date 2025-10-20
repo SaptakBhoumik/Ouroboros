@@ -3,8 +3,11 @@
 #include <cstdint>
 #include <initializer_list>
 #include <iostream>
+#include <map>
 #include <sys/cdefs.h>
 #include <set>
+#include <sys/types.h>
+#include <unordered_map>
 #include <vector>
 namespace Ouroboros{
 class Shape{
@@ -16,6 +19,7 @@ public:
     Shape(std::uint64_t dim,std::uint64_t val);
     Shape(std::uint64_t dim,std::uint64_t* shape);//Note we copy the shape
     Shape(std::initializer_list<std::uint64_t> shape);
+    Shape(std::vector<std::uint64_t> shape);
     Shape(const Shape& shape);
     Shape(Shape&& shape);
 
@@ -27,7 +31,7 @@ public:
         m_shape[index]=val;
         //Recompute strides and count
         m_count=1;
-        for(std::size_t i=m_dim;i>0;i--){
+        for(std::uint64_t i=m_dim;i>0;i--){
             if(i==m_dim){
                 m_strides[i-1]=1;
             }else{
@@ -43,10 +47,17 @@ public:
         return m_strides[index];
     }
 
-    __always_inline std::size_t offset(const std::vector<std::size_t>& indices) const{
-        std::size_t off=0;
-        for(std::size_t i=0;i<m_dim;i++){
+    __always_inline std::uint64_t offset(const std::vector<std::uint64_t>& indices) const{
+        std::uint64_t off=0;
+        for(std::uint64_t i=0;i<m_dim;i++){
             off+=indices[i]*m_strides[i];
+        }
+        return off;
+    }
+    __always_inline std::uint64_t offset(const std::uint64_t* start) const{
+        std::uint64_t off=0;
+        for(std::uint64_t i=0;i<m_dim;i++){
+            off+=start[i]*m_strides[i];
         }
         return off;
     }
@@ -58,6 +69,7 @@ public:
 
     std::uint64_t count() const;
     std::uint64_t dim() const;
+    std::vector<std::uint64_t> to_vector() const;
 
     ~Shape();
 }; 
@@ -73,19 +85,19 @@ public:
     }
     Tensor(const Shape& shape,T val):m_shape(shape){
         m_data=new T[m_shape.count()];
-        for(std::size_t i=0;i<m_shape.count();i++){
+        for(std::uint64_t i=0;i<m_shape.count();i++){
             m_data[i]=val;
         }
     }
     Tensor(const Shape& shape,const T* data):m_shape(shape){
         m_data=new T[m_shape.count()];
-        for(std::size_t i=0;i<m_shape.count();i++){
+        for(std::uint64_t i=0;i<m_shape.count();i++){
             m_data[i]=data[i];
         }
     }
     Tensor(const Tensor<T>& tensor):m_shape(tensor.m_shape){
         m_data=new T[m_shape.count()];
-        for(std::size_t i=0;i<m_shape.count();i++){
+        for(std::uint64_t i=0;i<m_shape.count();i++){
             m_data[i]=tensor.m_data[i];
         }
     }
@@ -111,7 +123,7 @@ public:
             m_shape=tensor.m_shape;
             m_data=new T[m_shape.count()];
         }
-        for(std::size_t i=0;i<m_shape.count();i++){
+        for(std::uint64_t i=0;i<m_shape.count();i++){
             m_data[i]=tensor.m_data[i];
         }
     }
@@ -127,20 +139,30 @@ public:
         tensor.m_data=nullptr;
     }
 
-    __always_inline T& operator[](std::size_t index){
+    __always_inline T& operator[](std::uint64_t index){
         return m_data[index];
     }
-    __always_inline const T& operator[](std::size_t index) const{
+    __always_inline const T& operator[](std::uint64_t index) const{
         return m_data[index];
     }
-    __always_inline T& operator[](const std::vector<std::size_t>& indices){
-        std::size_t off=m_shape.offset(indices);
+    __always_inline T& operator[](const std::vector<std::uint64_t>& indices){
+        std::uint64_t off=m_shape.offset(indices);
         return m_data[off];
     }
-    __always_inline const T& operator[](const std::vector<std::size_t>& indices) const{
-        std::size_t off=m_shape.offset(indices);
+    __always_inline const T& operator[](const std::vector<std::uint64_t>& indices) const{
+        std::uint64_t off=m_shape.offset(indices);
         return m_data[off];
     }
+    __always_inline T& operator[](const std::uint64_t* indices){
+        std::uint64_t off=m_shape.offset(indices);
+        return m_data[off];
+    }
+    __always_inline const T& operator[](const std::uint64_t* indices) const{
+        std::uint64_t off=m_shape.offset(indices);
+        return m_data[off];
+    }
+
+    __always_inline void reshape(const Shape& shape){m_shape=shape;}
 
     const Shape& shape() const{
         return m_shape;
@@ -151,35 +173,35 @@ public:
     T* data(){
         return m_data;
     }
-    const std::size_t size() const{
+    const std::uint64_t size() const{
         return m_shape.count();
     }
-    const std::size_t dim() const{
+    const std::uint64_t dim() const{
         return m_shape.dim();
     }
 };
 
 class NDRange {
     Shape shape;
-    std::set<std::size_t> axis;
+    std::set<std::uint64_t> axis;
 public:
-    NDRange(std::initializer_list<size_t> s,std::set<size_t> axis);
+    NDRange(Shape s,std::set<uint64_t> axis);
 
     class Iterator0;
     class Range;
     class Iterator1 {
-        const std::vector<size_t>* shape;
-        const std::vector<size_t>* weight;
-        std::vector<size_t> index;
-        std::size_t offset = 0;
+        const std::vector<uint64_t>* shape;
+        const std::vector<uint64_t>* weight;
+        std::vector<uint64_t> index;
+        std::uint64_t offset = 0;
         bool end_flag = false;
 
-        void reset(std::size_t off);
+        void reset(std::uint64_t off);
         public:
         Iterator1()=default;
-        Iterator1(const std::vector<size_t>* shape_, const std::vector<size_t>* weight_, bool end=false,std::size_t off=0);
+        Iterator1(const std::vector<uint64_t>* shape_, const std::vector<uint64_t>* weight_, bool end=false,std::uint64_t off=0);
 
-        __always_inline const std::size_t operator*() const { 
+        __always_inline const std::uint64_t operator*() const { 
             return offset;
         }
         
@@ -194,12 +216,12 @@ public:
     class Range{
         Iterator1 it_start;
         Iterator1 it_end;
-        std::size_t offset = 0;
+        std::uint64_t offset = 0;
         bool end_flag = false;
-        void reset(std::size_t off);
+        void reset(std::uint64_t off);
         public:
         Range()=default;
-        Range(const std::vector<size_t>* shape_, const std::vector<size_t>* weight_,std::size_t off=0);
+        Range(const std::vector<uint64_t>* shape_, const std::vector<uint64_t>* weight_,std::uint64_t off=0);
 
         Iterator1 begin() const;
         Iterator1 end() const;
@@ -207,17 +229,17 @@ public:
     };
     class Iterator0 {
         //Info from the shape that is in axis i.e fixed first
-        std::vector<std::size_t> shape0;
-        std::vector<std::size_t> strides0;
+        std::vector<std::uint64_t> shape0;
+        std::vector<std::uint64_t> strides0;
         //Info from the shape that is not in axis i.e varying later
-        std::vector<std::size_t> shape1;
-        std::vector<std::size_t> strides1;
+        std::vector<std::uint64_t> shape1;
+        std::vector<std::uint64_t> strides1;
         bool end_flag = false;
 
         Iterator1 it0;
         Range it1;
         public:
-        Iterator0(const Shape* shape_,const std::set<std::size_t>& axis, bool end=false);
+        Iterator0(const Shape* shape_,const std::set<std::uint64_t>& axis, bool end=false);
 
         __always_inline const Range& operator*()const{ 
             return it1;
@@ -229,11 +251,83 @@ public:
     Iterator0 begin() const;
     Iterator0 end()   const;
 };
-}
+class IdxIterator {
+    std::vector<uint64_t> shape;
+    std::vector<int64_t> is_fixed;
+    std::vector<uint64_t> weight;
+    public:
+    IdxIterator(Shape s,std::unordered_map<std::uint64_t,std::uint64_t> fixed_indices={});
 
+    class Iterator {
+        const std::vector<uint64_t>* shape;
+        const std::vector<int64_t>* is_fixed;//Negative if not fixed else fixed value
+        const std::vector<uint64_t>* weight;
+        std::vector<uint64_t> index;
+        std::uint64_t offset = 0;
+        bool end_flag = false;
+
+        public:
+        Iterator()=default;
+        Iterator(const std::vector<uint64_t>* shape_, const std::vector<int64_t>* is_fixed_, const std::vector<uint64_t>* weight_,bool end=false);
+
+        __always_inline const std::uint64_t operator*() const { 
+            return offset;
+        }
+        __always_inline const std::vector<uint64_t>& get_index() const {
+            return index;
+        }
+
+        Iterator& operator++();
+
+        bool operator!=(const Iterator& other) const;
+
+        friend class IdxIterator;
+    };
+    Iterator begin() const;
+    Iterator end()   const;
+
+};
+
+class IdxIterator2 {
+    std::vector<uint64_t> start;
+    std::vector<uint64_t> _end;
+    std::vector<uint64_t> step;
+    std::vector<uint64_t> weight;
+    public:
+    IdxIterator2(const Shape& shape_,const std::vector<uint64_t>& start_,const std::vector<uint64_t>& end_,const std::vector<uint64_t>& step_);
+
+    class Iterator {
+        const std::vector<uint64_t>* start;
+        const std::vector<uint64_t>* end;
+        const std::vector<uint64_t>* step;
+        const std::vector<uint64_t>* weight;
+
+        std::vector<uint64_t> index;
+        std::uint64_t offset = 0;
+        bool end_flag = false;
+        public:
+        Iterator()=default;
+        Iterator(const std::vector<uint64_t>* start_,const std::vector<uint64_t>* end_, const std::vector<uint64_t>* step_,
+                const std::vector<uint64_t>* weight_,bool end=false);
+
+        __always_inline const std::uint64_t operator*() const { 
+            return offset;
+        }
+        __always_inline const std::vector<uint64_t>& get_index() const {
+            return index;
+        }
+
+        Iterator& operator++();
+
+        bool operator!=(const Iterator& other) const;
+    };
+
+    Iterator begin() const;
+    Iterator end()   const;
+};
+}
 #include "op0.hpp"
 #include "op1.hpp"
 #include "op2.hpp"
 #include "op3.hpp"
 #include "func0.hpp"
-#include "loss.hpp"
