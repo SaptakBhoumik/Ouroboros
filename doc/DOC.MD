@@ -1,5 +1,7 @@
 # Ouroboros Library Documentation
 
+NOTE:-AI generated documentation, may contain errors. Please refer to the source code for accurate information. And report any issues you find.
+
 This document provides comprehensive documentation for all public APIs in the Ouroboros tensor library.
 
 ## Table of Contents
