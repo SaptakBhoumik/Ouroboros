@@ -102,8 +102,8 @@ void Shape::operator=(const Shape& shape){
         if(m_strides!=nullptr){
             delete[] m_strides;
         }
-        m_shape=new std::size_t[m_dim];
-        m_strides=new std::size_t[m_dim];
+        m_shape=new std::size_t[shape.m_dim];
+        m_strides=new std::size_t[shape.m_dim];
     }
     m_dim=shape.m_dim;
     m_count=shape.m_count;
