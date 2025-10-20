@@ -41,6 +41,16 @@ int main(){
     //There's a lot more you can do with tensors, check the documentation for more information
 }
 ```
+## Installation Guide
+Run the following commands in your terminal
+```bash
+git clone https://github.com/SaptakBhoumik/Ouroboros.git
+cd Ouroboros
+meson --buildtype=release dist
+cd dist
+ninja
+ninja install #Use sudo if required
+```
 
 ## Documentation
 
