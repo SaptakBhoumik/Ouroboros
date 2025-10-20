@@ -14,12 +14,12 @@ Well the main reason that this library exists is for personal use in my other pr
 ## Example usage
 
 ```cpp
-#include <ouroboros/ouroboros.hpp>
-
+#include <ouroboros/tensor.hpp>
+#include <cmath>
 int main(){
-    Ouroboros::Tensor t1=Ouroboros::CreateTensor::linspace({3,3},1.0,9.0);
-    std::cout<<"t2:\n"<<t1<<"\n";
-    Ouroboros::Tensor t2=Ouroboros::CreateTensor::linspace({3,3},9.0,1.0);
+    Ouroboros::Tensor<double> t1({2,3},1.0);
+    std::cout<<"t1:\n"<<t1<<"\n";
+    Ouroboros::Tensor<double> t2({3,2},2.0);
     std::cout<<"t2:\n"<<t2<<"\n";
 
     auto func=[](double x,double y)->double{
@@ -33,8 +33,10 @@ int main(){
     };
     t3=Ouroboros::transform<sin>(t3);//Apply sin to all elements of t3
     std::cout<<"sin(t3):\n"<<t3<<"\n";
-    
+
     std::cout<<"t1+t2:\n"<<t1+t2<<"\n";//Element wise addition
+    std::cout<<"matmul(t1,t2):\n"<<Ouroboros::matmul(t1,t2)<<"\n";//Matrix multiplication
+
 
     //There's a lot more you can do with tensors, check the documentation for more information
 }
@@ -42,29 +44,18 @@ int main(){
 
 More examples can be found [HERE](https://github.com/SaptakBhoumik/Ouroboros/tree/master/example) 
 
-## Documentation
-
-You can find the documentation and installation guide 
-[HERE](https://github.com/SaptakBhoumik/Ouroboros/wiki)
 
 ## Future TODOs
 
-- Support block wise reduction
+- Support block wise opperations like conv,block reduction etc
+- Better support for tensor slices and easier function to create function
 - Support GPU
-- Improve threading(Current implimentation is not up to the mark) 
-- Improve template
 - Create a logo
-- Reduce the amount of heap allocation
-- Improve it based on the feedback I recieve
 
 ## Have questions?
 
 Cool, you can contact me via mail.
-Email: saptakbhoumik@gmail.com
-
-## Want to contribute?
-
-Great, go ahead and make the changes you want, then submit a new pull request
+Email: saptakbhoumik.acad@gmail.com
 
 ## License
 The Ouroboros library is licensed under the [Mozilla Public License](https://github.com/SaptakBhoumik/Ouroboros/blob/master/LICENSE), which is attached in this repository

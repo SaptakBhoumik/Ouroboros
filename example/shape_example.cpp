@@ -1,9 +1,9 @@
-#include <ouroboros/ouroboros.hpp>
+#include <ouroboros/tensor.hpp>
 #include <iostream>
 
 int main(){
     //Various ways to initialize the Shape class
-    Ouroboros::Shape shape1(3,(std::uint64_t)2);//Creates a shape of 3 items each of value 2. 
+    Ouroboros::Shape shape1(3,(std::size_t)2);//Creates a shape of 3 items each of value 2. 
     std::cout<<"shape1="<<shape1<<std::endl;
 
     Ouroboros::Shape shape2={1,2,3};
@@ -15,7 +15,7 @@ int main(){
     Ouroboros::Shape shape4(std::move(shape3));
     std::cout<<"shape4="<<shape4<<std::endl;
 
-    std::uint64_t array[]={1,2,3};
+    std::size_t array[]={1,2,3};
     Ouroboros::Shape shape5(3, array);//Takes in a pointer to an array and copies it
     std::cout<<"shape5="<<shape5<<std::endl;
 
@@ -33,9 +33,9 @@ int main(){
     //Note:- Something like shape1[0]=5 is not allowed
 
     //Iterating over the shape
-    const std::uint64_t* start=shape1.begin();//Get the pointer to the start of the shape
-    const std::uint64_t* end=shape1.end();//Get the pointer to the end of the shape
-    for(const std::uint64_t* i=start;i!=end;i++){
+    const std::size_t* start=shape1.begin();//Get the pointer to the start of the shape
+    const std::size_t* end=shape1.end();//Get the pointer to the end of the shape
+    for(const std::size_t* i=start;i!=end;i++){
         std::cout<<*i<<" ";
     }
     for(auto i:shape1){

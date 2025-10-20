@@ -1,16 +1,5 @@
-tensor_src=[
-    'src/tensor/shape.cpp',
-    'src/tensor/tensor.cpp',
-    'src/tensor/booltensor.cpp',
-    'src/tensor/utils.cpp',
-    'src/tensor/slice.cpp',
-    'src/tensor/create_tensor.cpp',
-]
-op_src=[
-    'src/cpu/op.cpp',
-    'src/op/op.cpp',
-    'src/op/bool_op.cpp',
-]
-utils_src=[
-    'src/utils.cpp'
+src= [
+    'src/iterator.cpp',
+    'src/shape.cpp',
+    'src/op3.cpp',
 ]
