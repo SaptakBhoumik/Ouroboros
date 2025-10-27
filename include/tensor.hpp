@@ -1,14 +1,16 @@
 #pragma once
 #include <cstddef>
 #include <cstdint>
-#include <functional>
 #include <initializer_list>
 #include <iostream>
-#include <sys/cdefs.h>
-#include <sys/types.h>
+// #include <sys/cdefs.h>
+// #include <sys/types.h>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#ifndef __always_inline
+#define __always_inline __attribute__((always_inline)) inline
+#endif
 namespace Ouroboros{
 class Shape{
     std::size_t* m_shape=nullptr;

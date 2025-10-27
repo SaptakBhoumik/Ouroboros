@@ -6,8 +6,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
-#include <sys/cdefs.h>
-#include <sys/types.h>
 
 #include <array>
 #include <unordered_set>

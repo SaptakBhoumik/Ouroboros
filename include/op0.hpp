@@ -2,7 +2,7 @@
 #include "tensor.hpp"
 namespace Ouroboros{
 template<typename T>
-Tensor<T> operator~(const Tensor<T>& a){
+__always_inline Tensor<T> operator~(const Tensor<T>& a){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=~a[i];
@@ -11,7 +11,7 @@ Tensor<T> operator~(const Tensor<T>& a){
 }
 
 template<typename T>
-Tensor<T> operator|(const Tensor<T>& a,const Tensor<T>& b){
+__always_inline Tensor<T> operator|(const Tensor<T>& a,const Tensor<T>& b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]|b[i];
@@ -19,7 +19,7 @@ Tensor<T> operator|(const Tensor<T>& a,const Tensor<T>& b){
     return result;
 }
 template<typename T>
-Tensor<T> operator&(const Tensor<T>& a,const Tensor<T>& b){
+__always_inline Tensor<T> operator&(const Tensor<T>& a,const Tensor<T>& b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]&b[i];
@@ -28,7 +28,7 @@ Tensor<T> operator&(const Tensor<T>& a,const Tensor<T>& b){
 }
 
 template<typename T>
-Tensor<T> operator^(const Tensor<T>& a,const Tensor<T>& b){
+__always_inline Tensor<T> operator^(const Tensor<T>& a,const Tensor<T>& b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]^b[i];
@@ -36,7 +36,7 @@ Tensor<T> operator^(const Tensor<T>& a,const Tensor<T>& b){
     return result;
 }
 template<typename T>
-Tensor<T> operator<<(const Tensor<T>& a,const Tensor<T>& b){
+__always_inline Tensor<T> operator<<(const Tensor<T>& a,const Tensor<T>& b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]<<b[i];
@@ -44,7 +44,7 @@ Tensor<T> operator<<(const Tensor<T>& a,const Tensor<T>& b){
     return result;
 }
 template<typename T>
-Tensor<T> operator>>(const Tensor<T>& a,const Tensor<T>& b){
+__always_inline Tensor<T> operator>>(const Tensor<T>& a,const Tensor<T>& b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]>>b[i];
@@ -54,7 +54,7 @@ Tensor<T> operator>>(const Tensor<T>& a,const Tensor<T>& b){
 
 
 template<typename T>
-Tensor<T> operator|(const Tensor<T>& a,T b){
+__always_inline Tensor<T> operator|(const Tensor<T>& a,T b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]|b;
@@ -62,7 +62,7 @@ Tensor<T> operator|(const Tensor<T>& a,T b){
     return result;
 }
 template<typename T>
-Tensor<T> operator&(const Tensor<T>& a,T b){
+__always_inline Tensor<T> operator&(const Tensor<T>& a,T b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]&b;
@@ -70,7 +70,7 @@ Tensor<T> operator&(const Tensor<T>& a,T b){
     return result;
 }
 template<typename T>
-Tensor<T> operator^(const Tensor<T>& a,T b){
+__always_inline Tensor<T> operator^(const Tensor<T>& a,T b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]^b;
@@ -78,7 +78,7 @@ Tensor<T> operator^(const Tensor<T>& a,T b){
     return result;
 }
 template<typename T>
-Tensor<T> operator<<(const Tensor<T>& a,T b){
+__always_inline Tensor<T> operator<<(const Tensor<T>& a,T b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]<<b;
@@ -86,7 +86,7 @@ Tensor<T> operator<<(const Tensor<T>& a,T b){
     return result;
 }
 template<typename T>
-Tensor<T> operator>>(const Tensor<T>& a,T b){
+__always_inline Tensor<T> operator>>(const Tensor<T>& a,T b){
     Tensor<T> result(a.shape());
     for(std::size_t i=0;i<a.size();i++){
         result[i]=a[i]>>b;
@@ -96,19 +96,19 @@ Tensor<T> operator>>(const Tensor<T>& a,T b){
 
 
 template<typename T>
-Tensor<T> operator|(T a,const Tensor<T>& b){
+__always_inline Tensor<T> operator|(T a,const Tensor<T>& b){
     return b|a;
 }
 template<typename T>
-Tensor<T> operator&(T a,const Tensor<T>& b){
+__always_inline Tensor<T> operator&(T a,const Tensor<T>& b){
     return b&a;
 }
 template<typename T>
-Tensor<T> operator^(T a,const Tensor<T>& b){
+__always_inline Tensor<T> operator^(T a,const Tensor<T>& b){
     return b^a;
 }
 template<typename T>
-Tensor<T> operator<<(T a,const Tensor<T>& b){
+__always_inline Tensor<T> operator<<(T a,const Tensor<T>& b){
     Tensor<T> result(b.shape());
     for(std::size_t i=0;i<b.size();i++){
         result[i]=a<<b[i];
@@ -116,7 +116,7 @@ Tensor<T> operator<<(T a,const Tensor<T>& b){
     return result;
 }
 template<typename T>
-Tensor<T> operator>>(T a,const Tensor<T>& b){
+__always_inline Tensor<T> operator>>(T a,const Tensor<T>& b){
     Tensor<T> result(b.shape());
     for(std::size_t i=0;i<b.size();i++){
         result[i]=a>>b[i];
