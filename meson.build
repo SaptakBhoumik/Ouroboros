@@ -36,7 +36,7 @@ pkg = import('pkgconfig')
 headers = ['.'] # subdirectories of ${prefix}/${includedir} to add to header path
 pkg.generate(libraries : ouroboros,
              subdirs : headers,
-             version : '0.1.0',
+             version : '0.2.0',
              name : 'Ouroboros',
              filebase : 'ouroboros',
              description : 'A simple c++ tensor library')
