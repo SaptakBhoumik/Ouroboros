@@ -52,6 +52,8 @@ ninja
 ninja install #Use sudo if required
 ```
 
+# TODO:Include how to compile with your project. And include the dependencies
+
 ## Documentation
 
 For comprehensive documentation of all public APIs, including detailed examples and NumPy equivalents, see [doc/DOC.MD](doc/DOC.MD).

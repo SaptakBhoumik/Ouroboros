@@ -180,6 +180,12 @@ public:
         std::size_t off=m_shape.offset(indices);
         return m_data[off];
     }
+    template<typename... Args>
+    __always_inline T& operator()(Args... args){
+        std::vector<std::size_t> indices={static_cast<std::size_t>(args)...};
+        std::size_t off=m_shape.offset(indices);
+        return m_data[off];
+    }
 
     __always_inline void reshape(const Shape& shape){m_shape=shape;}
 

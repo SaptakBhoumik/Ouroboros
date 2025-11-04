@@ -1,6 +1,4 @@
-
-
-project('Ouroboros', 'cpp', version: '0.2.0')
+project('Ouroboros', 'cpp', version: '0.2.1')
 
 include = include_directories('include/')
 # omp=dependency('openmp')
@@ -28,7 +26,7 @@ ouroboros=static_library(
     include_directories:include,
     sources:src,
     # dependencies:[omp,cblas],
-    dependencies:[cblas],
+    # dependencies:[cblas],
     install:true
 )
 
@@ -36,7 +34,7 @@ pkg = import('pkgconfig')
 headers = ['.'] # subdirectories of ${prefix}/${includedir} to add to header path
 pkg.generate(libraries : ouroboros,
              subdirs : headers,
-             version : '0.2.0',
+             version : '0.2.1',
              name : 'Ouroboros',
              filebase : 'ouroboros',
              description : 'A simple c++ tensor library')
