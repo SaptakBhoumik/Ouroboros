@@ -377,4 +377,5 @@ class IdxIterator2 {
 #include "op1.hpp"
 #include "op2.hpp"
 #include "op3.hpp"
+#include "op4.hpp"
 #include "func0.hpp"
